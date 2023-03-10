@@ -1,12 +1,11 @@
-package usersRoute
+package configRouter
 
 import (
 	UserControllers "api/src/controllers"
-	. "api/src/router"
 	"net/http"
 )
 
-var userRoute = []ConfigRoute{
+var userRoute = []ConfigRouter{
 	// create user
 	{
 		URI:             "/users",
