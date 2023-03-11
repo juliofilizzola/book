@@ -12,14 +12,14 @@ import (
 )
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
-	body, error := io.ReadAll(r.Body)
-	if error != nil {
-		response.Err(w, http.StatusUnprocessableEntity, error)
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		response.Err(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 	var user models.User
-	if error = json.Unmarshal(body, &user); error != nil {
-		response.Err(w, http.StatusBadRequest, error)
+	if err = json.Unmarshal(body, &user); err != nil {
+		response.Err(w, http.StatusBadRequest, err)
 		return
 	}
 
