@@ -37,7 +37,8 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	defer func(db2 *sql.DB) {
 		err := db2.Close()
 		if err != nil {
-
+			response.Err(w, http.StatusInternalServerError, err)
+			return
 		}
 	}(db2)
 	repo := repositories.UserRepository(db2)
