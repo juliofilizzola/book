@@ -1,7 +1,7 @@
 package main
 
 import (
-	config "api/src"
+	"api/src/config"
 	"api/src/router"
 	"fmt"
 	"log"

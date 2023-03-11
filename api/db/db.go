@@ -1,7 +1,7 @@
 package db
 
 import (
-	config "api/src"
+	"api/src/config"
 	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
