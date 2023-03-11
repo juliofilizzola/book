@@ -5,6 +5,7 @@ import (
 	"api/src/models"
 	"api/src/repositories"
 	"api/src/response"
+	"database/sql"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -23,11 +24,22 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err = user.PreparateData(); err != nil {
+		response.Err(w, http.StatusBadRequest, err)
+		return
+	}
+
 	db2, err := db.Connection()
 	if err != nil {
 		response.Err(w, http.StatusInternalServerError, err)
 		return
 	}
+	defer func(db2 *sql.DB) {
+		err := db2.Close()
+		if err != nil {
+
+		}
+	}(db2)
 	repo := repositories.UserRepository(db2)
 	user.ID, err = repo.Create(user)
 	if err != nil {
@@ -37,11 +49,13 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusCreated, struct {
 		ID        uint64    `json:"id"`
 		Name      string    `json:"name"`
+		Email     string    `json:"email"`
 		Nick      string    `json:"nick"`
 		CreatedAt time.Time `json:"created_at"`
 		UpdatedAt time.Time `json:"updated_at"`
 	}{
 		ID:        user.ID,
+		Email:     user.Email,
 		Nick:      user.Nick,
 		Name:      user.Name,
 		CreatedAt: user.CreatedAt,
