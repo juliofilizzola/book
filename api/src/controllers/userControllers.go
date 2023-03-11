@@ -4,34 +4,49 @@ import (
 	"api/db"
 	"api/src/models"
 	"api/src/repositories"
+	"api/src/response"
 	"encoding/json"
-	"fmt"
 	"io"
-	"log"
 	"net/http"
+	"time"
 )
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	body, error := io.ReadAll(r.Body)
 	if error != nil {
-		log.Fatal(error)
+		response.Err(w, http.StatusUnprocessableEntity, error)
+		return
 	}
 	var user models.User
 	if error = json.Unmarshal(body, &user); error != nil {
-		log.Fatal(error)
+		response.Err(w, http.StatusBadRequest, error)
+		return
 	}
 
 	db2, err := db.Connection()
 	if err != nil {
-		log.Fatal(error)
-	}
-	repo := repositories.UserRepository(db2)
-	create, err := repo.Create(user)
-	if err != nil {
+		response.Err(w, http.StatusInternalServerError, err)
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte(fmt.Sprintf("id insert: %d", create)))
+	repo := repositories.UserRepository(db2)
+	user.ID, err = repo.Create(user)
+	if err != nil {
+		response.Err(w, http.StatusInternalServerError, err)
+		return
+	}
+	response.JSON(w, http.StatusCreated, struct {
+		ID        uint64    `json:"id"`
+		Name      string    `json:"name"`
+		Nick      string    `json:"nick"`
+		CreatedAt time.Time `json:"created_at"`
+		UpdatedAt time.Time `json:"updated_at"`
+	}{
+		ID:        user.ID,
+		Nick:      user.Nick,
+		Name:      user.Name,
+		CreatedAt: user.CreatedAt,
+		UpdatedAt: user.UpdatedAt,
+	})
 }
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
