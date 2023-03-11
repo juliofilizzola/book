@@ -65,7 +65,32 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Creater User"))
+	db2, err := db.Connection()
+	if err != nil {
+		response.Err(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer func(db2 *sql.DB) {
+		err := db2.Close()
+		if err != nil {
+			response.Err(w, http.StatusInternalServerError, err)
+			return
+		}
+	}(db2)
+
+	getUsers, err := db2.Query("select * from user")
+	if err != nil {
+		response.Err(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer func(getUsers *sql.Rows) {
+		err := getUsers.Close()
+		if err != nil {
+			response.Err(w, http.StatusInternalServerError, err)
+			return
+		}
+	}(getUsers)
+
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
