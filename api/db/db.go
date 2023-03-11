@@ -3,19 +3,20 @@ package db
 import (
 	"api/src/config"
 	"database/sql"
-	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func Connection() (*sql.DB, error) {
-	db, error := sql.Open("mysql", config.URL_DATABASE)
-	if error != nil {
-		return nil, error
+	db, err := sql.Open("mysql", config.URL_DATABASE)
+	if err != nil {
+		return nil, err
 	}
-	if error = db.Ping(); error != nil {
-		db.Close()
-		return nil, error
+	if err = db.Ping(); err != nil {
+		err := db.Close()
+		if err != nil {
+			return nil, err
+		}
+		return nil, err
 	}
-	fmt.Println("HELLO")
-	return db, error
+	return db, err
 }
