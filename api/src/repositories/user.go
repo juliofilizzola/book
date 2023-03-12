@@ -37,10 +37,10 @@ func (u User) Create(user models.User) (uint64, error) {
 }
 
 func (u User) GetUsers(params string) ([]models.User, error) {
-	param = fmt.Sprintf("%%%s%%", params)
+	param := fmt.Sprintf("%%%s%%", params)
 	query, err := u.db.Query(
-		"select id, name, nick, email, created_at, updated_at, from user where name LIKE ? or nick LIKE ?", params, params
-		)
+		"select id, name, nick, email, created_at, updated_at, from user where name LIKE ? or nick LIKE ?", param, param,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (u User) GetUsers(params string) ([]models.User, error) {
 	defer func(query *sql.Rows) {
 		err := query.Close()
 		if err != nil {
-			return nil, err
+
 		}
 	}(query)
 	var users []models.User
@@ -63,12 +63,11 @@ func (u User) GetUsers(params string) ([]models.User, error) {
 			user.Email,
 			user.UpdatedAt,
 			user.CreatedAt,
-
-				); err != nil {
+		); err != nil {
 			return nil, err
 		}
 
-		users = append(user)
+		users = append(users, user)
 	}
-
+	return users, nil
 }
