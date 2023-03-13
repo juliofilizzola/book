@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	URL_DATABASE = ""
-	PORT         = 0
+	UrlDatabase = ""
+	PORT        = 0
 )
 
 func Config() {
@@ -26,6 +26,6 @@ func Config() {
 		PORT = 9000
 	}
 
-	URL_DATABASE = fmt.Sprint(os.Getenv("URL_DATABASE_ENV"))
+	UrlDatabase = fmt.Sprint(os.Getenv("URL_DATABASE_ENV"))
 
 }
