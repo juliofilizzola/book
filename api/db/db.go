@@ -7,7 +7,7 @@ import (
 )
 
 func Connection() (*sql.DB, error) {
-	db, err := sql.Open("mysql", config.URL_DATABASE)
+	db, err := sql.Open("mysql", config.UrlDatabase)
 	if err != nil {
 		return nil, err
 	}
