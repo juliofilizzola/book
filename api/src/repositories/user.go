@@ -3,6 +3,7 @@ package repositories
 import (
 	"api/src/models"
 	"database/sql"
+	"errors"
 	"fmt"
 )
 
@@ -39,7 +40,7 @@ func (u User) Create(user models.User) (uint64, error) {
 func (u User) GetUsers(params string) ([]models.User, error) {
 	param := fmt.Sprintf("%%%s%%", params)
 	query, err := u.db.Query(
-		"select id, name, nick, email, created_at, updated_at from user where name LIKE ? or nick LIKE ?", param, param,
+		"select id, name, nick, email, created_at from user where name LIKE ? or nick LIKE ?", param, param,
 	)
 	if err != nil {
 		return nil, err
@@ -55,13 +56,11 @@ func (u User) GetUsers(params string) ([]models.User, error) {
 
 	for query.Next() {
 		var user models.User
-		fmt.Println(user)
 		if err = query.Scan(
 			&user.ID,
 			&user.Name,
 			&user.Nick,
 			&user.Email,
-			&user.UpdatedAt,
 			&user.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -70,4 +69,37 @@ func (u User) GetUsers(params string) ([]models.User, error) {
 		users = append(users, user)
 	}
 	return users, nil
+}
+
+func (u User) GetUser(ID uint64) (models.User, error) {
+
+	getUser, err := u.db.Query("select id, name, nick, email, created_at from user where id = ? ", ID)
+
+	if err != nil {
+		fmt.Println("!")
+		return models.User{}, err
+	}
+
+	defer getUser.Close()
+
+	var user models.User
+
+	if getUser.Next() {
+		fmt.Println("Cheguei aqui")
+		if err = getUser.Scan(
+			&user.ID,
+			&user.Name,
+			&user.Nick,
+			&user.Email,
+			&user.CreatedAt,
+		); err != nil {
+			fmt.Println("Cheguei aqui 3")
+
+			return models.User{}, err
+		}
+	} else {
+		return models.User{}, errors.New("not found")
+	}
+
+	return user, nil
 }
