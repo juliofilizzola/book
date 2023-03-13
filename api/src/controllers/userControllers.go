@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -65,6 +66,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
+	params := strings.ToLower(r.URL.Query().Get("user"))
 	db2, err := db.Connection()
 	if err != nil {
 		response.Err(w, http.StatusInternalServerError, err)
@@ -78,19 +80,8 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 		}
 	}(db2)
 
-	getUsers, err := db2.Query("select * from user")
-	if err != nil {
-		response.Err(w, http.StatusInternalServerError, err)
-		return
-	}
-	defer func(getUsers *sql.Rows) {
-		err := getUsers.Close()
-		if err != nil {
-			response.Err(w, http.StatusInternalServerError, err)
-			return
-		}
-	}(getUsers)
-
+	repo := repositories.UserRepository(db2)
+	users, err := repo.GetUsers(params)
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
