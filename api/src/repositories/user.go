@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log"
 )
 
 type User struct {
@@ -20,7 +21,12 @@ func (u User) Create(user models.User) (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
-	defer statement.Close()
+	defer func(statement *sql.Stmt) {
+		err := statement.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(statement)
 
 	insert, err := statement.Exec(user.Name, user.Nick, user.Email, user.Password)
 
@@ -49,7 +55,7 @@ func (u User) GetUsers(params string) ([]models.User, error) {
 	defer func(query *sql.Rows) {
 		err := query.Close()
 		if err != nil {
-
+			log.Fatal(err)
 		}
 	}(query)
 	var users []models.User
@@ -80,7 +86,12 @@ func (u User) GetUser(ID uint64) (models.User, error) {
 		return models.User{}, err
 	}
 
-	defer getUser.Close()
+	defer func(getUser *sql.Rows) {
+		err := getUser.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(getUser)
 
 	var user models.User
 
