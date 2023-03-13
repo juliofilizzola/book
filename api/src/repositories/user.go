@@ -39,7 +39,7 @@ func (u User) Create(user models.User) (uint64, error) {
 func (u User) GetUsers(params string) ([]models.User, error) {
 	param := fmt.Sprintf("%%%s%%", params)
 	query, err := u.db.Query(
-		"select id, name, nick, email, created_at, updated_at, from user where name LIKE ? or nick LIKE ?", param, param,
+		"select id, name, nick, email, created_at, updated_at from user where name LIKE ? or nick LIKE ?", param, param,
 	)
 	if err != nil {
 		return nil, err
@@ -55,14 +55,14 @@ func (u User) GetUsers(params string) ([]models.User, error) {
 
 	for query.Next() {
 		var user models.User
-
+		fmt.Println(user)
 		if err = query.Scan(
 			&user.ID,
 			&user.Name,
 			&user.Nick,
-			user.Email,
-			user.UpdatedAt,
-			user.CreatedAt,
+			&user.Email,
+			&user.UpdatedAt,
+			&user.CreatedAt,
 		); err != nil {
 			return nil, err
 		}

@@ -82,6 +82,11 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 
 	repo := repositories.UserRepository(db2)
 	users, err := repo.GetUsers(params)
+	if err != nil {
+		response.Err(w, http.StatusNotFound, err)
+		return
+	}
+	response.JSON(w, http.StatusOK, users)
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
