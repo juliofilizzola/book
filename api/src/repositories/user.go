@@ -85,7 +85,6 @@ func (u User) GetUser(ID uint64) (models.User, error) {
 	var user models.User
 
 	if getUser.Next() {
-		fmt.Println("Cheguei aqui")
 		if err = getUser.Scan(
 			&user.ID,
 			&user.Name,
@@ -93,8 +92,6 @@ func (u User) GetUser(ID uint64) (models.User, error) {
 			&user.Email,
 			&user.CreatedAt,
 		); err != nil {
-			fmt.Println("Cheguei aqui 3")
-
 			return models.User{}, err
 		}
 	} else {
