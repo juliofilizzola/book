@@ -3,6 +3,7 @@ package repositories
 import (
 	"api/src/models"
 	"database/sql"
+	"errors"
 	"fmt"
 )
 
@@ -75,6 +76,7 @@ func (u User) GetUser(ID uint64) (models.User, error) {
 	getUser, err := u.db.Query("select id, name, nick, email, created_at from user where id = ? ", ID)
 
 	if err != nil {
+		fmt.Println("!")
 		return models.User{}, err
 	}
 
@@ -83,6 +85,7 @@ func (u User) GetUser(ID uint64) (models.User, error) {
 	var user models.User
 
 	if getUser.Next() {
+		fmt.Println("Cheguei aqui")
 		if err = getUser.Scan(
 			&user.ID,
 			&user.Name,
@@ -90,10 +93,12 @@ func (u User) GetUser(ID uint64) (models.User, error) {
 			&user.Email,
 			&user.CreatedAt,
 		); err != nil {
+			fmt.Println("Cheguei aqui 3")
+
 			return models.User{}, err
 		}
 	} else {
-		return models.User{}, err
+		return models.User{}, errors.New("not found")
 	}
 
 	return user, nil
