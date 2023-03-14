@@ -16,8 +16,8 @@ type User struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
 
-func (u *User) PreparateData() error {
-	if err := u.validation(); err != nil {
+func (u *User) PreparateData(edit bool) error {
+	if err := u.validation(edit); err != nil {
 		return err
 	}
 
@@ -25,7 +25,7 @@ func (u *User) PreparateData() error {
 	return nil
 }
 
-func (u *User) validation() error {
+func (u *User) validation(edit bool) error {
 	if u.Name == "" {
 		return errors.New("name has required")
 	}
@@ -38,7 +38,7 @@ func (u *User) validation() error {
 		return errors.New("email has required")
 	}
 
-	if u.Password == "" {
+	if u.Password == "" && !edit {
 		return errors.New("pasaword has required")
 	}
 

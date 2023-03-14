@@ -30,7 +30,7 @@ var userRoute = []ConfigRouter{
 
 	{
 		URI:             "/users/{id}",
-		Method:          http.MethodPatch,
+		Method:          http.MethodPut,
 		Func:            UserControllers.UpdateUser,
 		AuthRequeriment: false,
 	},
