@@ -46,7 +46,7 @@ func (u *User) validation(edit bool) error {
 		return errors.New("email invalid")
 	}
 	if u.Password == "" && !edit {
-		return errors.New("pasaword has required")
+		return errors.New("password has required")
 	}
 
 	return nil
