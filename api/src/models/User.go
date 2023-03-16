@@ -1,7 +1,9 @@
 package models
 
 import (
+	"api/src/auth"
 	"errors"
+	"fmt"
 	"github.com/badoux/checkmail"
 	"strings"
 	"time"
@@ -22,7 +24,9 @@ func (u *User) PrepareData(edit bool) error {
 		return err
 	}
 
-	u.format()
+	if err := u.format(edit); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -48,8 +52,19 @@ func (u *User) validation(edit bool) error {
 	return nil
 }
 
-func (u *User) format() {
+func (u *User) format(edit bool) error {
 	u.Name = strings.TrimSpace(u.Name)
 	u.Email = strings.TrimSpace(u.Email)
 	u.Nick = strings.TrimSpace(u.Nick)
+
+	if !edit {
+		passwordHash, err := auth.Hash(u.Password)
+		fmt.Println(passwordHash)
+		if err != nil {
+			return err
+		}
+
+		u.Password = string(passwordHash)
+	}
+	return nil
 }
