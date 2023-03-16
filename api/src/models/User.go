@@ -16,7 +16,7 @@ type User struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
 
-func (u *User) PreparateData(edit bool) error {
+func (u *User) PrepareData(edit bool) error {
 	if err := u.validation(edit); err != nil {
 		return err
 	}
