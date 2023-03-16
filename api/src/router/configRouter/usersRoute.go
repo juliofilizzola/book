@@ -11,33 +11,33 @@ var userRoute = []ConfigRouter{
 		URI:             "/users",
 		Method:          http.MethodPost,
 		Func:            UserControllers.CreateUser,
-		AuthRequeriment: false,
+		AuthRequirement: false,
 	},
 	// get all user
 	{
 		URI:             "/users",
 		Method:          http.MethodGet,
 		Func:            UserControllers.GetUsers,
-		AuthRequeriment: false,
+		AuthRequirement: false,
 	},
 	// get unique user
 	{
 		URI:             "/users/{id}",
 		Method:          http.MethodGet,
 		Func:            UserControllers.GetUser,
-		AuthRequeriment: false,
+		AuthRequirement: false,
 	},
 
 	{
 		URI:             "/users/{id}",
 		Method:          http.MethodPut,
 		Func:            UserControllers.UpdateUser,
-		AuthRequeriment: false,
+		AuthRequirement: false,
 	},
 	{
 		URI:             "/users/{id}",
 		Method:          http.MethodDelete,
 		Func:            UserControllers.DeleteUser,
-		AuthRequeriment: false,
+		AuthRequirement: false,
 	},
 }

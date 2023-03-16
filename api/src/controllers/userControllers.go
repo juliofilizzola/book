@@ -27,7 +27,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = user.PreparateData(false); err != nil {
+	if err = user.PrepareData(false); err != nil {
 		response.Err(w, http.StatusBadRequest, err)
 		return
 	}
@@ -141,7 +141,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = user.PreparateData(true); err != nil {
+	if err = user.PrepareData(true); err != nil {
 		response.Err(w, http.StatusConflict, err)
 		return
 	}

@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS devbook;
-USE devbook;
+CREATE DATABASE IF NOT EXISTS `dev-book`;
+USE `dev-book`;
 DROP TABLE IF EXISTS user;
 CREATE TABLE USER (
     id int auto_increment primary key,
