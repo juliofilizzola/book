@@ -9,7 +9,7 @@ type ConfigRouter struct {
 	URI             string
 	Method          string
 	Func            func(w http.ResponseWriter, r *http.Request)
-	AuthRequeriment bool
+	AuthRequirement bool
 }
 
 func Config(r *mux.Router) *mux.Router {
