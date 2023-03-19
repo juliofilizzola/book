@@ -1,7 +1,7 @@
 package configRouter
 
 import (
-	UserControllers "api/src/controllers"
+	UserControllers "api/src/controllers/users"
 	"net/http"
 )
 
