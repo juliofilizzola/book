@@ -3,7 +3,6 @@ package models
 import (
 	"api/src/auth"
 	"errors"
-	"fmt"
 	"github.com/badoux/checkmail"
 	"strings"
 	"time"
@@ -59,7 +58,7 @@ func (u *User) format(edit bool) error {
 
 	if !edit {
 		passwordHash, err := auth.Hash(u.Password)
-		fmt.Println(passwordHash)
+
 		if err != nil {
 			return err
 		}
