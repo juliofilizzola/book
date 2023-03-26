@@ -4,6 +4,7 @@ import (
 	"api/src/config"
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
+	"log"
 )
 
 func Connection() (*sql.DB, error) {
@@ -18,5 +19,6 @@ func Connection() (*sql.DB, error) {
 		}
 		return nil, err
 	}
+	log.Println("Successfully connected to PlanetScale!")
 	return db, err
 }
