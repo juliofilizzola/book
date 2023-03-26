@@ -13,9 +13,10 @@ type ConfigRouter struct {
 }
 
 func Config(r *mux.Router) *mux.Router {
-	userRoute := userRoute
+	routes := userRoute
+	routes = append(routes, loginRoute...)
 
-	for _, route := range userRoute {
+	for _, route := range routes {
 		r.HandleFunc(route.URI, route.Func).Methods(route.Method)
 	}
 
