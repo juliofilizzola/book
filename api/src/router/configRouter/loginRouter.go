@@ -1,14 +1,15 @@
 package configRouter
 
-import "net/http"
+import (
+	loginController "api/src/controllers/login"
+	"net/http"
+)
 
 var loginRoute = []ConfigRouter{
 	{
-		URI:    "/login",
-		Method: http.MethodPost,
-		Func: func(w http.ResponseWriter, r *http.Request) {
-
-		},
-		AuthRequirement: true,
+		URI:             "/login",
+		Method:          http.MethodPost,
+		Func:            loginController.Login,
+		AuthRequirement: false,
 	},
 }
