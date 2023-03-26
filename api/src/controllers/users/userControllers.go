@@ -3,7 +3,7 @@ package UserControllers
 import (
 	"api/db"
 	"api/src/models"
-	"api/src/repositories"
+	"api/src/repositories/users"
 	"api/src/response"
 	"database/sql"
 	"encoding/json"
@@ -44,7 +44,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}(db2)
-	repo := repositories.UserRepository(db2)
+	repo := users.UserRepository(db2)
 	user.ID, err = repo.Create(user)
 	if err != nil {
 		response.Err(w, http.StatusInternalServerError, err)
@@ -82,13 +82,13 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 		}
 	}(db2)
 
-	repo := repositories.UserRepository(db2)
-	users, err := repo.GetUsers(params)
+	repo := users.UserRepository(db2)
+	usersResponse, err := repo.GetUsers(params)
 	if err != nil {
 		response.Err(w, http.StatusNotFound, err)
 		return
 	}
-	response.JSON(w, http.StatusOK, users)
+	response.JSON(w, http.StatusOK, usersResponse)
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
@@ -111,13 +111,13 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		}
 	}(db2)
 
-	repo := repositories.UserRepository(db2)
-	users, err := repo.GetUser(ID)
+	repo := users.UserRepository(db2)
+	usersResponse, err := repo.GetUser(ID)
 	if err != nil {
 		response.Err(w, http.StatusNotFound, err)
 		return
 	}
-	response.JSON(w, http.StatusOK, users)
+	response.JSON(w, http.StatusOK, usersResponse)
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
@@ -129,6 +129,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	body, err := io.ReadAll(r.Body)
+
 	if err != nil {
 		response.Err(w, http.StatusUnprocessableEntity, err)
 		return
@@ -147,10 +148,12 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db2, err := db.Connection()
+
 	if err != nil {
 		response.Err(w, http.StatusInternalServerError, err)
 		return
 	}
+
 	defer func(db2 *sql.DB) {
 		err := db2.Close()
 		if err != nil {
@@ -158,15 +161,14 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}(db2)
-	repo := repositories.UserRepository(db2)
+
+	repo := users.UserRepository(db2)
 
 	if err := repo.UpdatedUser(ID, user); err != nil {
 		response.Err(w, http.StatusBadRequest, err)
 		return
 	}
-
 	response.JSON(w, http.StatusNoContent, nil)
-
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
@@ -187,7 +189,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}(db2)
-	repo := repositories.UserRepository(db2)
+	repo := users.UserRepository(db2)
 	if err = repo.DeleteUser(ID); err != nil {
 		response.Err(w, http.StatusBadRequest, err)
 		return
