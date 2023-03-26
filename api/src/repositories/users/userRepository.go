@@ -1,4 +1,4 @@
-package repositories
+package users
 
 import (
 	"api/src/models"
@@ -13,7 +13,9 @@ type User struct {
 }
 
 func UserRepository(db *sql.DB) *User {
-	return &User{db}
+	return &User{
+		db: db,
+	}
 }
 
 func (u User) Create(user models.User) (uint64, error) {
