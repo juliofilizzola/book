@@ -3,6 +3,7 @@ package loginRepository
 import (
 	"api/src/models"
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 )
@@ -33,11 +34,17 @@ func (u User) SEARCH(params string) (models.User, error) {
 	}(query)
 
 	var user models.User
-	if err = query.Scan(
-		&user.ID,
-		&user.Password,
-	); err != nil {
-		return models.User{}, err
+	if query.Next() {
+		if err = query.Scan(
+			&user.ID,
+			&user.Password,
+			&user.Email,
+			&user.Nick,
+		); err != nil {
+			return models.User{}, err
+		}
+	} else {
+		return models.User{}, errors.New("not found")
 	}
 	return user, nil
 }

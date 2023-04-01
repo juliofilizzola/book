@@ -11,6 +11,7 @@ import (
 var (
 	UrlDatabase = ""
 	PORT        = 0
+	SecretKey   = ""
 )
 
 func Config() {
@@ -27,5 +28,7 @@ func Config() {
 	}
 
 	UrlDatabase = fmt.Sprint(os.Getenv("URL_DATABASE_ENV"))
+
+	SecretKey = fmt.Sprint(os.Getenv("SECRET_KEY"))
 
 }

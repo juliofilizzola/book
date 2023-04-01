@@ -49,6 +49,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		response.Err(w, http.StatusUnauthorized, err)
 		return
 	}
+	token, err := auth.GenerateToken(user.ID)
+	if err != nil {
+		response.Err(w, http.StatusUnauthorized, err)
+		return
+	}
 
-	response.JSON(w, http.StatusAccepted, user)
+	response.JSON(w, http.StatusAccepted, token)
 }
