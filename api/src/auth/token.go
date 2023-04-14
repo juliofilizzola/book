@@ -2,8 +2,10 @@ package auth
 
 import (
 	"api/src/config"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -18,5 +20,29 @@ func GenerateToken(userId uint64) (string, error) {
 }
 
 func ValidToken(r *http.Request) error {
+	tokenString := getToken(r)
+	token, err := jwt.Parse(tokenString, validKey)
+	if err != nil {
+		return err
+	}
+	fmt.Println(token)
 	return nil
+}
+
+func getToken(r *http.Request) string {
+	token := r.Header.Get("Authorization")
+	validToken := strings.Split(token, " ")
+	if len(validToken) == 2 {
+		return validToken[1]
+	}
+	return ""
+}
+
+func validKey(token *jwt.Token) (interface{}, error) {
+	if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+		return nil, fmt.Errorf("method invalid! %v", token.Header["alg"])
+	}
+
+	return config.SecretKey, nil
+
 }
