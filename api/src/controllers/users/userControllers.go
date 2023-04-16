@@ -2,6 +2,7 @@ package UserControllers
 
 import (
 	"api/db"
+	"api/src/auth"
 	"api/src/models"
 	"api/src/repositories/users"
 	"api/src/response"
@@ -125,6 +126,12 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	ID, err := strconv.ParseUint(params["id"], 10, 32)
 	if err != nil {
 		response.Err(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	_, err = auth.GetIdToken(r)
+	if err != nil {
+		response.Err(w, http.StatusUnauthorized, err)
 		return
 	}
 
