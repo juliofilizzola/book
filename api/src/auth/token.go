@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -21,8 +22,7 @@ func GenerateToken(userId uint64) (string, error) {
 }
 
 func ValidToken(r *http.Request) error {
-	tokenString := getToken(r)
-	token, err := jwt.Parse(tokenString, validKey)
+	token, err := convertToken(r)
 	if err != nil {
 		return err
 	}
@@ -48,4 +48,32 @@ func validKey(token *jwt.Token) (interface{}, error) {
 
 	return config.SecretKey, nil
 
+}
+
+func getIdToken(r *http.Request) (uint64, error) {
+	token, err := convertToken(r)
+	if err != nil {
+		return 0, err
+	}
+
+	if permission, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		var tokenPermission = fmt.Sprintf("%.0f", permission["userId"])
+		userId, err := strconv.ParseUint(tokenPermission, 10, 64)
+		if err != nil {
+			return 0, err
+		}
+
+		return userId, nil
+	}
+
+	return 0, errors.New("invalid token")
+}
+
+func convertToken(r *http.Request) (*jwt.Token, error) {
+	tokenString := getToken(r)
+	token, err := jwt.Parse(tokenString, validKey)
+	if err != nil {
+		return nil, err
+	}
+	return token, nil
 }
