@@ -2,10 +2,10 @@ package UserControllers
 
 import (
 	"api/db"
-	"api/src/auth"
 	"api/src/models"
 	"api/src/repositories/users"
 	"api/src/response"
+	validation "api/src/validation/valid_user"
 	"database/sql"
 	"encoding/json"
 	"github.com/gorilla/mux"
@@ -129,17 +129,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userIdToken, err := auth.GetIdToken(r)
-
-	if err != nil {
-		response.Err(w, http.StatusUnauthorized, err)
-		return
-	}
-
-	if userIdToken != ID {
-		response.Err(w, http.StatusUnauthorized, err)
-		return
-	}
+	validation.ValidUser(r, w, ID)
 
 	body, err := io.ReadAll(r.Body)
 
