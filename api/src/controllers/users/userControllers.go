@@ -5,6 +5,7 @@ import (
 	"api/src/models"
 	"api/src/repositories/users"
 	"api/src/response"
+	validation "api/src/validation/valid_user"
 	"database/sql"
 	"encoding/json"
 	"github.com/gorilla/mux"
@@ -128,6 +129,8 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	validation.ValidUser(r, w, ID)
+
 	body, err := io.ReadAll(r.Body)
 
 	if err != nil {
@@ -174,14 +177,20 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	ID, err := strconv.ParseUint(params["id"], 10, 32)
+
 	if err != nil {
 		response.Err(w, http.StatusUnprocessableEntity, err)
 	}
+
+	validation.ValidUser(r, w, ID)
+
 	db2, err := db.Connection()
+
 	if err != nil {
 		response.Err(w, http.StatusInternalServerError, err)
 		return
 	}
+
 	defer func(db2 *sql.DB) {
 		err := db2.Close()
 		if err != nil {
@@ -189,7 +198,9 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}(db2)
+
 	repo := users.UserRepository(db2)
+
 	if err = repo.DeleteUser(ID); err != nil {
 		response.Err(w, http.StatusBadRequest, err)
 		return
