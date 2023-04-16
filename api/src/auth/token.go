@@ -50,7 +50,7 @@ func validKey(token *jwt.Token) (interface{}, error) {
 
 }
 
-func getIdToken(r *http.Request) (uint64, error) {
+func GetIdToken(r *http.Request) (uint64, error) {
 	token, err := convertToken(r)
 	if err != nil {
 		return 0, err
