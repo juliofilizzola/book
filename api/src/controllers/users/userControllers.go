@@ -129,8 +129,14 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = auth.GetIdToken(r)
+	userIdToken, err := auth.GetIdToken(r)
+
 	if err != nil {
+		response.Err(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	if userIdToken != ID {
 		response.Err(w, http.StatusUnauthorized, err)
 		return
 	}
