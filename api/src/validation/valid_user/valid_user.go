@@ -14,7 +14,7 @@ func ValidUser(r *http.Request, w http.ResponseWriter, ID uint64) error {
 	}
 
 	if userIdToken != ID {
-		response.Err(w, http.StatusUnauthorized, err)
+		response.Err(w, http.StatusForbidden, err)
 	}
 
 	return nil
