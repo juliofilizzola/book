@@ -56,4 +56,5 @@ func FollowerUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	response.JSON(w, http.StatusCreated, nil)
 }
