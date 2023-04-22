@@ -115,19 +115,19 @@ func (u User) GetUser(ID uint64) (models.User, error) {
 }
 
 func (u User) UpdatedUser(id uint64, body models.User) error {
-	statment, err := u.db.Prepare("update user set name = ?, nick = ?, email = ? where id = ? ")
+	statement, err := u.db.Prepare("update user set name = ?, nick = ?, email = ? where id = ? ")
 	fmt.Println("Hello")
 	if err != nil {
 		return err
 	}
-	defer func(statment *sql.Stmt) {
-		err := statment.Close()
+	defer func(statements *sql.Stmt) {
+		err := statements.Close()
 		if err != nil {
 			log.Fatal(err)
 		}
-	}(statment)
+	}(statement)
 
-	if _, err = statment.Exec(body.Name, body.Nick, body.Email, id); err != nil {
+	if _, err = statement.Exec(body.Name, body.Nick, body.Email, id); err != nil {
 		return err
 	}
 	return nil

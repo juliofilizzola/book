@@ -45,11 +45,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		response.Err(w, http.StatusInternalServerError, err)
 		return
 	}
+
 	if err = auth.ValidPassword(userSearch.Password, user.Password); err != nil {
 		response.Err(w, http.StatusUnauthorized, err)
 		return
 	}
-	token, err := auth.GenerateToken(user.ID)
+
+	token, err := auth.GenerateToken(userSearch.ID)
+
 	if err != nil {
 		response.Err(w, http.StatusUnauthorized, err)
 		return

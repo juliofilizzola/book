@@ -1,11 +1,12 @@
-package configRouter
+package login
 
 import (
 	loginController "api/src/controllers/login"
+	conf "api/src/router/dto"
 	"net/http"
 )
 
-var loginRoute = []ConfigRouter{
+var LoginRoute = []conf.ConfigRouter{
 	{
 		URI:             "/login",
 		Method:          http.MethodPost,
