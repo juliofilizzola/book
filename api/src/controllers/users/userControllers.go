@@ -2,12 +2,13 @@ package UserControllers
 
 import (
 	"api/db"
+	"api/src/auth"
 	"api/src/models"
 	"api/src/repositories/users"
 	"api/src/response"
-	validation "api/src/validation/valid_user"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"github.com/gorilla/mux"
 	"io"
 	"net/http"
@@ -129,7 +130,10 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	validation.ValidUser(r, w, ID)
+	if valid := auth.ValidUser(r, ID); !valid {
+		response.Err(w, http.StatusUnauthorized, errors.New("cannot updated other user"))
+		return
+	}
 
 	body, err := io.ReadAll(r.Body)
 
@@ -182,7 +186,10 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		response.Err(w, http.StatusUnprocessableEntity, err)
 	}
 
-	validation.ValidUser(r, w, ID)
+	if valid := auth.ValidUser(r, ID); !valid {
+		response.Err(w, http.StatusUnauthorized, errors.New("cannot deleted other user"))
+		return
+	}
 
 	db2, err := db.Connection()
 
