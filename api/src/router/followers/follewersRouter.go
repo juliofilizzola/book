@@ -2,11 +2,12 @@ package followers
 
 import (
 	FollowersController "api/src/controllers/followers"
-	"api/src/router/configRouter"
+	conf "api/src/router/dto"
+
 	"net/http"
 )
 
-var FollowersRouter = []configRouter.ConfigRouter{
+var FollowersRouter = []conf.ConfigRouter{
 	{
 		URI:             "/followers/{userId}",
 		Method:          http.MethodPost,
