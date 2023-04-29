@@ -24,6 +24,8 @@ func GenerateToken(userId uint64) (string, error) {
 func ValidToken(r *http.Request) error {
 	tokenString := getToken(r)
 	token, err := jwt.Parse(tokenString, getKey)
+	fmt.Println(token)
+	fmt.Println(token.Valid)
 	if err != nil {
 		return err
 	}
@@ -46,7 +48,7 @@ func getKey(token *jwt.Token) (interface{}, error) {
 	if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 		return nil, fmt.Errorf("method incorrect")
 	}
-
+	fmt.Println("hello 3")
 	return config.SecretKey, nil
 }
 
@@ -54,11 +56,13 @@ func GetUserId(r *http.Request) (uint64, error) {
 	tokenString := getToken(r)
 	token, err := jwt.Parse(tokenString, getKey)
 	if err != nil {
+		fmt.Printf("err", err)
 		return 0, err
 	}
 
 	if permission, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		permissionSting := fmt.Sprintf("%.0f", permission["userId"])
+		fmt.Println(permission, "per")
 		userId, err := strconv.ParseUint(permissionSting, 10, 64)
 		if err != nil {
 			return 0, err

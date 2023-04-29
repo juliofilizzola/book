@@ -39,6 +39,6 @@ var UserRoute = []conf.ConfigRouter{
 		URI:             "/users/{id}",
 		Method:          http.MethodDelete,
 		Func:            UserControllers.DeleteUser,
-		AuthRequirement: false,
+		AuthRequirement: true,
 	},
 }
