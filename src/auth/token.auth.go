@@ -54,11 +54,11 @@ func getKey(token *jwt.Token) (interface{}, error) {
 
 func GetUserId(r *http.Request) (uint64, error) {
 	tokenString := getToken(r)
-	token, err := jwt.Parse(tokenString, getKey)
-	if err != nil {
-		fmt.Printf("err", err)
-		return 0, err
-	}
+	token, _ := jwt.Parse(tokenString, getKey)
+	//if err != nil {
+	//	fmt.Printf("err", err)
+	//	return 0, err
+	//}
 
 	if permission, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		permissionSting := fmt.Sprintf("%.0f", permission["userId"])
