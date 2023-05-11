@@ -146,3 +146,41 @@ func GetFollow(w http.ResponseWriter, r *http.Request) {
 
 	response.JSON(w, http.StatusOK, followers)
 }
+
+func GetFollowers(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+
+	followId, err := strconv.ParseUint(params["followId"], 10, 64)
+
+	if err != nil {
+		response.Err(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := db2.Connection()
+
+	if err != nil {
+		response.Err(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			response.Err(w, http.StatusInternalServerError, err)
+			return
+		}
+	}(db)
+
+	repo := followersRepository.FollowersRepository(db)
+
+	followers, err := repo.GetFollowers(followId)
+
+	if err != nil {
+		response.Err(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, followers)
+}
