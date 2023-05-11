@@ -6,11 +6,13 @@ import (
 	"net/http"
 )
 
-var LoginRoute = []conf.ConfigRouter{
-	{
-		URI:             "/login",
-		Method:          http.MethodPost,
-		Func:            loginController.Login,
-		AuthRequirement: false,
-	},
-}
+var (
+	LoginsRoute = []conf.ConfigRouter{
+		{
+			URI:             "/auth/update-password/{userId}",
+			Method:          http.MethodPost,
+			Func:            loginController.Login,
+			AuthRequirement: true,
+		},
+	}
+)
