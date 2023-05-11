@@ -14,4 +14,10 @@ var FollowersRouter = []conf.ConfigRouter{
 		Func:            FollowersController.FollowerUser,
 		AuthRequirement: true,
 	},
+	{
+		URI:             "/unfollow/{userId}",
+		Method:          http.MethodPost,
+		Func:            FollowersController.Unfollow,
+		AuthRequirement: true,
+	},
 }
