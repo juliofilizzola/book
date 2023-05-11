@@ -21,9 +21,9 @@ var FollowersRouter = []conf.ConfigRouter{
 		AuthRequirement: true,
 	},
 	{
-		URI:             "/follow/{userId}/allFollowers",
+		URI:             "/follow/{followId}/allFollowers",
 		Method:          http.MethodGet,
-		Func:            FollowersController.GetFollow,
+		Func:            FollowersController.GetFollowers,
 		AuthRequirement: true,
 	},
 }
