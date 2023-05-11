@@ -9,7 +9,7 @@ import (
 
 var FollowersRouter = []conf.ConfigRouter{
 	{
-		URI:             "/followers/{userId}",
+		URI:             "/follow/{userId}",
 		Method:          http.MethodPost,
 		Func:            FollowersController.FollowerUser,
 		AuthRequirement: true,
@@ -18,6 +18,12 @@ var FollowersRouter = []conf.ConfigRouter{
 		URI:             "/unfollow/{userId}",
 		Method:          http.MethodPost,
 		Func:            FollowersController.Unfollow,
+		AuthRequirement: true,
+	},
+	{
+		URI:             "/follow/{userId}/allFollow",
+		Method:          http.MethodGet,
+		Func:            FollowersController.GetFollow,
 		AuthRequirement: true,
 	},
 	{
