@@ -20,4 +20,10 @@ var FollowersRouter = []conf.ConfigRouter{
 		Func:            FollowersController.Unfollow,
 		AuthRequirement: true,
 	},
+	{
+		URI:             "/follow/{userId}/allFollowers",
+		Method:          http.MethodGet,
+		Func:            FollowersController.GetFollow,
+		AuthRequirement: true,
+	},
 }
