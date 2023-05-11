@@ -1,6 +1,7 @@
 package followersRepository
 
 import (
+	"api/src/models"
 	"database/sql"
 	"log"
 )
@@ -51,4 +52,68 @@ func (u User) Unfollow(userId, followerId uint64) error {
 	}
 
 	return nil
+}
+
+func (u User) GetFollow(userId uint64) ([]models.User, error) {
+	row, err := u.db.Query(`
+		select user.id, user.name, user.email, user.nick, user.created_at
+		from USER inner join FOLLOWERS F on user.id = F.follower_id where user.id = ?
+	`, userId)
+	if err != nil {
+		return nil, err
+	}
+	defer func(row *sql.Rows) {
+		err := row.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(row)
+
+	var users []models.User
+	for row.Next() {
+		var user models.User
+		if err = row.Scan(
+			&user.ID,
+			&user.Email,
+			&user.Name,
+			&user.Nick,
+			&user.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	return users, nil
+}
+
+func (u User) GetFollowers(followId uint64) ([]models.User, error) {
+	row, err := u.db.Query(`
+		select user.id, user.name, user.email, user.nick, user.created_at
+		from USER inner join FOLLOWERS F on user.id = F.follower_id where F.follower_id = ?
+	`, followId)
+	if err != nil {
+		return nil, err
+	}
+	defer func(row *sql.Rows) {
+		err := row.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(row)
+
+	var users []models.User
+	for row.Next() {
+		var user models.User
+		if err = row.Scan(
+			&user.ID,
+			&user.Email,
+			&user.Name,
+			&user.Nick,
+			&user.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	return users, nil
 }
