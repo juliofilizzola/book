@@ -1,4 +1,4 @@
-package loginController
+package controllers
 
 import (
 	"api/db"

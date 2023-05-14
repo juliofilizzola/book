@@ -1,4 +1,4 @@
-package authController
+package controllers
 
 import (
 	db2 "api/db"
