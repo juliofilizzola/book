@@ -6,7 +6,6 @@ type Publication struct {
 	Content     string `json:"content,omitempty"`
 	Description string `json:"description"`
 	AuthId      string `json:"auth_id,omitempty"`
-	AuthNick    string `json:"auth_nick,omitempty"`
 	Likes       string `json:"likes"`
 	CreatedAt   string `json:"created_at,omitempty"`
 }
