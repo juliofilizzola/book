@@ -9,10 +9,10 @@ import (
 var (
 	LoginsRoute = []conf.ConfigRouter{
 		{
-			URI:             "/auth/update-password/{userId}",
+			URI:             "/login",
 			Method:          http.MethodPost,
 			Func:            loginController.Login,
-			AuthRequirement: true,
+			AuthRequirement: false,
 		},
 	}
 )
