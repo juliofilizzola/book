@@ -1,7 +1,7 @@
-package followers
+package router
 
 import (
-	FollowersController "api/src/controllers/followers"
+	FollowersController "api/src/controllers"
 	conf "api/src/router/dto"
 	"net/http"
 )

@@ -1,7 +1,7 @@
-package login
+package router
 
 import (
-	loginController "api/src/controllers/login"
+	loginController "api/src/controllers"
 	conf "api/src/router/dto"
 	"net/http"
 )

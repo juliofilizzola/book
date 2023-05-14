@@ -1,7 +1,7 @@
-package auth
+package router
 
 import (
-	authController "api/src/controllers/auth"
+	authController "api/src/controllers"
 	conf "api/src/router/dto"
 	"net/http"
 )

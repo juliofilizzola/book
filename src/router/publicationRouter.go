@@ -1,17 +1,17 @@
-package publication
+package router
 
 import (
-	loginController "api/src/controllers/login"
+	"api/src/controllers"
 	conf "api/src/router/dto"
 	"net/http"
 )
 
 var (
-	Router = []conf.ConfigRouter{
+	PublicationRouter = []conf.ConfigRouter{
 		{
 			URI:             "/publication",
 			Method:          http.MethodPost,
-			Func:            loginController.Login,
+			Func:            controllers.Create,
 			AuthRequirement: true,
 		},
 	}
