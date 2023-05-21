@@ -1,4 +1,4 @@
-package FollowersController
+package controllers
 
 import (
 	db2 "api/db"

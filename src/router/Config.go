@@ -1,19 +1,16 @@
-package configRouter
+package router
 
 import (
 	"api/src/middlewares"
-	"api/src/router/auth"
-	"api/src/router/followers"
-	"api/src/router/login"
-	"api/src/router/users"
 	"github.com/gorilla/mux"
 )
 
 func Config(r *mux.Router) *mux.Router {
-	routes := users.UserRoute
-	routes = append(routes, login.LoginsRoute...)
-	routes = append(routes, followers.FollowerRouter...)
-	routes = append(routes, auth.AuthsRouter...)
+	routes := User
+	routes = append(routes, LoginsRoute...)
+	routes = append(routes, FollowerRouter...)
+	routes = append(routes, AuthsRouter...)
+	routes = append(routes, PublicationRouter...)
 
 	for _, route := range routes {
 		if route.AuthRequirement {

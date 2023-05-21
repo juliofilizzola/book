@@ -1,4 +1,4 @@
-package UserControllers
+package controllers
 
 import (
 	"api/db"

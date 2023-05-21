@@ -1,13 +1,13 @@
-package users
+package router
 
 import (
-	UserControllers "api/src/controllers/users"
+	UserControllers "api/src/controllers"
 	conf "api/src/router/dto"
 	"net/http"
 )
 
 var (
-	UserRoute = []conf.ConfigRouter{
+	User = []conf.ConfigRouter{
 		// create user
 		{
 			URI:             "/users",
