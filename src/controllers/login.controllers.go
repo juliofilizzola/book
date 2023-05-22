@@ -50,13 +50,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		response.Err(w, http.StatusUnauthorized, err)
 		return
 	}
-
+	var responseToken models.Login
 	token, err := auth.GenerateToken(userSearch.ID)
 
 	if err != nil {
 		response.Err(w, http.StatusUnauthorized, err)
 		return
 	}
-
-	response.JSON(w, http.StatusAccepted, token)
+	responseToken.Token = token
+	response.JSON(w, http.StatusAccepted, responseToken)
 }
