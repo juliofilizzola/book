@@ -117,6 +117,21 @@ func (p Publication) GetPublication() ([]models.PublicationReturn, error) {
 	return publications, nil
 }
 
-//func (p Publication) UpdatePublication() error {
-//
-//}
+func (p Publication) UpdatePublication(id, userId uint64, body models.Publication) error {
+	statement, err := p.db.Prepare("update PUBLICATION set content = ?, description = ?, title = ? where id = ? and auth_id = ?")
+	if err != nil {
+		return err
+	}
+
+	defer func(statement *sql.Stmt) {
+		err := statement.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(statement)
+	if _, err = statement.Exec(body.Content, body.Description, body.Title, id, userId); err != nil {
+		return err
+	}
+
+	return nil
+}
