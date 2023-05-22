@@ -9,6 +9,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -64,4 +65,35 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	}{
 		publication,
 	})
+}
+
+func GetMyPublications(w http.ResponseWriter, r *http.Request) {
+	userId, err := auth.GetUserId(r)
+	if err != nil {
+		response.Err(w, http.StatusUnauthorized, err)
+		return
+	}
+	db, err := db2.Connection()
+
+	if err != nil {
+		response.Err(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	defer func(db *sql.DB) {
+		err = db.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(db)
+
+	repo := publication2.PublicationsRepository(db)
+
+	data, err := repo.GetPublicationByUser(userId)
+	if err != nil {
+		response.Err(w, http.StatusNotFound, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, data)
 }

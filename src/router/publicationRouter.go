@@ -14,5 +14,11 @@ var (
 			Func:            controllers.Create,
 			AuthRequirement: true,
 		},
+		{
+			URI:             "/publication/for-me",
+			Method:          http.MethodPost,
+			Func:            controllers.GetMyPublications,
+			AuthRequirement: true,
+		},
 	}
 )
