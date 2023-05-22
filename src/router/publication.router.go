@@ -23,6 +23,12 @@ var (
 
 		{
 			URI:             "/publication/{id}",
+			Method:          http.MethodGet,
+			Func:            controllers.GetPublication,
+			AuthRequirement: true,
+		},
+		{
+			URI:             "/publication/{id}",
 			Method:          http.MethodPatch,
 			Func:            controllers.UpdatePublication,
 			AuthRequirement: true,
