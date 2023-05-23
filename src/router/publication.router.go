@@ -15,20 +15,27 @@ var (
 			AuthRequirement: true,
 		},
 		{
-			URI:             "/publication/for-me",
-			Method:          http.MethodPost,
+			URI:             "/publication",
+			Method:          http.MethodGet,
 			Func:            controllers.GetMyPublications,
 			AuthRequirement: true,
 		},
 
 		{
-			URI:             "/publication/{id}",
+			URI:             "/publication/all",
+			Method:          http.MethodGet,
+			Func:            controllers.GetPublication,
+			AuthRequirement: true,
+		},
+
+		{
+			URI:             "/publication/find/{id}",
 			Method:          http.MethodGet,
 			Func:            controllers.GetPublication,
 			AuthRequirement: true,
 		},
 		{
-			URI:             "/publication/{id}",
+			URI:             "/publication/up/{id}",
 			Method:          http.MethodPatch,
 			Func:            controllers.UpdatePublication,
 			AuthRequirement: true,
