@@ -24,7 +24,7 @@ var (
 		{
 			URI:             "/publication/all",
 			Method:          http.MethodGet,
-			Func:            controllers.GetPublication,
+			Func:            controllers.GetAllPublication,
 			AuthRequirement: true,
 		},
 
