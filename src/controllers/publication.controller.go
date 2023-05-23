@@ -100,6 +100,35 @@ func GetMyPublications(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, data)
 }
 
+func GetPublication(w http.ResponseWriter, r *http.Request) {
+	userId, err := auth.GetUserId(r)
+	validation.Err(w, http.StatusUnauthorized, err)
+
+	params := mux.Vars(r)
+
+	id, err := strconv.ParseUint(params["id"], 10, 64)
+
+	validation.Err(w, http.StatusBadRequest, err)
+
+	db, err := db2.Connection()
+
+	validation.Err(w, http.StatusBadRequest, err)
+
+	defer func(db *sql.DB) {
+		err = db.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(db)
+
+	repo := publication2.PublicationsRepository(db)
+
+	data, err := repo.GetPublication(id, userId)
+	validation.Err(w, http.StatusNotFound, err)
+
+	response.JSON(w, http.StatusOK, data)
+}
+
 func UpdatePublication(w http.ResponseWriter, r *http.Request) {
 	userId, err := auth.GetUserId(r)
 
