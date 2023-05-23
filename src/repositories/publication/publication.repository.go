@@ -45,8 +45,8 @@ func (p Publication) Create(Publication models.Publication) (uint64, error) {
 
 func (p Publication) GetPublicationByUser(id uint64) ([]models.PublicationReturn, error) {
 	query, err := p.db.Query(`select
-    	P.id, P.title, P.auth_id, P.description, P.content, P.'like', P.created_at, U.id as AuthId, U.name as AuthName, U.nick as AuthNick, U.email as AuthEmail
-		from PUBLICATION as P inner join USER U on P.auth_id = U.id where auth_id = ?`, id)
+		P.id, P.title, P.description, P.content, P.like, u.CREATED_AT, u.NICK as auth_nick, u.EMAIL as auth_email
+		from PUBLICATION as P inner join USER U on U.id = P.auth_id where u.id = ?`, id)
 
 	defer func(query *sql.Rows) {
 		err := query.Close()
@@ -65,13 +65,12 @@ func (p Publication) GetPublicationByUser(id uint64) ([]models.PublicationReturn
 		if err = query.Scan(
 			&publication.ID,
 			&publication.Title,
-			&publication.Content,
 			&publication.Description,
-			&publication.AuthId,
-			&publication.AuthName,
-			&publication.AuthEmail,
-			&publication.AuthNick,
+			&publication.Content,
+			&publication.Likes,
 			&publication.CreatedAt,
+			&publication.AuthNick,
+			&publication.AuthEmail,
 		); err != nil {
 			return nil, err
 		}
@@ -80,10 +79,10 @@ func (p Publication) GetPublicationByUser(id uint64) ([]models.PublicationReturn
 	return publications, nil
 }
 
-func (p Publication) GetPublication() ([]models.PublicationReturn, error) {
+func (p Publication) GetPublications() ([]models.PublicationReturn, error) {
 	query, err := p.db.Query(`select
-    	P.id, P.title, P.auth_id, P.description, P.content, P.'like', P.created_at, U.id as AuthId, U.name as AuthName, U.nick as AuthNick, U.email as AuthEmail
-		from PUBLICATION as P inner join USER U on P.auth_id = U.id`)
+		P.id, P.title, P.description, P.content, P.like, u.CREATED_AT, u.NICK as auth_nick, u.EMAIL as auth_email
+		from PUBLICATION as P inner join USER as U on P.auth_id = U.id`)
 
 	defer func(query *sql.Rows) {
 		err := query.Close()
@@ -102,13 +101,12 @@ func (p Publication) GetPublication() ([]models.PublicationReturn, error) {
 		if err = query.Scan(
 			&publication.ID,
 			&publication.Title,
-			&publication.Content,
 			&publication.Description,
-			&publication.AuthId,
-			&publication.AuthName,
-			&publication.AuthEmail,
-			&publication.AuthNick,
+			&publication.Content,
+			&publication.Likes,
 			&publication.CreatedAt,
+			&publication.AuthNick,
+			&publication.AuthEmail,
 		); err != nil {
 			return nil, err
 		}
@@ -134,4 +132,44 @@ func (p Publication) UpdatePublication(id, userId uint64, body models.Publicatio
 	}
 
 	return nil
+}
+
+func (p Publication) GetPublication(id, userId uint64) (models.PublicationReturn, error) {
+
+	query, err := p.db.Query(`select
+    	P.id, P.title, P.description, P.content, P.like, u.CREATED_AT, u.NICK as auth_nick, u.EMAIL as auth_email
+		from PUBLICATION as P inner join USER u on u.id = P.auth_id where p.id = ?`, id)
+
+	if err != nil {
+		return models.PublicationReturn{}, err
+	}
+
+	defer func(query *sql.Rows) {
+		err := query.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(query)
+
+	if err != nil {
+		return models.PublicationReturn{}, err
+	}
+
+	var publication models.PublicationReturn
+	if query.Next() {
+		if err = query.Scan(
+			&publication.ID,
+			&publication.Title,
+			&publication.Description,
+			&publication.Content,
+			&publication.Likes,
+			&publication.CreatedAt,
+			&publication.AuthNick,
+			&publication.AuthEmail,
+		); err != nil {
+			return models.PublicationReturn{}, err
+		}
+	}
+
+	return publication, nil
 }
