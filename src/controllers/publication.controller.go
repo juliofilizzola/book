@@ -163,7 +163,33 @@ func UpdatePublication(w http.ResponseWriter, r *http.Request) {
 	repo := publication2.PublicationsRepository(db)
 
 	err = repo.UpdatePublication(id, userId, publication)
+
 	validation.Err(w, http.StatusInternalServerError, err)
 
 	response.JSON(w, http.StatusNoContent, nil)
+}
+
+func GetAllPublication(w http.ResponseWriter, r *http.Request) {
+	_, err := auth.GetUserId(r)
+
+	validation.Err(w, http.StatusUnauthorized, err)
+
+	db, err := db2.Connection()
+
+	validation.Err(w, http.StatusInternalServerError, err)
+
+	defer func(db *sql.DB) {
+		err = db.Close()
+		if err != nil {
+			validation.Err(w, http.StatusInternalServerError, err)
+		}
+	}(db)
+
+	repo := publication2.PublicationsRepository(db)
+
+	data, err := repo.GetPublications()
+
+	validation.Err(w, http.StatusNotFound, err)
+
+	response.JSON(w, http.StatusOK, data)
 }
