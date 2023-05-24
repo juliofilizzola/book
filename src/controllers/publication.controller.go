@@ -9,6 +9,7 @@ import (
 	"api/src/validation"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"github.com/gorilla/mux"
 	"io"
 	"log"
@@ -101,9 +102,6 @@ func GetMyPublications(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPublication(w http.ResponseWriter, r *http.Request) {
-	userId, err := auth.GetUserId(r)
-	validation.Err(w, http.StatusUnauthorized, err)
-
 	params := mux.Vars(r)
 
 	id, err := strconv.ParseUint(params["id"], 10, 64)
@@ -123,7 +121,7 @@ func GetPublication(w http.ResponseWriter, r *http.Request) {
 
 	repo := publication2.PublicationsRepository(db)
 
-	data, err := repo.GetPublication(id, userId)
+	data, err := repo.GetPublication(id)
 	validation.Err(w, http.StatusNotFound, err)
 
 	response.JSON(w, http.StatusOK, data)
@@ -192,4 +190,38 @@ func GetAllPublication(w http.ResponseWriter, r *http.Request) {
 	validation.Err(w, http.StatusNotFound, err)
 
 	response.JSON(w, http.StatusOK, data)
+}
+
+func DeletedPublication(w http.ResponseWriter, r *http.Request) {
+	userId, err := auth.GetUserId(r)
+
+	validation.Err(w, http.StatusUnauthorized, err)
+
+	params := mux.Vars(r)
+
+	id, err := strconv.ParseUint(params["id"], 10, 64)
+
+	validation.Err(w, http.StatusBadRequest, err)
+
+	db, err := db2.Connection()
+
+	validation.Err(w, http.StatusInternalServerError, err)
+
+	defer func(db *sql.DB) {
+		err = db.Close()
+		if err != nil {
+			validation.Err(w, http.StatusInternalServerError, err)
+		}
+	}(db)
+
+	repo := publication2.PublicationsRepository(db)
+	dbPublication, err := repo.GetPublication(id)
+	validation.Err(w, http.StatusBadRequest, err)
+	authId, err := strconv.ParseUint(dbPublication.AuthId, 0, 32)
+	if authId != userId {
+		response.Err(w, http.StatusBadRequest, errors.New("token invalid"))
+	}
+	err = repo.DeletedPublication(id)
+	validation.Err(w, http.StatusBadRequest, err)
+	response.JSON(w, http.StatusNoContent, nil)
 }
