@@ -54,5 +54,12 @@ var (
 			Func:            controllers.LikePublication,
 			AuthRequirement: true,
 		},
+
+		{
+			URI:             "/publication/dislike/{id}",
+			Method:          http.MethodPatch,
+			Func:            controllers.DislikePublication,
+			AuthRequirement: true,
+		},
 	}
 )
