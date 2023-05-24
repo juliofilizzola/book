@@ -81,7 +81,7 @@ func (p Publication) GetPublicationByUser(id uint64) ([]models.PublicationReturn
 
 func (p Publication) GetPublications() ([]models.PublicationReturn, error) {
 	query, err := p.db.Query(`select
-		P.id, P.title, P.description, P.content, P.like, u.CREATED_AT, u.NICK as auth_nick, u.EMAIL as auth_email
+		P.id, P.title, P.description, P.content, P.like, u.CREATED_AT, u.id as auth_id,u.NICK as auth_nick, u.EMAIL as auth_email
 		from PUBLICATION as P inner join USER as U on P.auth_id = U.id`)
 
 	defer func(query *sql.Rows) {
@@ -105,6 +105,7 @@ func (p Publication) GetPublications() ([]models.PublicationReturn, error) {
 			&publication.Content,
 			&publication.Likes,
 			&publication.CreatedAt,
+			&publication.AuthId,
 			&publication.AuthNick,
 			&publication.AuthEmail,
 		); err != nil {
@@ -134,10 +135,10 @@ func (p Publication) UpdatePublication(id, userId uint64, body models.Publicatio
 	return nil
 }
 
-func (p Publication) GetPublication(id, userId uint64) (models.PublicationReturn, error) {
+func (p Publication) GetPublication(id uint64) (models.PublicationReturn, error) {
 
 	query, err := p.db.Query(`select
-    	P.id, P.title, P.description, P.content, P.like, u.CREATED_AT, u.NICK as auth_nick, u.EMAIL as auth_email
+    	P.id, P.title, P.description, P.content, P.like, u.CREATED_AT, u.id as auth_id, u.NICK as auth_nick, u.EMAIL as auth_email
 		from PUBLICATION as P inner join USER u on u.id = P.auth_id where p.id = ?`, id)
 
 	if err != nil {
@@ -164,6 +165,7 @@ func (p Publication) GetPublication(id, userId uint64) (models.PublicationReturn
 			&publication.Content,
 			&publication.Likes,
 			&publication.CreatedAt,
+			&publication.AuthId,
 			&publication.AuthNick,
 			&publication.AuthEmail,
 		); err != nil {
@@ -172,4 +174,24 @@ func (p Publication) GetPublication(id, userId uint64) (models.PublicationReturn
 	}
 
 	return publication, nil
+}
+
+func (p Publication) DeletedPublication(id uint64) error {
+	statement, err := p.db.Prepare("delete from PUBLICATION as P where p.id = ?")
+
+	if err != nil {
+		return err
+	}
+
+	defer func(statement *sql.Stmt) {
+		err := statement.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(statement)
+
+	if _, err = statement.Exec(id); err != nil {
+		return err
+	}
+	return nil
 }
