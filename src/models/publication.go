@@ -23,3 +23,7 @@ type PublicationReturn struct {
 	Likes       string    `json:"likes"`
 	CreatedAt   time.Time `json:"created_at,omitempty"`
 }
+
+type Like struct {
+	Like int64 `json:"like"`
+}
