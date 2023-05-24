@@ -116,7 +116,7 @@ func (u User) GetUser(ID uint64) (models.User, error) {
 
 func (u User) UpdatedUser(id uint64, body models.User) error {
 	statement, err := u.db.Prepare("update user set name = ?, nick = ?, email = ? where id = ? ")
-	fmt.Println("Hello")
+
 	if err != nil {
 		return err
 	}

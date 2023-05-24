@@ -19,6 +19,6 @@ func Connection() (*sql.DB, error) {
 		}
 		return nil, err
 	}
-	log.Println("Successfully connected to PlanetScale!")
+	log.Println("Successfully connected to database!")
 	return db, err
 }

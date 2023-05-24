@@ -136,10 +136,10 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//if valid := auth.ValidUser(r, ID); !valid {
-	//	response.Err(w, http.StatusUnauthorized, errors.New("cannot updated other user"))
-	//	return
-	//}
+	if valid := auth.ValidUser(r, ID); !valid {
+		response.Err(w, http.StatusUnauthorized, errors.New("cannot updated other user"))
+		return
+	}
 
 	body, err := io.ReadAll(r.Body)
 
