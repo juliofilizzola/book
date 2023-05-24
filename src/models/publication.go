@@ -18,6 +18,7 @@ type PublicationReturn struct {
 	Content     string    `json:"content,omitempty"`
 	Description string    `json:"description"`
 	AuthNick    string    `json:"auth_nick,omitempty"`
+	AuthId      string    `json:"auth_id,omitempty"`
 	AuthEmail   string    `json:"auth_email,omitempty"`
 	Likes       string    `json:"likes"`
 	CreatedAt   time.Time `json:"created_at,omitempty"`
