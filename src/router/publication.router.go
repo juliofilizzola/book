@@ -40,5 +40,12 @@ var (
 			Func:            controllers.UpdatePublication,
 			AuthRequirement: true,
 		},
+
+		{
+			URI:             "/publication/del/{id}",
+			Method:          http.MethodDelete,
+			Func:            controllers.DeletedPublication,
+			AuthRequirement: true,
+		},
 	}
 )
