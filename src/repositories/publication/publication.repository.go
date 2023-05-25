@@ -195,3 +195,24 @@ func (p Publication) DeletedPublication(id uint64) error {
 	}
 	return nil
 }
+
+func (p Publication) LikePublication(id uint64, likes int64) error {
+	statement, err := p.db.Prepare("update PUBLICATION set `like` = ? where id = ?")
+
+	if err != nil {
+		return err
+	}
+
+	defer func(statement *sql.Stmt) {
+		err := statement.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(statement)
+
+	if _, err = statement.Exec(likes, id); err != nil {
+		return err
+	}
+
+	return nil
+}

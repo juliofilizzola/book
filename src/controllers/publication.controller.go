@@ -225,3 +225,105 @@ func DeletedPublication(w http.ResponseWriter, r *http.Request) {
 	validation.Err(w, http.StatusBadRequest, err)
 	response.JSON(w, http.StatusNoContent, nil)
 }
+
+func LikePublication(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	id, err := strconv.ParseUint(params["id"], 10, 64)
+
+	validation.Err(w, http.StatusBadRequest, err)
+
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		response.Err(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	var like models.Like
+
+	if err = json.Unmarshal(body, &like); err != nil {
+		response.Err(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := db2.Connection()
+
+	validation.Err(w, http.StatusInternalServerError, err)
+
+	defer func(db *sql.DB) {
+		err = db.Close()
+		if err != nil {
+			validation.Err(w, http.StatusInternalServerError, err)
+		}
+	}(db)
+
+	repo := publication2.PublicationsRepository(db)
+
+	data, err := repo.GetPublication(id)
+
+	validation.Err(w, http.StatusNotFound, err)
+
+	likes, err := strconv.ParseInt(data.Likes, 10, 64)
+	validation.Err(w, http.StatusNotFound, err)
+
+	var (
+		totalLikes = likes + like.Like
+	)
+
+	err = repo.LikePublication(id, totalLikes)
+
+	validation.Err(w, http.StatusBadRequest, err)
+
+	response.JSON(w, http.StatusNoContent, nil)
+}
+
+func DislikePublication(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	id, err := strconv.ParseUint(params["id"], 10, 64)
+
+	validation.Err(w, http.StatusBadRequest, err)
+
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		response.Err(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	var dislike models.Like
+
+	if err = json.Unmarshal(body, &dislike); err != nil {
+		response.Err(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := db2.Connection()
+
+	validation.Err(w, http.StatusInternalServerError, err)
+
+	defer func(db *sql.DB) {
+		err = db.Close()
+		if err != nil {
+			validation.Err(w, http.StatusInternalServerError, err)
+		}
+	}(db)
+
+	repo := publication2.PublicationsRepository(db)
+
+	data, err := repo.GetPublication(id)
+
+	validation.Err(w, http.StatusNotFound, err)
+
+	likes, err := strconv.ParseInt(data.Likes, 10, 64)
+	validation.Err(w, http.StatusNotFound, err)
+
+	var (
+		totalLikes = likes - dislike.Like
+	)
+
+	err = repo.LikePublication(id, totalLikes)
+
+	validation.Err(w, http.StatusBadRequest, err)
+
+	response.JSON(w, http.StatusNoContent, nil)
+}

@@ -47,5 +47,19 @@ var (
 			Func:            controllers.DeletedPublication,
 			AuthRequirement: true,
 		},
+
+		{
+			URI:             "/publication/like/{id}",
+			Method:          http.MethodPatch,
+			Func:            controllers.LikePublication,
+			AuthRequirement: true,
+		},
+
+		{
+			URI:             "/publication/dislike/{id}",
+			Method:          http.MethodPatch,
+			Func:            controllers.DislikePublication,
+			AuthRequirement: true,
+		},
 	}
 )
