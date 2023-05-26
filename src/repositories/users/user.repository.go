@@ -4,9 +4,7 @@ import (
 	"api/prisma/db"
 	"api/src/models"
 	"context"
-	"database/sql"
 	"fmt"
-	"log"
 )
 
 type User struct {
@@ -191,20 +189,30 @@ func (u User) UpdatedUser(userId string, body models.User) error {
 	//return nil
 }
 
-func (u User) DeleteUser(id uint64) error {
-	statement, err := u.db.Prepare("delete from user where id = ?")
+func (u User) DeleteUser(userId string) error {
+	ctx := context.Background()
+
+	_, err := u.db.User.FindUnique(
+		db.User.ID.Equals(userId),
+	).Delete().Exec(ctx)
 	if err != nil {
 		return err
 	}
 
-	defer func(statement *sql.Stmt) {
-		err := statement.Close()
-		if err != nil {
-			log.Fatal(err)
-		}
-	}(statement)
-	if _, err = statement.Exec(id); err != nil {
-		return err
-	}
 	return nil
+	//statement, err := u.db.Prepare("delete from user where id = ?")
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//defer func(statement *sql.Stmt) {
+	//	err := statement.Close()
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//}(statement)
+	//if _, err = statement.Exec(id); err != nil {
+	//	return err
+	//}
+	//return nil
 }
