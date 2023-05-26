@@ -1,32 +1,27 @@
 package controllers
 
 import (
-	db2 "api/db"
+	internal "api/internal/db"
 	"api/src/auth"
 	"api/src/models"
 	authRepository "api/src/repositories/auth"
 	"api/src/response"
-	"database/sql"
+	"api/src/validation"
 	"encoding/json"
 	"errors"
 	"github.com/gorilla/mux"
 	"io"
-	"log"
 	"net/http"
-	"strconv"
 )
 
 func UpdatePassword(w http.ResponseWriter, r *http.Request) {
 	userIDToken, err := auth.GetUserId(r)
 
-	if err != nil {
-		response.Err(w, http.StatusUnauthorized, err)
-		return
-	}
+	validation.Err(w, http.StatusUnauthorized, err)
 
 	params := mux.Vars(r)
 
-	userId, err := strconv.ParseUint(params["userId"], 10, 64)
+	userId := params["userId"]
 
 	if err != nil {
 		response.Err(w, http.StatusBadRequest, err)
@@ -47,28 +42,15 @@ func UpdatePassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := db2.Connection()
+	db, err := internal.PrismaClientDB()
 
-	if err != nil {
-		response.Err(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-			log.Fatal(err)
-		}
-	}(db)
+	validation.Err(w, http.StatusInternalServerError, err)
 
 	repo := authRepository.AuthRepository(db)
 
 	passwordDb, err := repo.SearchPassword(userId)
 
-	if err != nil {
-		response.Err(w, http.StatusInternalServerError, err)
-		return
-	}
+	validation.Err(w, http.StatusInternalServerError, err)
 
 	if err = auth.ValidPassword(passwordDb, password.CurrentPassword); err != nil {
 		response.Err(w, http.StatusUnauthorized, err)
@@ -77,10 +59,7 @@ func UpdatePassword(w http.ResponseWriter, r *http.Request) {
 
 	newPassword, err := auth.Hash(password.NewPassword)
 
-	if err != nil {
-		response.Err(w, http.StatusBadRequest, err)
-		return
-	}
+	validation.Err(w, http.StatusBadRequest, err)
 
 	if err = repo.UpdatePassword(newPassword, userId); err != nil {
 		response.Err(w, http.StatusBadRequest, err)
