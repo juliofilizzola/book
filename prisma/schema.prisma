@@ -21,8 +21,9 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  followedBy Followers[] @relation("following")
-  following  Followers[] @relation("follower")
+  followedBy  Followers[]   @relation("following")
+  following   Followers[]   @relation("follower")
+  publication Publication[]
 }
 
 model Followers {
@@ -32,4 +33,16 @@ model Followers {
   followingId String
 
   @@id([followerId, followingId])
+}
+
+model Publication {
+  id          String   @id() @default(uuid())
+  title       String
+  description String
+  content     String
+  like        Int
+  authId      String
+  auth        User     @relation(fields: [authId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
