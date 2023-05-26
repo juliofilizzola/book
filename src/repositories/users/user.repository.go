@@ -157,23 +157,38 @@ func (u User) GetUser(userId string) (models.User, error) {
 	//return user, nil
 }
 
-func (u User) UpdatedUser(id uint64, body models.User) error {
-	statement, err := u.db.Prepare("update user set name = ?, nick = ?, email = ? where id = ? ")
+func (u User) UpdatedUser(userId string, body models.User) error {
+	ctx := context.Background()
+
+	_, err := u.db.User.FindUnique(
+		db.User.ID.Equals(userId),
+	).Update(
+		db.User.Name.Set(body.Name),
+		db.User.Email.Set(body.Email),
+		db.User.Nick.Set(body.Nick),
+	).Exec(ctx)
 
 	if err != nil {
 		return err
 	}
-	defer func(statements *sql.Stmt) {
-		err := statements.Close()
-		if err != nil {
-			log.Fatal(err)
-		}
-	}(statement)
-
-	if _, err = statement.Exec(body.Name, body.Nick, body.Email, id); err != nil {
-		return err
-	}
 	return nil
+
+	//statement, err := u.db.Prepare("update user set name = ?, nick = ?, email = ? where id = ? ")
+	//
+	//if err != nil {
+	//	return err
+	//}
+	//defer func(statements *sql.Stmt) {
+	//	err := statements.Close()
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//}(statement)
+	//
+	//if _, err = statement.Exec(body.Name, body.Nick, body.Email, id); err != nil {
+	//	return err
+	//}
+	//return nil
 }
 
 func (u User) DeleteUser(id uint64) error {
