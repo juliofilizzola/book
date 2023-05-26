@@ -1,7 +1,9 @@
 package users
 
 import (
+	"api/prisma/db"
 	"api/src/models"
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -9,39 +11,54 @@ import (
 )
 
 type User struct {
-	db *sql.DB
+	db *db.PrismaClient
 }
 
-func UserRepository(db *sql.DB) *User {
+func UserRepository(db *db.PrismaClient) *User {
 	return &User{
 		db: db,
 	}
 }
 
-func (u User) Create(user models.User) (uint64, error) {
-	statement, err := u.db.Prepare("insert into user (name, nick, email, password) values (?, ?, ?, ?)")
-	if err != nil {
-		return 0, err
-	}
-	defer func(statement *sql.Stmt) {
-		err := statement.Close()
-		if err != nil {
-			log.Fatal(err)
-		}
-	}(statement)
+func (u User) Create(user models.User) (string, error) {
+	ctx := context.Background()
 
-	insert, err := statement.Exec(user.Name, user.Nick, user.Email, user.Password)
+	result, err := u.db.User.CreateOne(
+		db.User.Name.Set(user.Name),
+		db.User.Nick.Set(user.Nick),
+		db.User.Password.Set(user.Password),
+		db.User.Email.Set(user.Email),
+	).Exec(ctx)
 
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
-	idInsert, err := insert.LastInsertId()
-	if err != nil {
-		return 0, err
-	}
+	return result.ID, nil
 
-	return uint64(idInsert), nil
+	//statement, err := u.db.Prepare("insert into user (name, nick, email, password) values (?, ?, ?, ?)")
+	//if err != nil {
+	//	return 0, err
+	//}
+	//defer func(statement *sql.Stmt) {
+	//	err := statement.Close()
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//}(statement)
+	//
+	//insert, err := statement.Exec(user.Name, user.Nick, user.Email, user.Password)
+	//
+	//if err != nil {
+	//	return 0, err
+	//}
+	//
+	//idInsert, err := insert.LastInsertId()
+	//if err != nil {
+	//	return 0, err
+	//}
+	//
+	//return uint64(idInsert), nil
 
 }
 
