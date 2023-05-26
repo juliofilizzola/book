@@ -15,22 +15,26 @@ import (
 
 func Login(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
+
 	if err != nil {
 		response.Err(w, http.StatusUnprocessableEntity, err)
 		return
 	}
 
 	var user models.User
+
 	if err = json.Unmarshal(body, &user); err != nil {
 		response.Err(w, http.StatusBadRequest, err)
 		return
 	}
 
 	db2, err := db.Connection()
+
 	if err != nil {
 		response.Err(w, http.StatusInternalServerError, err)
 		return
 	}
+
 	defer func(db2 *sql.DB) {
 		err := db2.Close()
 		if err != nil {
@@ -51,12 +55,15 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var responseToken models.Login
+
 	token, err := auth.GenerateToken(userSearch.ID)
 
 	if err != nil {
 		response.Err(w, http.StatusUnauthorized, err)
 		return
 	}
+
 	responseToken.Token = token
+
 	response.JSON(w, http.StatusAccepted, responseToken)
 }
