@@ -20,12 +20,16 @@ model User {
   email     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  followedBy Followers[] @relation("following")
+  following  Followers[] @relation("follower")
 }
 
-// model Followers {
-//   user User @relation(fields: [user_id], references: [id])
-//   user_id String
-//   followers User @relation(fields: [followers_id], references: [id])
-//   followers_id String
-//   @@id([user_id, followers_id])
-// }
+model Followers {
+  follower    User   @relation("follower", fields: [followerId], references: [id])
+  followerId  String
+  following   User   @relation("following", fields: [followingId], references: [id])
+  followingId String
+
+  @@id([followerId, followingId])
+}
