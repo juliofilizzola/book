@@ -5,7 +5,6 @@ import (
 	"api/src/models"
 	"context"
 	"database/sql"
-	"errors"
 	"fmt"
 	"log"
 )
@@ -110,39 +109,52 @@ func (u User) GetUsers(params string) ([]models.User, error) {
 	//return users, nil
 }
 
-func (u User) GetUser(ID uint64) (models.User, error) {
+func (u User) GetUser(userId string) (models.User, error) {
+	ctx := context.Background()
 
-	getUser, err := u.db.Query("select id, name, nick, email, created_at from user where id = ? ", ID)
+	var (
+		user models.User
+	)
+
+	err := u.db.Prisma.QueryRaw("select id, name, nick, email, created_at from user where user.id = ?", userId).Exec(ctx, &user)
 
 	if err != nil {
-		fmt.Println("!")
 		return models.User{}, err
 	}
 
-	defer func(getUser *sql.Rows) {
-		err := getUser.Close()
-		if err != nil {
-			log.Fatal(err)
-		}
-	}(getUser)
-
-	var user models.User
-
-	if getUser.Next() {
-		if err = getUser.Scan(
-			&user.ID,
-			&user.Name,
-			&user.Nick,
-			&user.Email,
-			&user.CreatedAt,
-		); err != nil {
-			return models.User{}, err
-		}
-	} else {
-		return models.User{}, errors.New("not found")
-	}
-
 	return user, nil
+
+	//getUser, err := u.db.Query("select id, name, nick, email, created_at from user where id = ? ", ID)
+	//
+	//if err != nil {
+	//	fmt.Println("!")
+	//	return models.User{}, err
+	//}
+	//
+	//defer func(getUser *sql.Rows) {
+	//	err := getUser.Close()
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//}(getUser)
+	//
+	//var user models.User
+	//
+	//if getUser.Next() {
+	//	if err = getUser.Scan(
+	//		&user.ID,
+	//		&user.Name,
+	//		&user.Nick,
+	//		&user.Email,
+	//		&user.CreatedAt,
+	//	); err != nil {
+	//		return models.User{}, err
+	//	}
+	//} else {
+	//	return models.User{}, errors.New("not found")
+	//}
+	//
+	//return user, nil
 }
 
 func (u User) UpdatedUser(id uint64, body models.User) error {
