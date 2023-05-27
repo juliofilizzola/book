@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Publication struct {
-	ID          uint64    `json:"id,omitempty"`
+	ID          string    `json:"id,omitempty"`
 	Title       string    `json:"title,omitempty"`
 	Content     string    `json:"content,omitempty"`
 	Description string    `json:"description"`
@@ -25,5 +25,5 @@ type PublicationReturn struct {
 }
 
 type Like struct {
-	Like int `json:"like"`
+	Like int64 `json:"like"`
 }

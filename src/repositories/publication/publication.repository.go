@@ -199,7 +199,7 @@ func (p Publication) UpdatePublication(id string, body models.Publication) error
 	//return nil
 }
 
-func (p Publication) GetPublication(id uint64) (models.PublicationReturn, error) {
+func (p Publication) GetPublication(id string) (models.PublicationReturn, error) {
 
 	ctx := context.Background()
 
