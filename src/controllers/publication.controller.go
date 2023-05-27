@@ -12,7 +12,6 @@ import (
 	"github.com/gorilla/mux"
 	"io"
 	"net/http"
-	"strconv"
 )
 
 func Create(w http.ResponseWriter, r *http.Request) {
@@ -200,7 +199,7 @@ func LikePublication(w http.ResponseWriter, r *http.Request) {
 
 	validation.Err(w, http.StatusNotFound, err)
 
-	likes, err := strconv.ParseInt(data.Likes, 10, 64)
+	likes := data.Likes
 
 	validation.Err(w, http.StatusNotFound, err)
 
@@ -208,7 +207,7 @@ func LikePublication(w http.ResponseWriter, r *http.Request) {
 		totalLikes = likes + like.Like
 	)
 
-	err = repo.LikePublication(id, int(totalLikes))
+	err = repo.LikePublication(id, totalLikes)
 
 	validation.Err(w, http.StatusBadRequest, err)
 
@@ -241,7 +240,7 @@ func DislikePublication(w http.ResponseWriter, r *http.Request) {
 
 	validation.Err(w, http.StatusNotFound, err)
 
-	likes, err := strconv.ParseInt(data.Likes, 10, 64)
+	likes := data.Likes
 
 	validation.Err(w, http.StatusNotFound, err)
 

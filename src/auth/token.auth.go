@@ -11,10 +11,13 @@ import (
 )
 
 func GenerateToken(userId string) (string, error) {
+	fmt.Println(userId)
 	permission := jwt.MapClaims{}
 	permission["authorized"] = true
 	permission["exp"] = time.Now().Add(time.Hour * 6).Unix()
 	permission["userId"] = userId
+
+	fmt.Println(permission)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, permission)
 	s, _ := token.SignedString([]byte(config.SecretKey))
 	return s, nil
@@ -58,7 +61,7 @@ func GetUserId(r *http.Request) (string, error) {
 	}
 
 	if permission, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		userId := fmt.Sprintf("%.0f", permission["userId"])
+		userId := fmt.Sprintf("%v", permission["userId"])
 		return userId, nil
 	}
 

@@ -4,6 +4,7 @@ import (
 	"api/prisma/db"
 	"api/src/models"
 	"context"
+	"fmt"
 )
 
 type Publication struct {
@@ -68,8 +69,8 @@ func (p Publication) GetPublicationByUser(id string) ([]models.PublicationReturn
 	)
 
 	err := p.db.Prisma.QueryRaw(`select
-		P.id, P.title, P.description, P.content, P.like, u.CREATED_AT, u.NICK as auth_nick, u.EMAIL as auth_email
-		from PUBLICATION as P inner join USER U on U.id = P.auth_id where u.id = ?`, id).Exec(ctx, &publications)
+		P.id, P.title, P.description, P.content, P.like, u.createdAt, u.NICK as auth_nick, u.EMAIL as auth_email
+		from PUBLICATION as P inner join USER U on U.id = P.authId where u.id = ?`, id).Exec(ctx, &publications)
 
 	if err != nil {
 		return nil, err
@@ -120,8 +121,8 @@ func (p Publication) GetPublications() ([]models.PublicationReturn, error) {
 	)
 
 	err := p.db.Prisma.QueryRaw(`select
-		P.id, P.title, P.description, P.content, P.like, u.CREATED_AT, u.NICK as auth_nick, u.EMAIL as auth_email
-		from PUBLICATION as P inner join USER U on U.id = P.auth_id where u.id = ?`).Exec(ctx, &publications)
+		P.id, P.title, P.description, P.content, P.like, u.createdAt, u.NICK as auth_nick, u.EMAIL as auth_email
+		from PUBLICATION as P inner join USER U on U.id = P.authId where u.id = ?`).Exec(ctx, &publications)
 
 	if err != nil {
 		return nil, err
@@ -199,23 +200,33 @@ func (p Publication) UpdatePublication(id string, body models.Publication) error
 	//return nil
 }
 
-func (p Publication) GetPublication(id string) (models.PublicationReturn, error) {
+func (p Publication) GetPublication(id string) (models.PublicationReturn2, error) {
 
 	ctx := context.Background()
 
-	var (
-		publications models.PublicationReturn
-	)
-
-	err := p.db.Prisma.QueryRaw(`select
-		P.id, P.title, P.description, P.content, P.like, u.CREATED_AT, u.NICK as auth_nick, u.EMAIL as auth_email
-		from PUBLICATION as P inner join USER U on U.id = P.auth_id where u.id = ?`, id).Exec(ctx, &publications)
-
+	query, err := p.db.Publication.FindFirst(
+		db.Publication.ID.Equals(id),
+	).With(
+	//db.Publication.Auth.Where(
+	//	db.User.ID.Equals(db.Publication.Auth)
+	//),
+	).Exec(ctx)
+	fmt.Println(query)
 	if err != nil {
-		return models.PublicationReturn{}, err
+		return models.PublicationReturn2{}, err
 	}
+	//var publications = db.PublicationModel{}
 
-	return publications, nil
+	//err := p.db.Prisma.ExecuteRaw(`select
+	//	P.id, P.title, P.description, P.content, P.like, u.createdAt, u.nick as auth_nick, u.email as auth_email, p.authId as auth_id
+	//	from Publication as P inner join User U on U.id = P.authId where u.id = ?`, id).ExtractQuery().Exec(ctx, &publications)
+	//if err != nil {
+	//	fmt.Println(err)
+	//	fmt.Println(publications)
+	//	return models.PublicationReturn2{}, err
+	//}
+
+	return models.PublicationReturn2{}, nil
 
 	//query, err := p.db.Query(`select
 	//	P.id, P.title, P.description, P.content, P.like, u.CREATED_AT, u.id as auth_id, u.NICK as auth_nick, u.EMAIL as auth_email
