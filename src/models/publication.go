@@ -8,12 +8,12 @@ type Publication struct {
 	Content     string    `json:"content,omitempty"`
 	Description string    `json:"description"`
 	AuthId      string    `json:"auth_id,omitempty"`
-	Likes       string    `json:"likes"`
+	Likes       int       `json:"likes"`
 	CreatedAt   time.Time `json:"created_at,omitempty"`
 }
 
 type PublicationReturn struct {
-	ID          uint64    `json:"id,omitempty"`
+	ID          string    `json:"id,omitempty"`
 	Title       string    `json:"title,omitempty"`
 	Content     string    `json:"content,omitempty"`
 	Description string    `json:"description"`
@@ -25,5 +25,5 @@ type PublicationReturn struct {
 }
 
 type Like struct {
-	Like int64 `json:"like"`
+	Like int `json:"like"`
 }
