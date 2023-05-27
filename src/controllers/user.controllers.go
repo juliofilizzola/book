@@ -1,28 +1,25 @@
 package controllers
 
 import (
-	"api/db"
+	internal "api/internal/db"
 	"api/src/auth"
 	"api/src/models"
 	"api/src/repositories/users"
 	"api/src/response"
-	"database/sql"
+	"api/src/validation"
 	"encoding/json"
 	"errors"
 	"github.com/gorilla/mux"
 	"io"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 )
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		response.Err(w, http.StatusUnprocessableEntity, err)
-		return
-	}
+	validation.Err(w, http.StatusUnprocessableEntity, err)
+
 	var user models.User
 
 	if err = json.Unmarshal(body, &user); err != nil {
@@ -35,31 +32,18 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db2, err := db.Connection()
+	db, err := internal.PrismaClientDB()
 
-	if err != nil {
-		response.Err(w, http.StatusInternalServerError, err)
-		return
-	}
+	validation.Err(w, http.StatusInternalServerError, err)
 
-	defer func(db2 *sql.DB) {
-		err := db2.Close()
-		if err != nil {
-			response.Err(w, http.StatusInternalServerError, err)
-			return
-		}
-	}(db2)
-
-	repo := users.UserRepository(db2)
+	repo := users.UserRepository(db)
 
 	user.ID, err = repo.Create(user)
-	if err != nil {
-		response.Err(w, http.StatusInternalServerError, err)
-		return
-	}
+
+	validation.Err(w, http.StatusInternalServerError, err)
 
 	response.JSON(w, http.StatusCreated, struct {
-		ID        uint64    `json:"id"`
+		ID        string    `json:"id"`
 		Name      string    `json:"name"`
 		Email     string    `json:"email"`
 		Nick      string    `json:"nick"`
@@ -77,76 +61,50 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	params := strings.ToLower(r.URL.Query().Get("user"))
-	db2, err := db.Connection()
-	if err != nil {
-		response.Err(w, http.StatusInternalServerError, err)
-		return
-	}
-	defer func(db2 *sql.DB) {
-		err := db2.Close()
-		if err != nil {
-			response.Err(w, http.StatusInternalServerError, err)
-			return
-		}
-	}(db2)
 
-	repo := users.UserRepository(db2)
+	db, err := internal.PrismaClientDB()
+
+	validation.Err(w, http.StatusInternalServerError, err)
+
+	repo := users.UserRepository(db)
+
 	usersResponse, err := repo.GetUsers(params)
-	if err != nil {
-		response.Err(w, http.StatusNotFound, err)
-		return
-	}
+
+	validation.Err(w, http.StatusNotFound, err)
+
 	response.JSON(w, http.StatusOK, usersResponse)
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
-	ID, err := strconv.ParseUint(params["id"], 10, 32)
-	if err != nil {
-		response.Err(w, http.StatusUnprocessableEntity, err)
-	}
-	db2, err := db.Connection()
-	if err != nil {
-		response.Err(w, http.StatusInternalServerError, err)
-		return
-	}
-	defer func(db2 *sql.DB) {
-		err := db2.Close()
-		if err != nil {
-			response.Err(w, http.StatusInternalServerError, err)
-			return
-		}
-	}(db2)
+	userId := params["id"]
 
-	repo := users.UserRepository(db2)
-	usersResponse, err := repo.GetUser(ID)
-	if err != nil {
-		response.Err(w, http.StatusNotFound, err)
-		return
-	}
+	db, err := internal.PrismaClientDB()
+
+	validation.Err(w, http.StatusInternalServerError, err)
+
+	repo := users.UserRepository(db)
+
+	usersResponse, err := repo.GetUser(userId)
+
+	validation.Err(w, http.StatusNotFound, err)
+
 	response.JSON(w, http.StatusOK, usersResponse)
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	ID, err := strconv.ParseUint(params["id"], 10, 32)
-	if err != nil {
-		response.Err(w, http.StatusUnprocessableEntity, err)
-		return
-	}
+	userId := params["id"]
 
-	if valid := auth.ValidUser(r, ID); !valid {
+	if valid := auth.ValidUser(r, userId); !valid {
 		response.Err(w, http.StatusUnauthorized, errors.New("cannot updated other user"))
 		return
 	}
 
 	body, err := io.ReadAll(r.Body)
 
-	if err != nil {
-		response.Err(w, http.StatusUnprocessableEntity, err)
-		return
-	}
+	validation.Err(w, http.StatusInternalServerError, err)
 
 	var user models.User
 
@@ -160,61 +118,37 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db2, err := db.Connection()
+	db, err := internal.PrismaClientDB()
 
-	if err != nil {
-		response.Err(w, http.StatusInternalServerError, err)
-		return
-	}
+	validation.Err(w, http.StatusInternalServerError, err)
 
-	defer func(db2 *sql.DB) {
-		err := db2.Close()
-		if err != nil {
-			response.Err(w, http.StatusInternalServerError, err)
-			return
-		}
-	}(db2)
+	repo := users.UserRepository(db)
 
-	repo := users.UserRepository(db2)
-
-	if err := repo.UpdatedUser(ID, user); err != nil {
+	if err := repo.UpdatedUser(userId, user); err != nil {
 		response.Err(w, http.StatusBadRequest, err)
 		return
 	}
+
 	response.JSON(w, http.StatusNoContent, nil)
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	ID, err := strconv.ParseUint(params["id"], 10, 32)
 
-	if err != nil {
-		response.Err(w, http.StatusUnprocessableEntity, err)
-	}
+	userId := params["id"]
 
-	if valid := auth.ValidUser(r, ID); !valid {
+	if valid := auth.ValidUser(r, userId); !valid {
 		response.Err(w, http.StatusUnauthorized, errors.New("cannot deleted other user"))
 		return
 	}
 
-	db2, err := db.Connection()
+	db, err := internal.PrismaClientDB()
 
-	if err != nil {
-		response.Err(w, http.StatusInternalServerError, err)
-		return
-	}
+	validation.Err(w, http.StatusInternalServerError, err)
 
-	defer func(db2 *sql.DB) {
-		err := db2.Close()
-		if err != nil {
-			response.Err(w, http.StatusInternalServerError, err)
-			return
-		}
-	}(db2)
+	repo := users.UserRepository(db)
 
-	repo := users.UserRepository(db2)
-
-	if err = repo.DeleteUser(ID); err != nil {
+	if err = repo.DeleteUser(userId); err != nil {
 		response.Err(w, http.StatusBadRequest, err)
 		return
 	}

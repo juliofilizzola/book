@@ -1,144 +1,26 @@
 package controllers
 
 import (
-	db2 "api/db"
+	internal "api/internal/db"
 	"api/src/auth"
 	"api/src/models"
 	publication2 "api/src/repositories/publication"
 	"api/src/response"
 	"api/src/validation"
-	"database/sql"
 	"encoding/json"
 	"errors"
 	"github.com/gorilla/mux"
 	"io"
-	"log"
 	"net/http"
-	"strconv"
 )
 
 func Create(w http.ResponseWriter, r *http.Request) {
 	userId, err := auth.GetUserId(r)
 
-	if err != nil {
-		response.Err(w, http.StatusUnauthorized, err)
-		return
-	}
-
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		response.Err(w, http.StatusUnprocessableEntity, err)
-		return
-	}
-
-	var publication models.Publication
-
-	if err = json.Unmarshal(body, &publication); err != nil {
-		response.Err(w, http.StatusBadRequest, err)
-		return
-	}
-
-	publication.AuthId = strconv.FormatUint(userId, 10)
-	publication.Likes = strconv.Itoa(0)
-	db, err := db2.Connection()
-
-	if err != nil {
-		response.Err(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	defer func(db2 *sql.DB) {
-		err := db2.Close()
-		if err != nil {
-			response.Err(w, http.StatusInternalServerError, err)
-			return
-		}
-	}(db)
-
-	repo := publication2.PublicationsRepository(db)
-
-	publication.ID, err = repo.Create(publication)
-
-	if err != nil {
-		response.Err(w, http.StatusInternalServerError, err)
-		return
-	}
-	response.JSON(w, http.StatusCreated, struct {
-		models.Publication
-	}{
-		publication,
-	})
-}
-
-func GetMyPublications(w http.ResponseWriter, r *http.Request) {
-	userId, err := auth.GetUserId(r)
-	if err != nil {
-		response.Err(w, http.StatusUnauthorized, err)
-		return
-	}
-	db, err := db2.Connection()
-
-	if err != nil {
-		response.Err(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	defer func(db *sql.DB) {
-		err = db.Close()
-		if err != nil {
-			log.Fatal(err)
-		}
-	}(db)
-
-	repo := publication2.PublicationsRepository(db)
-
-	data, err := repo.GetPublicationByUser(userId)
-	if err != nil {
-		response.Err(w, http.StatusNotFound, err)
-		return
-	}
-
-	response.JSON(w, http.StatusOK, data)
-}
-
-func GetPublication(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-
-	id, err := strconv.ParseUint(params["id"], 10, 64)
-
-	validation.Err(w, http.StatusBadRequest, err)
-
-	db, err := db2.Connection()
-
-	validation.Err(w, http.StatusBadRequest, err)
-
-	defer func(db *sql.DB) {
-		err = db.Close()
-		if err != nil {
-			log.Fatal(err)
-		}
-	}(db)
-
-	repo := publication2.PublicationsRepository(db)
-
-	data, err := repo.GetPublication(id)
-	validation.Err(w, http.StatusNotFound, err)
-
-	response.JSON(w, http.StatusOK, data)
-}
-
-func UpdatePublication(w http.ResponseWriter, r *http.Request) {
-	userId, err := auth.GetUserId(r)
-
 	validation.Err(w, http.StatusUnauthorized, err)
 
-	params := mux.Vars(r)
-
-	id, err := strconv.ParseUint(params["id"], 10, 64)
-
-	validation.Err(w, http.StatusBadRequest, err)
-
 	body, err := io.ReadAll(r.Body)
+
 	validation.Err(w, http.StatusUnprocessableEntity, err)
 
 	var publication models.Publication
@@ -148,19 +30,91 @@ func UpdatePublication(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := db2.Connection()
-	validation.Err(w, http.StatusInternalServerError, err)
+	publication.AuthId = userId
+	publication.Likes = 0
 
-	defer func(db *sql.DB) {
-		err = db.Close()
-		if err != nil {
-			log.Fatal(err)
-		}
-	}(db)
+	db, err := internal.PrismaClientDB()
+
+	validation.Err(w, http.StatusBadRequest, err)
 
 	repo := publication2.PublicationsRepository(db)
 
-	err = repo.UpdatePublication(id, userId, publication)
+	publication.ID, err = repo.Create(publication)
+
+	validation.Err(w, http.StatusUnprocessableEntity, err)
+
+	response.JSON(w, http.StatusCreated, struct {
+		models.Publication
+	}{
+		publication,
+	})
+}
+
+func GetMyPublications(w http.ResponseWriter, r *http.Request) {
+	userId, err := auth.GetUserId(r)
+
+	validation.Err(w, http.StatusUnauthorized, err)
+
+	db, err := internal.PrismaClientDB()
+
+	validation.Err(w, http.StatusBadRequest, err)
+
+	repo := publication2.PublicationsRepository(db)
+
+	data, err := repo.GetPublicationByUser(userId)
+
+	validation.Err(w, http.StatusNotFound, err)
+
+	response.JSON(w, http.StatusOK, data)
+}
+
+func GetPublication(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	id := params["id"]
+
+	db, err := internal.PrismaClientDB()
+
+	validation.Err(w, http.StatusBadRequest, err)
+
+	repo := publication2.PublicationsRepository(db)
+
+	data, err := repo.GetPublication(id)
+
+	validation.Err(w, http.StatusNotFound, err)
+
+	response.JSON(w, http.StatusOK, data)
+}
+
+func UpdatePublication(w http.ResponseWriter, r *http.Request) {
+	_, err := auth.GetUserId(r)
+
+	validation.Err(w, http.StatusUnauthorized, err)
+
+	params := mux.Vars(r)
+
+	id := params["id"]
+
+	validation.Err(w, http.StatusBadRequest, err)
+
+	body, err := io.ReadAll(r.Body)
+
+	validation.Err(w, http.StatusUnprocessableEntity, err)
+
+	var publication models.Publication
+
+	if err = json.Unmarshal(body, &publication); err != nil {
+		response.Err(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := internal.PrismaClientDB()
+
+	validation.Err(w, http.StatusInternalServerError, err)
+
+	repo := publication2.PublicationsRepository(db)
+
+	err = repo.UpdatePublication(id, publication)
 
 	validation.Err(w, http.StatusInternalServerError, err)
 
@@ -172,16 +126,9 @@ func GetAllPublication(w http.ResponseWriter, r *http.Request) {
 
 	validation.Err(w, http.StatusUnauthorized, err)
 
-	db, err := db2.Connection()
+	db, err := internal.PrismaClientDB()
 
 	validation.Err(w, http.StatusInternalServerError, err)
-
-	defer func(db *sql.DB) {
-		err = db.Close()
-		if err != nil {
-			validation.Err(w, http.StatusInternalServerError, err)
-		}
-	}(db)
 
 	repo := publication2.PublicationsRepository(db)
 
@@ -199,45 +146,41 @@ func DeletedPublication(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 
-	id, err := strconv.ParseUint(params["id"], 10, 64)
+	id := params["id"]
 
 	validation.Err(w, http.StatusBadRequest, err)
 
-	db, err := db2.Connection()
+	db, err := internal.PrismaClientDB()
 
 	validation.Err(w, http.StatusInternalServerError, err)
 
-	defer func(db *sql.DB) {
-		err = db.Close()
-		if err != nil {
-			validation.Err(w, http.StatusInternalServerError, err)
-		}
-	}(db)
-
 	repo := publication2.PublicationsRepository(db)
+
 	dbPublication, err := repo.GetPublication(id)
+
 	validation.Err(w, http.StatusBadRequest, err)
-	authId, err := strconv.ParseUint(dbPublication.AuthId, 0, 32)
+
+	authId := dbPublication.AuthId
+
 	if authId != userId {
 		response.Err(w, http.StatusBadRequest, errors.New("token invalid"))
 	}
+
 	err = repo.DeletedPublication(id)
+
 	validation.Err(w, http.StatusBadRequest, err)
+
 	response.JSON(w, http.StatusNoContent, nil)
 }
 
 func LikePublication(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
-	id, err := strconv.ParseUint(params["id"], 10, 64)
-
-	validation.Err(w, http.StatusBadRequest, err)
+	id := params["id"]
 
 	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		response.Err(w, http.StatusUnprocessableEntity, err)
-		return
-	}
+
+	validation.Err(w, http.StatusUnprocessableEntity, err)
 
 	var like models.Like
 
@@ -246,16 +189,9 @@ func LikePublication(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := db2.Connection()
+	db, err := internal.PrismaClientDB()
 
 	validation.Err(w, http.StatusInternalServerError, err)
-
-	defer func(db *sql.DB) {
-		err = db.Close()
-		if err != nil {
-			validation.Err(w, http.StatusInternalServerError, err)
-		}
-	}(db)
 
 	repo := publication2.PublicationsRepository(db)
 
@@ -263,7 +199,8 @@ func LikePublication(w http.ResponseWriter, r *http.Request) {
 
 	validation.Err(w, http.StatusNotFound, err)
 
-	likes, err := strconv.ParseInt(data.Likes, 10, 64)
+	likes := data.Likes
+
 	validation.Err(w, http.StatusNotFound, err)
 
 	var (
@@ -280,15 +217,11 @@ func LikePublication(w http.ResponseWriter, r *http.Request) {
 func DislikePublication(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
-	id, err := strconv.ParseUint(params["id"], 10, 64)
-
-	validation.Err(w, http.StatusBadRequest, err)
+	id := params["id"]
 
 	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		response.Err(w, http.StatusUnprocessableEntity, err)
-		return
-	}
+
+	validation.Err(w, http.StatusUnprocessableEntity, err)
 
 	var dislike models.Like
 
@@ -297,16 +230,9 @@ func DislikePublication(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := db2.Connection()
+	db, err := internal.PrismaClientDB()
 
 	validation.Err(w, http.StatusInternalServerError, err)
-
-	defer func(db *sql.DB) {
-		err = db.Close()
-		if err != nil {
-			validation.Err(w, http.StatusInternalServerError, err)
-		}
-	}(db)
 
 	repo := publication2.PublicationsRepository(db)
 
@@ -314,14 +240,15 @@ func DislikePublication(w http.ResponseWriter, r *http.Request) {
 
 	validation.Err(w, http.StatusNotFound, err)
 
-	likes, err := strconv.ParseInt(data.Likes, 10, 64)
+	likes := data.Likes
+
 	validation.Err(w, http.StatusNotFound, err)
 
 	var (
 		totalLikes = likes - dislike.Like
 	)
 
-	err = repo.LikePublication(id, totalLikes)
+	err = repo.LikePublication(id, int(totalLikes))
 
 	validation.Err(w, http.StatusBadRequest, err)
 

@@ -1,57 +1,33 @@
 package controllers
 
 import (
-	db2 "api/db"
+	internal "api/internal/db"
 	"api/src/auth"
 	followersRepository "api/src/repositories/followers"
-	"errors"
-
-	//"api/src/auth"
-	//followersRepository "api/src/repositories/followers"
 	"api/src/response"
-	"database/sql"
-	//"errors"
+	"api/src/validation"
+	"errors"
 	"github.com/gorilla/mux"
 	"net/http"
-	"strconv"
 )
 
 func FollowerUser(w http.ResponseWriter, r *http.Request) {
 	followerId, err := auth.GetUserId(r)
 
-	if err != nil {
-		response.Err(w, http.StatusUnauthorized, err)
-		return
-	}
+	validation.Err(w, http.StatusUnauthorized, err)
 
 	params := mux.Vars(r)
 
-	userId, err := strconv.ParseUint(params["userId"], 10, 64)
-
-	if err != nil {
-		response.Err(w, http.StatusBadRequest, err)
-		return
-	}
+	userId := params["userId"]
 
 	if userId == followerId {
 		response.Err(w, http.StatusForbidden, errors.New("cannot follower you"))
 		return
 	}
 
-	db, err := db2.Connection()
+	db, err := internal.PrismaClientDB()
 
-	if err != nil {
-		response.Err(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-			response.Err(w, http.StatusInternalServerError, err)
-			return
-		}
-	}(db)
+	validation.Err(w, http.StatusBadRequest, err)
 
 	repo := followersRepository.FollowersRepository(db)
 
@@ -66,39 +42,20 @@ func FollowerUser(w http.ResponseWriter, r *http.Request) {
 func Unfollow(w http.ResponseWriter, r *http.Request) {
 	followerId, err := auth.GetUserId(r)
 
-	if err != nil {
-		response.Err(w, http.StatusUnauthorized, err)
-		return
-	}
+	validation.Err(w, http.StatusUnauthorized, err)
 
 	params := mux.Vars(r)
 
-	userId, err := strconv.ParseUint(params["userId"], 10, 64)
-
-	if err != nil {
-		response.Err(w, http.StatusBadRequest, err)
-		return
-	}
+	userId := params["userId"]
 
 	if userId == followerId {
 		response.Err(w, http.StatusForbidden, errors.New("cannot follower you"))
 		return
 	}
 
-	db, err := db2.Connection()
+	db, err := internal.PrismaClientDB()
 
-	if err != nil {
-		response.Err(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-			response.Err(w, http.StatusInternalServerError, err)
-			return
-		}
-	}(db)
+	validation.Err(w, http.StatusInternalServerError, err)
 
 	repo := followersRepository.FollowersRepository(db)
 
@@ -108,37 +65,24 @@ func Unfollow(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.JSON(w, http.StatusAccepted, nil)
-
 }
 
 func GetFollow(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 
-	userId, err := strconv.ParseUint(params["userId"], 10, 64)
+	userId := params["userId"]
 
-	if err != nil {
-		response.Err(w, http.StatusBadRequest, err)
-		return
-	}
-
-	db, err := db2.Connection()
+	db, err := internal.PrismaClientDB()
 
 	if err != nil {
 		response.Err(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-			response.Err(w, http.StatusInternalServerError, err)
-			return
-		}
-	}(db)
-
 	repo := followersRepository.FollowersRepository(db)
 	followers, err := repo.GetFollow(userId)
+
 	if err != nil {
 		response.Err(w, http.StatusInternalServerError, err)
 		return
@@ -151,36 +95,17 @@ func GetFollowers(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 
-	followId, err := strconv.ParseUint(params["followId"], 10, 64)
+	followId := params["followId"]
 
-	if err != nil {
-		response.Err(w, http.StatusBadRequest, err)
-		return
-	}
+	db, err := internal.PrismaClientDB()
 
-	db, err := db2.Connection()
-
-	if err != nil {
-		response.Err(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-			response.Err(w, http.StatusInternalServerError, err)
-			return
-		}
-	}(db)
+	validation.Err(w, http.StatusInternalServerError, err)
 
 	repo := followersRepository.FollowersRepository(db)
 
 	followers, err := repo.GetFollowers(followId)
 
-	if err != nil {
-		response.Err(w, http.StatusInternalServerError, err)
-		return
-	}
+	validation.Err(w, http.StatusInternalServerError, err)
 
 	response.JSON(w, http.StatusOK, followers)
 }

@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-func ValidUser(r *http.Request, userId uint64) bool {
+func ValidUser(r *http.Request, userId string) bool {
 	userIdToken, err := GetUserId(r)
 	if err != nil {
 		return false

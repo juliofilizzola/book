@@ -6,16 +6,18 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 )
 
-func GenerateToken(userId uint64) (string, error) {
+func GenerateToken(userId string) (string, error) {
+	fmt.Println(userId)
 	permission := jwt.MapClaims{}
 	permission["authorized"] = true
 	permission["exp"] = time.Now().Add(time.Hour * 6).Unix()
 	permission["userId"] = userId
+
+	fmt.Println(permission)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, permission)
 	s, _ := token.SignedString([]byte(config.SecretKey))
 	return s, nil
@@ -51,21 +53,17 @@ func getKey(token *jwt.Token) (interface{}, error) {
 	return []byte(config.SecretKey), nil
 }
 
-func GetUserId(r *http.Request) (uint64, error) {
+func GetUserId(r *http.Request) (string, error) {
 	tokenString := getToken(r)
 	token, err := jwt.Parse(tokenString, getKey)
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
 	if permission, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		permissionSting := fmt.Sprintf("%.0f", permission["userId"])
-		userId, err := strconv.ParseUint(permissionSting, 10, 64)
-		if err != nil {
-			return 0, err
-		}
+		userId := fmt.Sprintf("%v", permission["userId"])
 		return userId, nil
 	}
 
-	return 0, errors.New("token invalid")
+	return "", errors.New("token invalid")
 }
