@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -19,8 +20,12 @@ func (User) Fields() []ent.Field {
 		field.String("nick").
 			Unique(),
 		field.String("password"),
-		field.String(""),
-		field.Int("age").
-			Positive(),
+		field.String("following"),
+	}
+}
+
+func (User) Edges() []ent.Edge {
+	return []ent.Edge{
+		edge.From("following", User.Type).Ref("following"),
 	}
 }
