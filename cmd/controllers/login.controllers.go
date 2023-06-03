@@ -26,7 +26,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := internal.PrismaClientDB()
+	db, err := internal.ClientDB()
 
 	if err != nil {
 		response.Err(w, http.StatusInternalServerError, err)
