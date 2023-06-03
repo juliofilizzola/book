@@ -9,15 +9,12 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/iancoleman/strcase v0.0.0-20190422225806-e506e3ef7365
 	github.com/joho/godotenv v1.5.1
-	github.com/prisma/prisma-client-go v0.17.0
 	github.com/shopspring/decimal v1.3.1
 	github.com/takuoki/gocase v1.0.0
 	golang.org/x/crypto v0.7.0
 )
 
 require (
-	ariga.io/atlas v0.10.2-0.20230427182402-87a07dfb83bf // indirect
-	entgo.io/ent v0.12.3
 	github.com/agext/levenshtein v1.2.1 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect
