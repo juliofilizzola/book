@@ -12,6 +12,7 @@ import (
 	"github.com/gorilla/mux"
 	"io"
 	"net/http"
+	"strconv"
 )
 
 func Create(w http.ResponseWriter, r *http.Request) {
@@ -33,7 +34,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	publication.AuthId = userId
 	publication.Likes = 0
 
-	db, err := internal.PrismaClientDB()
+	db, err := internal.ClientDB()
 
 	validation.Err(w, http.StatusBadRequest, err)
 
@@ -55,7 +56,7 @@ func GetMyPublications(w http.ResponseWriter, r *http.Request) {
 
 	validation.Err(w, http.StatusUnauthorized, err)
 
-	db, err := internal.PrismaClientDB()
+	db, err := internal.ClientDB()
 
 	validation.Err(w, http.StatusBadRequest, err)
 
@@ -73,7 +74,7 @@ func GetPublication(w http.ResponseWriter, r *http.Request) {
 
 	id := params["id"]
 
-	db, err := internal.PrismaClientDB()
+	db, err := internal.ClientDB()
 
 	validation.Err(w, http.StatusBadRequest, err)
 
@@ -108,7 +109,7 @@ func UpdatePublication(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := internal.PrismaClientDB()
+	db, err := internal.ClientDB()
 
 	validation.Err(w, http.StatusInternalServerError, err)
 
@@ -126,7 +127,7 @@ func GetAllPublication(w http.ResponseWriter, r *http.Request) {
 
 	validation.Err(w, http.StatusUnauthorized, err)
 
-	db, err := internal.PrismaClientDB()
+	db, err := internal.ClientDB()
 
 	validation.Err(w, http.StatusInternalServerError, err)
 
@@ -150,7 +151,7 @@ func DeletedPublication(w http.ResponseWriter, r *http.Request) {
 
 	validation.Err(w, http.StatusBadRequest, err)
 
-	db, err := internal.PrismaClientDB()
+	db, err := internal.ClientDB()
 
 	validation.Err(w, http.StatusInternalServerError, err)
 
@@ -189,7 +190,7 @@ func LikePublication(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := internal.PrismaClientDB()
+	db, err := internal.ClientDB()
 
 	validation.Err(w, http.StatusInternalServerError, err)
 
@@ -202,10 +203,10 @@ func LikePublication(w http.ResponseWriter, r *http.Request) {
 	likes := data.Likes
 
 	validation.Err(w, http.StatusNotFound, err)
+	convertLike, err := strconv.ParseInt(likes, 10, 0)
+	validation.Err(w, http.StatusBadRequest, err)
 
-	var (
-		totalLikes = likes + like.Like
-	)
+	totalLikes := int(convertLike) + like.Like
 
 	err = repo.LikePublication(id, totalLikes)
 
@@ -230,7 +231,7 @@ func DislikePublication(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := internal.PrismaClientDB()
+	db, err := internal.ClientDB()
 
 	validation.Err(w, http.StatusInternalServerError, err)
 
@@ -244,11 +245,15 @@ func DislikePublication(w http.ResponseWriter, r *http.Request) {
 
 	validation.Err(w, http.StatusNotFound, err)
 
-	var (
-		totalLikes = likes - dislike.Like
-	)
+	convertLike, err := strconv.ParseInt(likes, 10, 0)
+	validation.Err(w, http.StatusBadRequest, err)
 
-	err = repo.LikePublication(id, int(totalLikes))
+	totalLikes := int(convertLike) - dislike.Like
+
+	err = repo.LikePublication(
+		id,
+		totalLikes,
+	)
 
 	validation.Err(w, http.StatusBadRequest, err)
 

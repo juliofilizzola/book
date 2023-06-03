@@ -32,7 +32,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := internal.PrismaClientDB()
+	db, err := internal.ClientDB()
 
 	validation.Err(w, http.StatusInternalServerError, err)
 
@@ -62,7 +62,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	params := strings.ToLower(r.URL.Query().Get("user"))
 
-	db, err := internal.PrismaClientDB()
+	db, err := internal.ClientDB()
 
 	validation.Err(w, http.StatusInternalServerError, err)
 
@@ -80,7 +80,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	userId := params["id"]
 
-	db, err := internal.PrismaClientDB()
+	db, err := internal.ClientDB()
 
 	validation.Err(w, http.StatusInternalServerError, err)
 
@@ -118,7 +118,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := internal.PrismaClientDB()
+	db, err := internal.ClientDB()
 
 	validation.Err(w, http.StatusInternalServerError, err)
 
@@ -142,7 +142,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := internal.PrismaClientDB()
+	db, err := internal.ClientDB()
 
 	validation.Err(w, http.StatusInternalServerError, err)
 

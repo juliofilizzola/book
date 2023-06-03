@@ -25,7 +25,7 @@ func FollowerUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := internal.PrismaClientDB()
+	db, err := internal.ClientDB()
 
 	validation.Err(w, http.StatusBadRequest, err)
 
@@ -53,7 +53,7 @@ func Unfollow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := internal.PrismaClientDB()
+	db, err := internal.ClientDB()
 
 	validation.Err(w, http.StatusInternalServerError, err)
 
@@ -73,7 +73,7 @@ func GetFollow(w http.ResponseWriter, r *http.Request) {
 
 	userId := params["userId"]
 
-	db, err := internal.PrismaClientDB()
+	db, err := internal.ClientDB()
 
 	if err != nil {
 		response.Err(w, http.StatusInternalServerError, err)
@@ -97,7 +97,7 @@ func GetFollowers(w http.ResponseWriter, r *http.Request) {
 
 	followId := params["followId"]
 
-	db, err := internal.PrismaClientDB()
+	db, err := internal.ClientDB()
 
 	validation.Err(w, http.StatusInternalServerError, err)
 
