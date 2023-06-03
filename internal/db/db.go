@@ -1,4 +1,4 @@
-package db
+package internal
 
 import (
 	"api/cmd/config"
@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-func Connection() (*sql.DB, error) {
+func ClientDB() (*sql.DB, error) {
 	db, err := sql.Open("mysql", config.UrlDatabase)
 	if err != nil {
 		return nil, err
