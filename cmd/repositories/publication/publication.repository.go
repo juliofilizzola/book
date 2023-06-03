@@ -50,7 +50,7 @@ func (p Publication) Create(Publication models.Publication) (string, error) {
 	insert, err := statement.Exec(Publication.Title, Publication.AuthId, Publication.Description, Publication.Content, Publication.Likes)
 
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
 	idInsert, err := insert.LastInsertId()
@@ -193,7 +193,7 @@ func (p Publication) UpdatePublication(id string, body models.Publication) error
 			log.Fatal(err)
 		}
 	}(statement)
-	if _, err = statement.Exec(body.Content, body.Description, body.Title, id, userId); err != nil {
+	if _, err = statement.Exec(body.Content, body.Description, body.Title, id); err != nil {
 		return err
 	}
 
