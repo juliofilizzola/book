@@ -42,7 +42,7 @@ func UpdatePassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := internal.PrismaClientDB()
+	db, err := internal.ClientDB()
 
 	validation.Err(w, http.StatusInternalServerError, err)
 
