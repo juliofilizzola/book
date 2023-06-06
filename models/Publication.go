@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/friendsofgo/errors"
+	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
@@ -21,85 +22,62 @@ import (
 	"github.com/volatiletech/strmangle"
 )
 
-// Publication is an object representing the database table.
-type Publication struct {
-	ID          string    `boil:"id" json:"id" toml:"id" yaml:"id"`
-	Title       string    `boil:"title" json:"title" toml:"title" yaml:"title"`
-	Description string    `boil:"description" json:"description" toml:"description" yaml:"description"`
-	Content     string    `boil:"content" json:"content" toml:"content" yaml:"content"`
-	Like        int       `boil:"like" json:"like" toml:"like" yaml:"like"`
-	AuthId      string    `boil:"authId" json:"authId" toml:"authId" yaml:"authId"`
-	CreatedAt   time.Time `boil:"createdAt" json:"createdAt" toml:"createdAt" yaml:"createdAt"`
-	UpdatedAt   time.Time `boil:"updatedAt" json:"updatedAt" toml:"updatedAt" yaml:"updatedAt"`
+// PUBLICATION is an object representing the database table.
+type PUBLICATION struct {
+	ID          int         `boil:"id" json:"id" toml:"id" yaml:"id"`
+	Title       string      `boil:"title" json:"title" toml:"title" yaml:"title"`
+	AuthID      int         `boil:"auth_id" json:"auth_id" toml:"auth_id" yaml:"auth_id"`
+	Description null.String `boil:"description" json:"description,omitempty" toml:"description" yaml:"description,omitempty"`
+	Content     null.String `boil:"content" json:"content,omitempty" toml:"content" yaml:"content,omitempty"`
+	Like        null.Int    `boil:"like" json:"like,omitempty" toml:"like" yaml:"like,omitempty"`
+	CreatedAt   null.Time   `boil:"created_at" json:"created_at,omitempty" toml:"created_at" yaml:"created_at,omitempty"`
+	UpdatedAt   null.Time   `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
 
-	R *publicationR `boil:"-" json:"-" toml:"-" yaml:"-"`
-	L publicationL  `boil:"-" json:"-" toml:"-" yaml:"-"`
+	R *pUBLICATIONR `boil:"-" json:"-" toml:"-" yaml:"-"`
+	L pUBLICATIONL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
-var PublicationColumns = struct {
+var PUBLICATIONColumns = struct {
 	ID          string
 	Title       string
+	AuthID      string
 	Description string
 	Content     string
 	Like        string
-	AuthId      string
 	CreatedAt   string
 	UpdatedAt   string
 }{
 	ID:          "id",
 	Title:       "title",
+	AuthID:      "auth_id",
 	Description: "description",
 	Content:     "content",
 	Like:        "like",
-	AuthId:      "authId",
-	CreatedAt:   "createdAt",
-	UpdatedAt:   "updatedAt",
+	CreatedAt:   "created_at",
+	UpdatedAt:   "updated_at",
 }
 
-var PublicationTableColumns = struct {
+var PUBLICATIONTableColumns = struct {
 	ID          string
 	Title       string
+	AuthID      string
 	Description string
 	Content     string
 	Like        string
-	AuthId      string
 	CreatedAt   string
 	UpdatedAt   string
 }{
-	ID:          "Publication.id",
-	Title:       "Publication.title",
-	Description: "Publication.description",
-	Content:     "Publication.content",
-	Like:        "Publication.like",
-	AuthId:      "Publication.authId",
-	CreatedAt:   "Publication.createdAt",
-	UpdatedAt:   "Publication.updatedAt",
+	ID:          "PUBLICATION.id",
+	Title:       "PUBLICATION.title",
+	AuthID:      "PUBLICATION.auth_id",
+	Description: "PUBLICATION.description",
+	Content:     "PUBLICATION.content",
+	Like:        "PUBLICATION.like",
+	CreatedAt:   "PUBLICATION.created_at",
+	UpdatedAt:   "PUBLICATION.updated_at",
 }
 
 // Generated where
-
-type whereHelperstring struct{ field string }
-
-func (w whereHelperstring) EQ(x string) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperstring) NEQ(x string) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
-func (w whereHelperstring) LT(x string) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperstring) LTE(x string) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
-func (w whereHelperstring) GT(x string) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperstring) GTE(x string) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
-func (w whereHelperstring) IN(slice []string) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
-}
-func (w whereHelperstring) NIN(slice []string) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
-}
 
 type whereHelperint struct{ field string }
 
@@ -124,105 +102,207 @@ func (w whereHelperint) NIN(slice []int) qm.QueryMod {
 	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
 }
 
-type whereHelpertime_Time struct{ field string }
+type whereHelperstring struct{ field string }
 
-func (w whereHelpertime_Time) EQ(x time.Time) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.EQ, x)
+func (w whereHelperstring) EQ(x string) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
+func (w whereHelperstring) NEQ(x string) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
+func (w whereHelperstring) LT(x string) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
+func (w whereHelperstring) LTE(x string) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
+func (w whereHelperstring) GT(x string) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
+func (w whereHelperstring) GTE(x string) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
+func (w whereHelperstring) IN(slice []string) qm.QueryMod {
+	values := make([]interface{}, 0, len(slice))
+	for _, value := range slice {
+		values = append(values, value)
+	}
+	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
 }
-func (w whereHelpertime_Time) NEQ(x time.Time) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.NEQ, x)
+func (w whereHelperstring) NIN(slice []string) qm.QueryMod {
+	values := make([]interface{}, 0, len(slice))
+	for _, value := range slice {
+		values = append(values, value)
+	}
+	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
 }
-func (w whereHelpertime_Time) LT(x time.Time) qm.QueryMod {
+
+type whereHelpernull_String struct{ field string }
+
+func (w whereHelpernull_String) EQ(x null.String) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, false, x)
+}
+func (w whereHelpernull_String) NEQ(x null.String) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, true, x)
+}
+func (w whereHelpernull_String) LT(x null.String) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.LT, x)
 }
-func (w whereHelpertime_Time) LTE(x time.Time) qm.QueryMod {
+func (w whereHelpernull_String) LTE(x null.String) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.LTE, x)
 }
-func (w whereHelpertime_Time) GT(x time.Time) qm.QueryMod {
+func (w whereHelpernull_String) GT(x null.String) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.GT, x)
 }
-func (w whereHelpertime_Time) GTE(x time.Time) qm.QueryMod {
+func (w whereHelpernull_String) GTE(x null.String) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GTE, x)
+}
+func (w whereHelpernull_String) IN(slice []string) qm.QueryMod {
+	values := make([]interface{}, 0, len(slice))
+	for _, value := range slice {
+		values = append(values, value)
+	}
+	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
+}
+func (w whereHelpernull_String) NIN(slice []string) qm.QueryMod {
+	values := make([]interface{}, 0, len(slice))
+	for _, value := range slice {
+		values = append(values, value)
+	}
+	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
+}
+
+func (w whereHelpernull_String) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
+func (w whereHelpernull_String) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
+
+type whereHelpernull_Int struct{ field string }
+
+func (w whereHelpernull_Int) EQ(x null.Int) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, false, x)
+}
+func (w whereHelpernull_Int) NEQ(x null.Int) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, true, x)
+}
+func (w whereHelpernull_Int) LT(x null.Int) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LT, x)
+}
+func (w whereHelpernull_Int) LTE(x null.Int) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LTE, x)
+}
+func (w whereHelpernull_Int) GT(x null.Int) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GT, x)
+}
+func (w whereHelpernull_Int) GTE(x null.Int) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GTE, x)
+}
+func (w whereHelpernull_Int) IN(slice []int) qm.QueryMod {
+	values := make([]interface{}, 0, len(slice))
+	for _, value := range slice {
+		values = append(values, value)
+	}
+	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
+}
+func (w whereHelpernull_Int) NIN(slice []int) qm.QueryMod {
+	values := make([]interface{}, 0, len(slice))
+	for _, value := range slice {
+		values = append(values, value)
+	}
+	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
+}
+
+func (w whereHelpernull_Int) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
+func (w whereHelpernull_Int) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
+
+type whereHelpernull_Time struct{ field string }
+
+func (w whereHelpernull_Time) EQ(x null.Time) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, false, x)
+}
+func (w whereHelpernull_Time) NEQ(x null.Time) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, true, x)
+}
+func (w whereHelpernull_Time) LT(x null.Time) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LT, x)
+}
+func (w whereHelpernull_Time) LTE(x null.Time) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LTE, x)
+}
+func (w whereHelpernull_Time) GT(x null.Time) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GT, x)
+}
+func (w whereHelpernull_Time) GTE(x null.Time) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.GTE, x)
 }
 
-var PublicationWhere = struct {
-	ID          whereHelperstring
+func (w whereHelpernull_Time) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
+func (w whereHelpernull_Time) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
+
+var PUBLICATIONWhere = struct {
+	ID          whereHelperint
 	Title       whereHelperstring
-	Description whereHelperstring
-	Content     whereHelperstring
-	Like        whereHelperint
-	AuthId      whereHelperstring
-	CreatedAt   whereHelpertime_Time
-	UpdatedAt   whereHelpertime_Time
+	AuthID      whereHelperint
+	Description whereHelpernull_String
+	Content     whereHelpernull_String
+	Like        whereHelpernull_Int
+	CreatedAt   whereHelpernull_Time
+	UpdatedAt   whereHelpernull_Time
 }{
-	ID:          whereHelperstring{field: "`Publication`.`id`"},
-	Title:       whereHelperstring{field: "`Publication`.`title`"},
-	Description: whereHelperstring{field: "`Publication`.`description`"},
-	Content:     whereHelperstring{field: "`Publication`.`content`"},
-	Like:        whereHelperint{field: "`Publication`.`like`"},
-	AuthId:      whereHelperstring{field: "`Publication`.`authId`"},
-	CreatedAt:   whereHelpertime_Time{field: "`Publication`.`createdAt`"},
-	UpdatedAt:   whereHelpertime_Time{field: "`Publication`.`updatedAt`"},
+	ID:          whereHelperint{field: "`PUBLICATION`.`id`"},
+	Title:       whereHelperstring{field: "`PUBLICATION`.`title`"},
+	AuthID:      whereHelperint{field: "`PUBLICATION`.`auth_id`"},
+	Description: whereHelpernull_String{field: "`PUBLICATION`.`description`"},
+	Content:     whereHelpernull_String{field: "`PUBLICATION`.`content`"},
+	Like:        whereHelpernull_Int{field: "`PUBLICATION`.`like`"},
+	CreatedAt:   whereHelpernull_Time{field: "`PUBLICATION`.`created_at`"},
+	UpdatedAt:   whereHelpernull_Time{field: "`PUBLICATION`.`updated_at`"},
 }
 
-// PublicationRels is where relationship names are stored.
-var PublicationRels = struct {
-	AuthIdUser string
+// PUBLICATIONRels is where relationship names are stored.
+var PUBLICATIONRels = struct {
+	Auth string
 }{
-	AuthIdUser: "AuthIdUser",
+	Auth: "Auth",
 }
 
-// publicationR is where relationships are stored.
-type publicationR struct {
-	AuthIdUser *User `boil:"AuthIdUser" json:"AuthIdUser" toml:"AuthIdUser" yaml:"AuthIdUser"`
+// pUBLICATIONR is where relationships are stored.
+type pUBLICATIONR struct {
+	Auth *USER `boil:"Auth" json:"Auth" toml:"Auth" yaml:"Auth"`
 }
 
 // NewStruct creates a new relationship struct
-func (*publicationR) NewStruct() *publicationR {
-	return &publicationR{}
+func (*pUBLICATIONR) NewStruct() *pUBLICATIONR {
+	return &pUBLICATIONR{}
 }
 
-func (r *publicationR) GetAuthIdUser() *User {
+func (r *pUBLICATIONR) GetAuth() *USER {
 	if r == nil {
 		return nil
 	}
-	return r.AuthIdUser
+	return r.Auth
 }
 
-// publicationL is where Load methods for each relationship are stored.
-type publicationL struct{}
+// pUBLICATIONL is where Load methods for each relationship are stored.
+type pUBLICATIONL struct{}
 
 var (
-	publicationAllColumns            = []string{"id", "title", "description", "content", "like", "authId", "createdAt", "updatedAt"}
-	publicationColumnsWithoutDefault = []string{"id", "title", "description", "content", "like", "authId", "updatedAt"}
-	publicationColumnsWithDefault    = []string{"createdAt"}
-	publicationPrimaryKeyColumns     = []string{"id"}
-	publicationGeneratedColumns      = []string{}
+	pUBLICATIONAllColumns            = []string{"id", "title", "auth_id", "description", "content", "like", "created_at", "updated_at"}
+	pUBLICATIONColumnsWithoutDefault = []string{"title", "auth_id", "description", "content", "updated_at"}
+	pUBLICATIONColumnsWithDefault    = []string{"id", "like", "created_at"}
+	pUBLICATIONPrimaryKeyColumns     = []string{"id"}
+	pUBLICATIONGeneratedColumns      = []string{}
 )
 
 type (
-	// PublicationSlice is an alias for a slice of pointers to Publication.
-	// This should almost always be used instead of []Publication.
-	PublicationSlice []*Publication
-	// PublicationHook is the signature for custom Publication hook methods
-	PublicationHook func(context.Context, boil.ContextExecutor, *Publication) error
+	// PUBLICATIONSlice is an alias for a slice of pointers to PUBLICATION.
+	// This should almost always be used instead of []PUBLICATION.
+	PUBLICATIONSlice []*PUBLICATION
+	// PUBLICATIONHook is the signature for custom PUBLICATION hook methods
+	PUBLICATIONHook func(context.Context, boil.ContextExecutor, *PUBLICATION) error
 
-	publicationQuery struct {
+	pUBLICATIONQuery struct {
 		*queries.Query
 	}
 )
 
 // Cache for insert, update and upsert
 var (
-	publicationType                 = reflect.TypeOf(&Publication{})
-	publicationMapping              = queries.MakeStructMapping(publicationType)
-	publicationPrimaryKeyMapping, _ = queries.BindMapping(publicationType, publicationMapping, publicationPrimaryKeyColumns)
-	publicationInsertCacheMut       sync.RWMutex
-	publicationInsertCache          = make(map[string]insertCache)
-	publicationUpdateCacheMut       sync.RWMutex
-	publicationUpdateCache          = make(map[string]updateCache)
-	publicationUpsertCacheMut       sync.RWMutex
-	publicationUpsertCache          = make(map[string]insertCache)
+	pUBLICATIONType                 = reflect.TypeOf(&PUBLICATION{})
+	pUBLICATIONMapping              = queries.MakeStructMapping(pUBLICATIONType)
+	pUBLICATIONPrimaryKeyMapping, _ = queries.BindMapping(pUBLICATIONType, pUBLICATIONMapping, pUBLICATIONPrimaryKeyColumns)
+	pUBLICATIONInsertCacheMut       sync.RWMutex
+	pUBLICATIONInsertCache          = make(map[string]insertCache)
+	pUBLICATIONUpdateCacheMut       sync.RWMutex
+	pUBLICATIONUpdateCache          = make(map[string]updateCache)
+	pUBLICATIONUpsertCacheMut       sync.RWMutex
+	pUBLICATIONUpsertCache          = make(map[string]insertCache)
 )
 
 var (
@@ -233,27 +313,27 @@ var (
 	_ = qmhelper.Where
 )
 
-var publicationAfterSelectHooks []PublicationHook
+var pUBLICATIONAfterSelectHooks []PUBLICATIONHook
 
-var publicationBeforeInsertHooks []PublicationHook
-var publicationAfterInsertHooks []PublicationHook
+var pUBLICATIONBeforeInsertHooks []PUBLICATIONHook
+var pUBLICATIONAfterInsertHooks []PUBLICATIONHook
 
-var publicationBeforeUpdateHooks []PublicationHook
-var publicationAfterUpdateHooks []PublicationHook
+var pUBLICATIONBeforeUpdateHooks []PUBLICATIONHook
+var pUBLICATIONAfterUpdateHooks []PUBLICATIONHook
 
-var publicationBeforeDeleteHooks []PublicationHook
-var publicationAfterDeleteHooks []PublicationHook
+var pUBLICATIONBeforeDeleteHooks []PUBLICATIONHook
+var pUBLICATIONAfterDeleteHooks []PUBLICATIONHook
 
-var publicationBeforeUpsertHooks []PublicationHook
-var publicationAfterUpsertHooks []PublicationHook
+var pUBLICATIONBeforeUpsertHooks []PUBLICATIONHook
+var pUBLICATIONAfterUpsertHooks []PUBLICATIONHook
 
 // doAfterSelectHooks executes all "after Select" hooks.
-func (o *Publication) doAfterSelectHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *PUBLICATION) doAfterSelectHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range publicationAfterSelectHooks {
+	for _, hook := range pUBLICATIONAfterSelectHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -263,12 +343,12 @@ func (o *Publication) doAfterSelectHooks(ctx context.Context, exec boil.ContextE
 }
 
 // doBeforeInsertHooks executes all "before insert" hooks.
-func (o *Publication) doBeforeInsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *PUBLICATION) doBeforeInsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range publicationBeforeInsertHooks {
+	for _, hook := range pUBLICATIONBeforeInsertHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -278,12 +358,12 @@ func (o *Publication) doBeforeInsertHooks(ctx context.Context, exec boil.Context
 }
 
 // doAfterInsertHooks executes all "after Insert" hooks.
-func (o *Publication) doAfterInsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *PUBLICATION) doAfterInsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range publicationAfterInsertHooks {
+	for _, hook := range pUBLICATIONAfterInsertHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -293,12 +373,12 @@ func (o *Publication) doAfterInsertHooks(ctx context.Context, exec boil.ContextE
 }
 
 // doBeforeUpdateHooks executes all "before Update" hooks.
-func (o *Publication) doBeforeUpdateHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *PUBLICATION) doBeforeUpdateHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range publicationBeforeUpdateHooks {
+	for _, hook := range pUBLICATIONBeforeUpdateHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -308,12 +388,12 @@ func (o *Publication) doBeforeUpdateHooks(ctx context.Context, exec boil.Context
 }
 
 // doAfterUpdateHooks executes all "after Update" hooks.
-func (o *Publication) doAfterUpdateHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *PUBLICATION) doAfterUpdateHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range publicationAfterUpdateHooks {
+	for _, hook := range pUBLICATIONAfterUpdateHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -323,12 +403,12 @@ func (o *Publication) doAfterUpdateHooks(ctx context.Context, exec boil.ContextE
 }
 
 // doBeforeDeleteHooks executes all "before Delete" hooks.
-func (o *Publication) doBeforeDeleteHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *PUBLICATION) doBeforeDeleteHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range publicationBeforeDeleteHooks {
+	for _, hook := range pUBLICATIONBeforeDeleteHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -338,12 +418,12 @@ func (o *Publication) doBeforeDeleteHooks(ctx context.Context, exec boil.Context
 }
 
 // doAfterDeleteHooks executes all "after Delete" hooks.
-func (o *Publication) doAfterDeleteHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *PUBLICATION) doAfterDeleteHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range publicationAfterDeleteHooks {
+	for _, hook := range pUBLICATIONAfterDeleteHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -353,12 +433,12 @@ func (o *Publication) doAfterDeleteHooks(ctx context.Context, exec boil.ContextE
 }
 
 // doBeforeUpsertHooks executes all "before Upsert" hooks.
-func (o *Publication) doBeforeUpsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *PUBLICATION) doBeforeUpsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range publicationBeforeUpsertHooks {
+	for _, hook := range pUBLICATIONBeforeUpsertHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -368,12 +448,12 @@ func (o *Publication) doBeforeUpsertHooks(ctx context.Context, exec boil.Context
 }
 
 // doAfterUpsertHooks executes all "after Upsert" hooks.
-func (o *Publication) doAfterUpsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *PUBLICATION) doAfterUpsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range publicationAfterUpsertHooks {
+	for _, hook := range pUBLICATIONAfterUpsertHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -382,33 +462,33 @@ func (o *Publication) doAfterUpsertHooks(ctx context.Context, exec boil.ContextE
 	return nil
 }
 
-// AddPublicationHook registers your hook function for all future operations.
-func AddPublicationHook(hookPoint boil.HookPoint, publicationHook PublicationHook) {
+// AddPUBLICATIONHook registers your hook function for all future operations.
+func AddPUBLICATIONHook(hookPoint boil.HookPoint, pUBLICATIONHook PUBLICATIONHook) {
 	switch hookPoint {
 	case boil.AfterSelectHook:
-		publicationAfterSelectHooks = append(publicationAfterSelectHooks, publicationHook)
+		pUBLICATIONAfterSelectHooks = append(pUBLICATIONAfterSelectHooks, pUBLICATIONHook)
 	case boil.BeforeInsertHook:
-		publicationBeforeInsertHooks = append(publicationBeforeInsertHooks, publicationHook)
+		pUBLICATIONBeforeInsertHooks = append(pUBLICATIONBeforeInsertHooks, pUBLICATIONHook)
 	case boil.AfterInsertHook:
-		publicationAfterInsertHooks = append(publicationAfterInsertHooks, publicationHook)
+		pUBLICATIONAfterInsertHooks = append(pUBLICATIONAfterInsertHooks, pUBLICATIONHook)
 	case boil.BeforeUpdateHook:
-		publicationBeforeUpdateHooks = append(publicationBeforeUpdateHooks, publicationHook)
+		pUBLICATIONBeforeUpdateHooks = append(pUBLICATIONBeforeUpdateHooks, pUBLICATIONHook)
 	case boil.AfterUpdateHook:
-		publicationAfterUpdateHooks = append(publicationAfterUpdateHooks, publicationHook)
+		pUBLICATIONAfterUpdateHooks = append(pUBLICATIONAfterUpdateHooks, pUBLICATIONHook)
 	case boil.BeforeDeleteHook:
-		publicationBeforeDeleteHooks = append(publicationBeforeDeleteHooks, publicationHook)
+		pUBLICATIONBeforeDeleteHooks = append(pUBLICATIONBeforeDeleteHooks, pUBLICATIONHook)
 	case boil.AfterDeleteHook:
-		publicationAfterDeleteHooks = append(publicationAfterDeleteHooks, publicationHook)
+		pUBLICATIONAfterDeleteHooks = append(pUBLICATIONAfterDeleteHooks, pUBLICATIONHook)
 	case boil.BeforeUpsertHook:
-		publicationBeforeUpsertHooks = append(publicationBeforeUpsertHooks, publicationHook)
+		pUBLICATIONBeforeUpsertHooks = append(pUBLICATIONBeforeUpsertHooks, pUBLICATIONHook)
 	case boil.AfterUpsertHook:
-		publicationAfterUpsertHooks = append(publicationAfterUpsertHooks, publicationHook)
+		pUBLICATIONAfterUpsertHooks = append(pUBLICATIONAfterUpsertHooks, pUBLICATIONHook)
 	}
 }
 
-// One returns a single publication record from the query.
-func (q publicationQuery) One(ctx context.Context, exec boil.ContextExecutor) (*Publication, error) {
-	o := &Publication{}
+// One returns a single pUBLICATION record from the query.
+func (q pUBLICATIONQuery) One(ctx context.Context, exec boil.ContextExecutor) (*PUBLICATION, error) {
+	o := &PUBLICATION{}
 
 	queries.SetLimit(q.Query, 1)
 
@@ -417,7 +497,7 @@ func (q publicationQuery) One(ctx context.Context, exec boil.ContextExecutor) (*
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, sql.ErrNoRows
 		}
-		return nil, errors.Wrap(err, "models: failed to execute a one query for Publication")
+		return nil, errors.Wrap(err, "models: failed to execute a one query for PUBLICATION")
 	}
 
 	if err := o.doAfterSelectHooks(ctx, exec); err != nil {
@@ -427,16 +507,16 @@ func (q publicationQuery) One(ctx context.Context, exec boil.ContextExecutor) (*
 	return o, nil
 }
 
-// All returns all Publication records from the query.
-func (q publicationQuery) All(ctx context.Context, exec boil.ContextExecutor) (PublicationSlice, error) {
-	var o []*Publication
+// All returns all PUBLICATION records from the query.
+func (q pUBLICATIONQuery) All(ctx context.Context, exec boil.ContextExecutor) (PUBLICATIONSlice, error) {
+	var o []*PUBLICATION
 
 	err := q.Bind(ctx, exec, &o)
 	if err != nil {
-		return nil, errors.Wrap(err, "models: failed to assign all query results to Publication slice")
+		return nil, errors.Wrap(err, "models: failed to assign all query results to PUBLICATION slice")
 	}
 
-	if len(publicationAfterSelectHooks) != 0 {
+	if len(pUBLICATIONAfterSelectHooks) != 0 {
 		for _, obj := range o {
 			if err := obj.doAfterSelectHooks(ctx, exec); err != nil {
 				return o, err
@@ -447,8 +527,8 @@ func (q publicationQuery) All(ctx context.Context, exec boil.ContextExecutor) (P
 	return o, nil
 }
 
-// Count returns the count of all Publication records in the query.
-func (q publicationQuery) Count(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+// Count returns the count of all PUBLICATION records in the query.
+func (q pUBLICATIONQuery) Count(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
 	var count int64
 
 	queries.SetSelect(q.Query, nil)
@@ -456,14 +536,14 @@ func (q publicationQuery) Count(ctx context.Context, exec boil.ContextExecutor) 
 
 	err := q.Query.QueryRowContext(ctx, exec).Scan(&count)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: failed to count Publication rows")
+		return 0, errors.Wrap(err, "models: failed to count PUBLICATION rows")
 	}
 
 	return count, nil
 }
 
 // Exists checks if the row exists in the table.
-func (q publicationQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, error) {
+func (q pUBLICATIONQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, error) {
 	var count int64
 
 	queries.SetSelect(q.Query, nil)
@@ -472,47 +552,47 @@ func (q publicationQuery) Exists(ctx context.Context, exec boil.ContextExecutor)
 
 	err := q.Query.QueryRowContext(ctx, exec).Scan(&count)
 	if err != nil {
-		return false, errors.Wrap(err, "models: failed to check if Publication exists")
+		return false, errors.Wrap(err, "models: failed to check if PUBLICATION exists")
 	}
 
 	return count > 0, nil
 }
 
-// AuthIdUser pointed to by the foreign key.
-func (o *Publication) AuthIdUser(mods ...qm.QueryMod) userQuery {
+// Auth pointed to by the foreign key.
+func (o *PUBLICATION) Auth(mods ...qm.QueryMod) uSERQuery {
 	queryMods := []qm.QueryMod{
-		qm.Where("`id` = ?", o.AuthId),
+		qm.Where("`id` = ?", o.AuthID),
 	}
 
 	queryMods = append(queryMods, mods...)
 
-	return Users(queryMods...)
+	return USERS(queryMods...)
 }
 
-// LoadAuthIdUser allows an eager lookup of values, cached into the
+// LoadAuth allows an eager lookup of values, cached into the
 // loaded structs of the objects. This is for an N-1 relationship.
-func (publicationL) LoadAuthIdUser(ctx context.Context, e boil.ContextExecutor, singular bool, maybePublication interface{}, mods queries.Applicator) error {
-	var slice []*Publication
-	var object *Publication
+func (pUBLICATIONL) LoadAuth(ctx context.Context, e boil.ContextExecutor, singular bool, maybePUBLICATION interface{}, mods queries.Applicator) error {
+	var slice []*PUBLICATION
+	var object *PUBLICATION
 
 	if singular {
 		var ok bool
-		object, ok = maybePublication.(*Publication)
+		object, ok = maybePUBLICATION.(*PUBLICATION)
 		if !ok {
-			object = new(Publication)
-			ok = queries.SetFromEmbeddedStruct(&object, &maybePublication)
+			object = new(PUBLICATION)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybePUBLICATION)
 			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybePublication))
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybePUBLICATION))
 			}
 		}
 	} else {
-		s, ok := maybePublication.(*[]*Publication)
+		s, ok := maybePUBLICATION.(*[]*PUBLICATION)
 		if ok {
 			slice = *s
 		} else {
-			ok = queries.SetFromEmbeddedStruct(&slice, maybePublication)
+			ok = queries.SetFromEmbeddedStruct(&slice, maybePUBLICATION)
 			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybePublication))
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybePUBLICATION))
 			}
 		}
 	}
@@ -520,24 +600,24 @@ func (publicationL) LoadAuthIdUser(ctx context.Context, e boil.ContextExecutor, 
 	args := make([]interface{}, 0, 1)
 	if singular {
 		if object.R == nil {
-			object.R = &publicationR{}
+			object.R = &pUBLICATIONR{}
 		}
-		args = append(args, object.AuthId)
+		args = append(args, object.AuthID)
 
 	} else {
 	Outer:
 		for _, obj := range slice {
 			if obj.R == nil {
-				obj.R = &publicationR{}
+				obj.R = &pUBLICATIONR{}
 			}
 
 			for _, a := range args {
-				if a == obj.AuthId {
+				if a == obj.AuthID {
 					continue Outer
 				}
 			}
 
-			args = append(args, obj.AuthId)
+			args = append(args, obj.AuthID)
 
 		}
 	}
@@ -547,8 +627,8 @@ func (publicationL) LoadAuthIdUser(ctx context.Context, e boil.ContextExecutor, 
 	}
 
 	query := NewQuery(
-		qm.From(`User`),
-		qm.WhereIn(`User.id in ?`, args...),
+		qm.From(`USER`),
+		qm.WhereIn(`USER.id in ?`, args...),
 	)
 	if mods != nil {
 		mods.Apply(query)
@@ -556,22 +636,22 @@ func (publicationL) LoadAuthIdUser(ctx context.Context, e boil.ContextExecutor, 
 
 	results, err := query.QueryContext(ctx, e)
 	if err != nil {
-		return errors.Wrap(err, "failed to eager load User")
+		return errors.Wrap(err, "failed to eager load USER")
 	}
 
-	var resultSlice []*User
+	var resultSlice []*USER
 	if err = queries.Bind(results, &resultSlice); err != nil {
-		return errors.Wrap(err, "failed to bind eager loaded slice User")
+		return errors.Wrap(err, "failed to bind eager loaded slice USER")
 	}
 
 	if err = results.Close(); err != nil {
-		return errors.Wrap(err, "failed to close results of eager load for User")
+		return errors.Wrap(err, "failed to close results of eager load for USER")
 	}
 	if err = results.Err(); err != nil {
-		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for User")
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for USER")
 	}
 
-	if len(userAfterSelectHooks) != 0 {
+	if len(uSERAfterSelectHooks) != 0 {
 		for _, obj := range resultSlice {
 			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
 				return err
@@ -585,22 +665,22 @@ func (publicationL) LoadAuthIdUser(ctx context.Context, e boil.ContextExecutor, 
 
 	if singular {
 		foreign := resultSlice[0]
-		object.R.AuthIdUser = foreign
+		object.R.Auth = foreign
 		if foreign.R == nil {
-			foreign.R = &userR{}
+			foreign.R = &uSERR{}
 		}
-		foreign.R.AuthIdPublications = append(foreign.R.AuthIdPublications, object)
+		foreign.R.AuthPUBLICATIONS = append(foreign.R.AuthPUBLICATIONS, object)
 		return nil
 	}
 
 	for _, local := range slice {
 		for _, foreign := range resultSlice {
-			if local.AuthId == foreign.ID {
-				local.R.AuthIdUser = foreign
+			if local.AuthID == foreign.ID {
+				local.R.Auth = foreign
 				if foreign.R == nil {
-					foreign.R = &userR{}
+					foreign.R = &uSERR{}
 				}
-				foreign.R.AuthIdPublications = append(foreign.R.AuthIdPublications, local)
+				foreign.R.AuthPUBLICATIONS = append(foreign.R.AuthPUBLICATIONS, local)
 				break
 			}
 		}
@@ -609,10 +689,10 @@ func (publicationL) LoadAuthIdUser(ctx context.Context, e boil.ContextExecutor, 
 	return nil
 }
 
-// SetAuthIdUser of the publication to the related item.
-// Sets o.R.AuthIdUser to related.
-// Adds o to related.R.AuthIdPublications.
-func (o *Publication) SetAuthIdUser(ctx context.Context, exec boil.ContextExecutor, insert bool, related *User) error {
+// SetAuth of the pUBLICATION to the related item.
+// Sets o.R.Auth to related.
+// Adds o to related.R.AuthPUBLICATIONS.
+func (o *PUBLICATION) SetAuth(ctx context.Context, exec boil.ContextExecutor, insert bool, related *USER) error {
 	var err error
 	if insert {
 		if err = related.Insert(ctx, exec, boil.Infer()); err != nil {
@@ -621,9 +701,9 @@ func (o *Publication) SetAuthIdUser(ctx context.Context, exec boil.ContextExecut
 	}
 
 	updateQuery := fmt.Sprintf(
-		"UPDATE `Publication` SET %s WHERE %s",
-		strmangle.SetParamNames("`", "`", 0, []string{"authId"}),
-		strmangle.WhereClause("`", "`", 0, publicationPrimaryKeyColumns),
+		"UPDATE `PUBLICATION` SET %s WHERE %s",
+		strmangle.SetParamNames("`", "`", 0, []string{"auth_id"}),
+		strmangle.WhereClause("`", "`", 0, pUBLICATIONPrimaryKeyColumns),
 	)
 	values := []interface{}{related.ID, o.ID}
 
@@ -636,113 +716,123 @@ func (o *Publication) SetAuthIdUser(ctx context.Context, exec boil.ContextExecut
 		return errors.Wrap(err, "failed to update local table")
 	}
 
-	o.AuthId = related.ID
+	o.AuthID = related.ID
 	if o.R == nil {
-		o.R = &publicationR{
-			AuthIdUser: related,
+		o.R = &pUBLICATIONR{
+			Auth: related,
 		}
 	} else {
-		o.R.AuthIdUser = related
+		o.R.Auth = related
 	}
 
 	if related.R == nil {
-		related.R = &userR{
-			AuthIdPublications: PublicationSlice{o},
+		related.R = &uSERR{
+			AuthPUBLICATIONS: PUBLICATIONSlice{o},
 		}
 	} else {
-		related.R.AuthIdPublications = append(related.R.AuthIdPublications, o)
+		related.R.AuthPUBLICATIONS = append(related.R.AuthPUBLICATIONS, o)
 	}
 
 	return nil
 }
 
-// Publications retrieves all the records using an executor.
-func Publications(mods ...qm.QueryMod) publicationQuery {
-	mods = append(mods, qm.From("`Publication`"))
+// PUBLICATIONS retrieves all the records using an executor.
+func PUBLICATIONS(mods ...qm.QueryMod) pUBLICATIONQuery {
+	mods = append(mods, qm.From("`PUBLICATION`"))
 	q := NewQuery(mods...)
 	if len(queries.GetSelect(q)) == 0 {
-		queries.SetSelect(q, []string{"`Publication`.*"})
+		queries.SetSelect(q, []string{"`PUBLICATION`.*"})
 	}
 
-	return publicationQuery{q}
+	return pUBLICATIONQuery{q}
 }
 
-// FindPublication retrieves a single record by ID with an executor.
+// FindPUBLICATION retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindPublication(ctx context.Context, exec boil.ContextExecutor, iD string, selectCols ...string) (*Publication, error) {
-	publicationObj := &Publication{}
+func FindPUBLICATION(ctx context.Context, exec boil.ContextExecutor, iD int, selectCols ...string) (*PUBLICATION, error) {
+	pUBLICATIONObj := &PUBLICATION{}
 
 	sel := "*"
 	if len(selectCols) > 0 {
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from `Publication` where `id`=?", sel,
+		"select %s from `PUBLICATION` where `id`=?", sel,
 	)
 
 	q := queries.Raw(query, iD)
 
-	err := q.Bind(ctx, exec, publicationObj)
+	err := q.Bind(ctx, exec, pUBLICATIONObj)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, sql.ErrNoRows
 		}
-		return nil, errors.Wrap(err, "models: unable to select from Publication")
+		return nil, errors.Wrap(err, "models: unable to select from PUBLICATION")
 	}
 
-	if err = publicationObj.doAfterSelectHooks(ctx, exec); err != nil {
-		return publicationObj, err
+	if err = pUBLICATIONObj.doAfterSelectHooks(ctx, exec); err != nil {
+		return pUBLICATIONObj, err
 	}
 
-	return publicationObj, nil
+	return pUBLICATIONObj, nil
 }
 
 // Insert a single record using an executor.
 // See boil.Columns.InsertColumnSet documentation to understand column list inference for inserts.
-func (o *Publication) Insert(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) error {
+func (o *PUBLICATION) Insert(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) error {
 	if o == nil {
-		return errors.New("models: no Publication provided for insertion")
+		return errors.New("models: no PUBLICATION provided for insertion")
 	}
 
 	var err error
+	if !boil.TimestampsAreSkipped(ctx) {
+		currTime := time.Now().In(boil.GetLocation())
+
+		if queries.MustTime(o.CreatedAt).IsZero() {
+			queries.SetScanner(&o.CreatedAt, currTime)
+		}
+		if queries.MustTime(o.UpdatedAt).IsZero() {
+			queries.SetScanner(&o.UpdatedAt, currTime)
+		}
+	}
 
 	if err := o.doBeforeInsertHooks(ctx, exec); err != nil {
 		return err
 	}
 
-	nzDefaults := queries.NonZeroDefaultSet(publicationColumnsWithDefault, o)
+	nzDefaults := queries.NonZeroDefaultSet(pUBLICATIONColumnsWithDefault, o)
 
 	key := makeCacheKey(columns, nzDefaults)
-	publicationInsertCacheMut.RLock()
-	cache, cached := publicationInsertCache[key]
-	publicationInsertCacheMut.RUnlock()
+	pUBLICATIONInsertCacheMut.RLock()
+	cache, cached := pUBLICATIONInsertCache[key]
+	pUBLICATIONInsertCacheMut.RUnlock()
 
 	if !cached {
 		wl, returnColumns := columns.InsertColumnSet(
-			publicationAllColumns,
-			publicationColumnsWithDefault,
-			publicationColumnsWithoutDefault,
+			pUBLICATIONAllColumns,
+			pUBLICATIONColumnsWithDefault,
+			pUBLICATIONColumnsWithoutDefault,
 			nzDefaults,
 		)
 
-		cache.valueMapping, err = queries.BindMapping(publicationType, publicationMapping, wl)
+		cache.valueMapping, err = queries.BindMapping(pUBLICATIONType, pUBLICATIONMapping, wl)
 		if err != nil {
 			return err
 		}
-		cache.retMapping, err = queries.BindMapping(publicationType, publicationMapping, returnColumns)
+		cache.retMapping, err = queries.BindMapping(pUBLICATIONType, pUBLICATIONMapping, returnColumns)
 		if err != nil {
 			return err
 		}
 		if len(wl) != 0 {
-			cache.query = fmt.Sprintf("INSERT INTO `Publication` (`%s`) %%sVALUES (%s)%%s", strings.Join(wl, "`,`"), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
+			cache.query = fmt.Sprintf("INSERT INTO `PUBLICATION` (`%s`) %%sVALUES (%s)%%s", strings.Join(wl, "`,`"), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
 		} else {
-			cache.query = "INSERT INTO `Publication` () VALUES ()%s%s"
+			cache.query = "INSERT INTO `PUBLICATION` () VALUES ()%s%s"
 		}
 
 		var queryOutput, queryReturning string
 
 		if len(cache.retMapping) != 0 {
-			cache.retQuery = fmt.Sprintf("SELECT `%s` FROM `Publication` WHERE %s", strings.Join(returnColumns, "`,`"), strmangle.WhereClause("`", "`", 0, publicationPrimaryKeyColumns))
+			cache.retQuery = fmt.Sprintf("SELECT `%s` FROM `PUBLICATION` WHERE %s", strings.Join(returnColumns, "`,`"), strmangle.WhereClause("`", "`", 0, pUBLICATIONPrimaryKeyColumns))
 		}
 
 		cache.query = fmt.Sprintf(cache.query, queryOutput, queryReturning)
@@ -756,15 +846,26 @@ func (o *Publication) Insert(ctx context.Context, exec boil.ContextExecutor, col
 		fmt.Fprintln(writer, cache.query)
 		fmt.Fprintln(writer, vals)
 	}
-	_, err = exec.ExecContext(ctx, cache.query, vals...)
+	result, err := exec.ExecContext(ctx, cache.query, vals...)
 
 	if err != nil {
-		return errors.Wrap(err, "models: unable to insert into Publication")
+		return errors.Wrap(err, "models: unable to insert into PUBLICATION")
 	}
 
+	var lastID int64
 	var identifierCols []interface{}
 
 	if len(cache.retMapping) == 0 {
+		goto CacheNoHooks
+	}
+
+	lastID, err = result.LastInsertId()
+	if err != nil {
+		return ErrSyncFail
+	}
+
+	o.ID = int(lastID)
+	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == pUBLICATIONMapping["id"] {
 		goto CacheNoHooks
 	}
 
@@ -779,50 +880,56 @@ func (o *Publication) Insert(ctx context.Context, exec boil.ContextExecutor, col
 	}
 	err = exec.QueryRowContext(ctx, cache.retQuery, identifierCols...).Scan(queries.PtrsFromMapping(value, cache.retMapping)...)
 	if err != nil {
-		return errors.Wrap(err, "models: unable to populate default values for Publication")
+		return errors.Wrap(err, "models: unable to populate default values for PUBLICATION")
 	}
 
 CacheNoHooks:
 	if !cached {
-		publicationInsertCacheMut.Lock()
-		publicationInsertCache[key] = cache
-		publicationInsertCacheMut.Unlock()
+		pUBLICATIONInsertCacheMut.Lock()
+		pUBLICATIONInsertCache[key] = cache
+		pUBLICATIONInsertCacheMut.Unlock()
 	}
 
 	return o.doAfterInsertHooks(ctx, exec)
 }
 
-// Update uses an executor to update the Publication.
+// Update uses an executor to update the PUBLICATION.
 // See boil.Columns.UpdateColumnSet documentation to understand column list inference for updates.
 // Update does not automatically update the record in case of default values. Use .Reload() to refresh the records.
-func (o *Publication) Update(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) (int64, error) {
+func (o *PUBLICATION) Update(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) (int64, error) {
+	if !boil.TimestampsAreSkipped(ctx) {
+		currTime := time.Now().In(boil.GetLocation())
+
+		queries.SetScanner(&o.UpdatedAt, currTime)
+	}
+
 	var err error
 	if err = o.doBeforeUpdateHooks(ctx, exec); err != nil {
 		return 0, err
 	}
 	key := makeCacheKey(columns, nil)
-	publicationUpdateCacheMut.RLock()
-	cache, cached := publicationUpdateCache[key]
-	publicationUpdateCacheMut.RUnlock()
+	pUBLICATIONUpdateCacheMut.RLock()
+	cache, cached := pUBLICATIONUpdateCache[key]
+	pUBLICATIONUpdateCacheMut.RUnlock()
 
 	if !cached {
 		wl := columns.UpdateColumnSet(
-			publicationAllColumns,
-			publicationPrimaryKeyColumns,
+			pUBLICATIONAllColumns,
+			pUBLICATIONPrimaryKeyColumns,
 		)
 
 		if !columns.IsWhitelist() {
 			wl = strmangle.SetComplement(wl, []string{"created_at"})
 		}
 		if len(wl) == 0 {
-			return 0, errors.New("models: unable to update Publication, could not build whitelist")
+			return 0, errors.New("models: unable to update PUBLICATION, could not build whitelist")
 		}
 
-		cache.query = fmt.Sprintf("UPDATE `Publication` SET %s WHERE %s",
+		cache.query = fmt.Sprintf("UPDATE `PUBLICATION` SET %s WHERE %s",
 			strmangle.SetParamNames("`", "`", 0, wl),
-			strmangle.WhereClause("`", "`", 0, publicationPrimaryKeyColumns),
+			strmangle.WhereClause("`", "`", 0, pUBLICATIONPrimaryKeyColumns),
 		)
-		cache.valueMapping, err = queries.BindMapping(publicationType, publicationMapping, append(wl, publicationPrimaryKeyColumns...))
+		cache.valueMapping, err = queries.BindMapping(pUBLICATIONType, pUBLICATIONMapping, append(wl, pUBLICATIONPrimaryKeyColumns...))
 		if err != nil {
 			return 0, err
 		}
@@ -838,42 +945,42 @@ func (o *Publication) Update(ctx context.Context, exec boil.ContextExecutor, col
 	var result sql.Result
 	result, err = exec.ExecContext(ctx, cache.query, values...)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to update Publication row")
+		return 0, errors.Wrap(err, "models: unable to update PUBLICATION row")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: failed to get rows affected by update for Publication")
+		return 0, errors.Wrap(err, "models: failed to get rows affected by update for PUBLICATION")
 	}
 
 	if !cached {
-		publicationUpdateCacheMut.Lock()
-		publicationUpdateCache[key] = cache
-		publicationUpdateCacheMut.Unlock()
+		pUBLICATIONUpdateCacheMut.Lock()
+		pUBLICATIONUpdateCache[key] = cache
+		pUBLICATIONUpdateCacheMut.Unlock()
 	}
 
 	return rowsAff, o.doAfterUpdateHooks(ctx, exec)
 }
 
 // UpdateAll updates all rows with the specified column values.
-func (q publicationQuery) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
+func (q pUBLICATIONQuery) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
 	queries.SetUpdate(q.Query, cols)
 
 	result, err := q.Query.ExecContext(ctx, exec)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to update all for Publication")
+		return 0, errors.Wrap(err, "models: unable to update all for PUBLICATION")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to retrieve rows affected for Publication")
+		return 0, errors.Wrap(err, "models: unable to retrieve rows affected for PUBLICATION")
 	}
 
 	return rowsAff, nil
 }
 
 // UpdateAll updates all rows with the specified column values, using an executor.
-func (o PublicationSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
+func (o PUBLICATIONSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
 	ln := int64(len(o))
 	if ln == 0 {
 		return 0, nil
@@ -895,13 +1002,13 @@ func (o PublicationSlice) UpdateAll(ctx context.Context, exec boil.ContextExecut
 
 	// Append all of the primary key values for each column
 	for _, obj := range o {
-		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), publicationPrimaryKeyMapping)
+		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), pUBLICATIONPrimaryKeyMapping)
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := fmt.Sprintf("UPDATE `Publication` SET %s WHERE %s",
+	sql := fmt.Sprintf("UPDATE `PUBLICATION` SET %s WHERE %s",
 		strmangle.SetParamNames("`", "`", 0, colNames),
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, publicationPrimaryKeyColumns, len(o)))
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, pUBLICATIONPrimaryKeyColumns, len(o)))
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -910,33 +1017,41 @@ func (o PublicationSlice) UpdateAll(ctx context.Context, exec boil.ContextExecut
 	}
 	result, err := exec.ExecContext(ctx, sql, args...)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to update all in publication slice")
+		return 0, errors.Wrap(err, "models: unable to update all in pUBLICATION slice")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to retrieve rows affected all in update all publication")
+		return 0, errors.Wrap(err, "models: unable to retrieve rows affected all in update all pUBLICATION")
 	}
 	return rowsAff, nil
 }
 
-var mySQLPublicationUniqueColumns = []string{
+var mySQLPUBLICATIONUniqueColumns = []string{
 	"id",
 }
 
 // Upsert attempts an insert using an executor, and does an update or ignore on conflict.
 // See boil.Columns documentation for how to properly use updateColumns and insertColumns.
-func (o *Publication) Upsert(ctx context.Context, exec boil.ContextExecutor, updateColumns, insertColumns boil.Columns) error {
+func (o *PUBLICATION) Upsert(ctx context.Context, exec boil.ContextExecutor, updateColumns, insertColumns boil.Columns) error {
 	if o == nil {
-		return errors.New("models: no Publication provided for upsert")
+		return errors.New("models: no PUBLICATION provided for upsert")
+	}
+	if !boil.TimestampsAreSkipped(ctx) {
+		currTime := time.Now().In(boil.GetLocation())
+
+		if queries.MustTime(o.CreatedAt).IsZero() {
+			queries.SetScanner(&o.CreatedAt, currTime)
+		}
+		queries.SetScanner(&o.UpdatedAt, currTime)
 	}
 
 	if err := o.doBeforeUpsertHooks(ctx, exec); err != nil {
 		return err
 	}
 
-	nzDefaults := queries.NonZeroDefaultSet(publicationColumnsWithDefault, o)
-	nzUniques := queries.NonZeroDefaultSet(mySQLPublicationUniqueColumns, o)
+	nzDefaults := queries.NonZeroDefaultSet(pUBLICATIONColumnsWithDefault, o)
+	nzUniques := queries.NonZeroDefaultSet(mySQLPUBLICATIONUniqueColumns, o)
 
 	if len(nzUniques) == 0 {
 		return errors.New("cannot upsert with a table that cannot conflict on a unique column")
@@ -964,43 +1079,43 @@ func (o *Publication) Upsert(ctx context.Context, exec boil.ContextExecutor, upd
 	key := buf.String()
 	strmangle.PutBuffer(buf)
 
-	publicationUpsertCacheMut.RLock()
-	cache, cached := publicationUpsertCache[key]
-	publicationUpsertCacheMut.RUnlock()
+	pUBLICATIONUpsertCacheMut.RLock()
+	cache, cached := pUBLICATIONUpsertCache[key]
+	pUBLICATIONUpsertCacheMut.RUnlock()
 
 	var err error
 
 	if !cached {
 		insert, ret := insertColumns.InsertColumnSet(
-			publicationAllColumns,
-			publicationColumnsWithDefault,
-			publicationColumnsWithoutDefault,
+			pUBLICATIONAllColumns,
+			pUBLICATIONColumnsWithDefault,
+			pUBLICATIONColumnsWithoutDefault,
 			nzDefaults,
 		)
 
 		update := updateColumns.UpdateColumnSet(
-			publicationAllColumns,
-			publicationPrimaryKeyColumns,
+			pUBLICATIONAllColumns,
+			pUBLICATIONPrimaryKeyColumns,
 		)
 
 		if !updateColumns.IsNone() && len(update) == 0 {
-			return errors.New("models: unable to upsert Publication, could not build update column list")
+			return errors.New("models: unable to upsert PUBLICATION, could not build update column list")
 		}
 
 		ret = strmangle.SetComplement(ret, nzUniques)
-		cache.query = buildUpsertQueryMySQL(dialect, "`Publication`", update, insert)
+		cache.query = buildUpsertQueryMySQL(dialect, "`PUBLICATION`", update, insert)
 		cache.retQuery = fmt.Sprintf(
-			"SELECT %s FROM `Publication` WHERE %s",
+			"SELECT %s FROM `PUBLICATION` WHERE %s",
 			strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, ret), ","),
 			strmangle.WhereClause("`", "`", 0, nzUniques),
 		)
 
-		cache.valueMapping, err = queries.BindMapping(publicationType, publicationMapping, insert)
+		cache.valueMapping, err = queries.BindMapping(pUBLICATIONType, pUBLICATIONMapping, insert)
 		if err != nil {
 			return err
 		}
 		if len(ret) != 0 {
-			cache.retMapping, err = queries.BindMapping(publicationType, publicationMapping, ret)
+			cache.retMapping, err = queries.BindMapping(pUBLICATIONType, pUBLICATIONMapping, ret)
 			if err != nil {
 				return err
 			}
@@ -1019,12 +1134,13 @@ func (o *Publication) Upsert(ctx context.Context, exec boil.ContextExecutor, upd
 		fmt.Fprintln(writer, cache.query)
 		fmt.Fprintln(writer, vals)
 	}
-	_, err = exec.ExecContext(ctx, cache.query, vals...)
+	result, err := exec.ExecContext(ctx, cache.query, vals...)
 
 	if err != nil {
-		return errors.Wrap(err, "models: unable to upsert for Publication")
+		return errors.Wrap(err, "models: unable to upsert for PUBLICATION")
 	}
 
+	var lastID int64
 	var uniqueMap []uint64
 	var nzUniqueCols []interface{}
 
@@ -1032,9 +1148,19 @@ func (o *Publication) Upsert(ctx context.Context, exec boil.ContextExecutor, upd
 		goto CacheNoHooks
 	}
 
-	uniqueMap, err = queries.BindMapping(publicationType, publicationMapping, nzUniques)
+	lastID, err = result.LastInsertId()
 	if err != nil {
-		return errors.Wrap(err, "models: unable to retrieve unique values for Publication")
+		return ErrSyncFail
+	}
+
+	o.ID = int(lastID)
+	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == pUBLICATIONMapping["id"] {
+		goto CacheNoHooks
+	}
+
+	uniqueMap, err = queries.BindMapping(pUBLICATIONType, pUBLICATIONMapping, nzUniques)
+	if err != nil {
+		return errors.Wrap(err, "models: unable to retrieve unique values for PUBLICATION")
 	}
 	nzUniqueCols = queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), uniqueMap)
 
@@ -1045,32 +1171,32 @@ func (o *Publication) Upsert(ctx context.Context, exec boil.ContextExecutor, upd
 	}
 	err = exec.QueryRowContext(ctx, cache.retQuery, nzUniqueCols...).Scan(returns...)
 	if err != nil {
-		return errors.Wrap(err, "models: unable to populate default values for Publication")
+		return errors.Wrap(err, "models: unable to populate default values for PUBLICATION")
 	}
 
 CacheNoHooks:
 	if !cached {
-		publicationUpsertCacheMut.Lock()
-		publicationUpsertCache[key] = cache
-		publicationUpsertCacheMut.Unlock()
+		pUBLICATIONUpsertCacheMut.Lock()
+		pUBLICATIONUpsertCache[key] = cache
+		pUBLICATIONUpsertCacheMut.Unlock()
 	}
 
 	return o.doAfterUpsertHooks(ctx, exec)
 }
 
-// Delete deletes a single Publication record with an executor.
+// Delete deletes a single PUBLICATION record with an executor.
 // Delete will match against the primary key column to find the record to delete.
-func (o *Publication) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+func (o *PUBLICATION) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
 	if o == nil {
-		return 0, errors.New("models: no Publication provided for delete")
+		return 0, errors.New("models: no PUBLICATION provided for delete")
 	}
 
 	if err := o.doBeforeDeleteHooks(ctx, exec); err != nil {
 		return 0, err
 	}
 
-	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), publicationPrimaryKeyMapping)
-	sql := "DELETE FROM `Publication` WHERE `id`=?"
+	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), pUBLICATIONPrimaryKeyMapping)
+	sql := "DELETE FROM `PUBLICATION` WHERE `id`=?"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1079,12 +1205,12 @@ func (o *Publication) Delete(ctx context.Context, exec boil.ContextExecutor) (in
 	}
 	result, err := exec.ExecContext(ctx, sql, args...)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to delete from Publication")
+		return 0, errors.Wrap(err, "models: unable to delete from PUBLICATION")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: failed to get rows affected by delete for Publication")
+		return 0, errors.Wrap(err, "models: failed to get rows affected by delete for PUBLICATION")
 	}
 
 	if err := o.doAfterDeleteHooks(ctx, exec); err != nil {
@@ -1095,33 +1221,33 @@ func (o *Publication) Delete(ctx context.Context, exec boil.ContextExecutor) (in
 }
 
 // DeleteAll deletes all matching rows.
-func (q publicationQuery) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+func (q pUBLICATIONQuery) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
 	if q.Query == nil {
-		return 0, errors.New("models: no publicationQuery provided for delete all")
+		return 0, errors.New("models: no pUBLICATIONQuery provided for delete all")
 	}
 
 	queries.SetDelete(q.Query)
 
 	result, err := q.Query.ExecContext(ctx, exec)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to delete all from Publication")
+		return 0, errors.Wrap(err, "models: unable to delete all from PUBLICATION")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: failed to get rows affected by deleteall for Publication")
+		return 0, errors.Wrap(err, "models: failed to get rows affected by deleteall for PUBLICATION")
 	}
 
 	return rowsAff, nil
 }
 
 // DeleteAll deletes all rows in the slice, using an executor.
-func (o PublicationSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+func (o PUBLICATIONSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
 	if len(o) == 0 {
 		return 0, nil
 	}
 
-	if len(publicationBeforeDeleteHooks) != 0 {
+	if len(pUBLICATIONBeforeDeleteHooks) != 0 {
 		for _, obj := range o {
 			if err := obj.doBeforeDeleteHooks(ctx, exec); err != nil {
 				return 0, err
@@ -1131,12 +1257,12 @@ func (o PublicationSlice) DeleteAll(ctx context.Context, exec boil.ContextExecut
 
 	var args []interface{}
 	for _, obj := range o {
-		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), publicationPrimaryKeyMapping)
+		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), pUBLICATIONPrimaryKeyMapping)
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "DELETE FROM `Publication` WHERE " +
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, publicationPrimaryKeyColumns, len(o))
+	sql := "DELETE FROM `PUBLICATION` WHERE " +
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, pUBLICATIONPrimaryKeyColumns, len(o))
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1145,15 +1271,15 @@ func (o PublicationSlice) DeleteAll(ctx context.Context, exec boil.ContextExecut
 	}
 	result, err := exec.ExecContext(ctx, sql, args...)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to delete all from publication slice")
+		return 0, errors.Wrap(err, "models: unable to delete all from pUBLICATION slice")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: failed to get rows affected by deleteall for Publication")
+		return 0, errors.Wrap(err, "models: failed to get rows affected by deleteall for PUBLICATION")
 	}
 
-	if len(publicationAfterDeleteHooks) != 0 {
+	if len(pUBLICATIONAfterDeleteHooks) != 0 {
 		for _, obj := range o {
 			if err := obj.doAfterDeleteHooks(ctx, exec); err != nil {
 				return 0, err
@@ -1166,8 +1292,8 @@ func (o PublicationSlice) DeleteAll(ctx context.Context, exec boil.ContextExecut
 
 // Reload refetches the object from the database
 // using the primary keys with an executor.
-func (o *Publication) Reload(ctx context.Context, exec boil.ContextExecutor) error {
-	ret, err := FindPublication(ctx, exec, o.ID)
+func (o *PUBLICATION) Reload(ctx context.Context, exec boil.ContextExecutor) error {
+	ret, err := FindPUBLICATION(ctx, exec, o.ID)
 	if err != nil {
 		return err
 	}
@@ -1178,26 +1304,26 @@ func (o *Publication) Reload(ctx context.Context, exec boil.ContextExecutor) err
 
 // ReloadAll refetches every row with matching primary key column values
 // and overwrites the original object slice with the newly updated slice.
-func (o *PublicationSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) error {
+func (o *PUBLICATIONSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) error {
 	if o == nil || len(*o) == 0 {
 		return nil
 	}
 
-	slice := PublicationSlice{}
+	slice := PUBLICATIONSlice{}
 	var args []interface{}
 	for _, obj := range *o {
-		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), publicationPrimaryKeyMapping)
+		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), pUBLICATIONPrimaryKeyMapping)
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "SELECT `Publication`.* FROM `Publication` WHERE " +
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, publicationPrimaryKeyColumns, len(*o))
+	sql := "SELECT `PUBLICATION`.* FROM `PUBLICATION` WHERE " +
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, pUBLICATIONPrimaryKeyColumns, len(*o))
 
 	q := queries.Raw(sql, args...)
 
 	err := q.Bind(ctx, exec, &slice)
 	if err != nil {
-		return errors.Wrap(err, "models: unable to reload all in PublicationSlice")
+		return errors.Wrap(err, "models: unable to reload all in PUBLICATIONSlice")
 	}
 
 	*o = slice
@@ -1205,10 +1331,10 @@ func (o *PublicationSlice) ReloadAll(ctx context.Context, exec boil.ContextExecu
 	return nil
 }
 
-// PublicationExists checks if the Publication row exists.
-func PublicationExists(ctx context.Context, exec boil.ContextExecutor, iD string) (bool, error) {
+// PUBLICATIONExists checks if the PUBLICATION row exists.
+func PUBLICATIONExists(ctx context.Context, exec boil.ContextExecutor, iD int) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from `Publication` where `id`=? limit 1)"
+	sql := "select exists(select 1 from `PUBLICATION` where `id`=? limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1219,13 +1345,13 @@ func PublicationExists(ctx context.Context, exec boil.ContextExecutor, iD string
 
 	err := row.Scan(&exists)
 	if err != nil {
-		return false, errors.Wrap(err, "models: unable to check if Publication exists")
+		return false, errors.Wrap(err, "models: unable to check if PUBLICATION exists")
 	}
 
 	return exists, nil
 }
 
-// Exists checks if the Publication row exists.
-func (o *Publication) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, error) {
-	return PublicationExists(ctx, exec, o.ID)
+// Exists checks if the PUBLICATION row exists.
+func (o *PUBLICATION) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, error) {
+	return PUBLICATIONExists(ctx, exec, o.ID)
 }

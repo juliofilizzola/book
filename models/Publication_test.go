@@ -21,24 +21,24 @@ var (
 	_ = queries.Equal
 )
 
-func testPublications(t *testing.T) {
+func testPUBLICATIONS(t *testing.T) {
 	t.Parallel()
 
-	query := Publications()
+	query := PUBLICATIONS()
 
 	if query.Query == nil {
 		t.Error("expected a query, got nothing")
 	}
 }
 
-func testPublicationsDelete(t *testing.T) {
+func testPUBLICATIONSDelete(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &Publication{}
-	if err = randomize.Struct(seed, o, publicationDBTypes, true, publicationColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	o := &PUBLICATION{}
+	if err = randomize.Struct(seed, o, pUBLICATIONDBTypes, true, pUBLICATIONColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -54,7 +54,7 @@ func testPublicationsDelete(t *testing.T) {
 		t.Error("should only have deleted one row, but affected:", rowsAff)
 	}
 
-	count, err := Publications().Count(ctx, tx)
+	count, err := PUBLICATIONS().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -64,14 +64,14 @@ func testPublicationsDelete(t *testing.T) {
 	}
 }
 
-func testPublicationsQueryDeleteAll(t *testing.T) {
+func testPUBLICATIONSQueryDeleteAll(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &Publication{}
-	if err = randomize.Struct(seed, o, publicationDBTypes, true, publicationColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	o := &PUBLICATION{}
+	if err = randomize.Struct(seed, o, pUBLICATIONDBTypes, true, pUBLICATIONColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -81,13 +81,13 @@ func testPublicationsQueryDeleteAll(t *testing.T) {
 		t.Error(err)
 	}
 
-	if rowsAff, err := Publications().DeleteAll(ctx, tx); err != nil {
+	if rowsAff, err := PUBLICATIONS().DeleteAll(ctx, tx); err != nil {
 		t.Error(err)
 	} else if rowsAff != 1 {
 		t.Error("should only have deleted one row, but affected:", rowsAff)
 	}
 
-	count, err := Publications().Count(ctx, tx)
+	count, err := PUBLICATIONS().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -97,14 +97,14 @@ func testPublicationsQueryDeleteAll(t *testing.T) {
 	}
 }
 
-func testPublicationsSliceDeleteAll(t *testing.T) {
+func testPUBLICATIONSSliceDeleteAll(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &Publication{}
-	if err = randomize.Struct(seed, o, publicationDBTypes, true, publicationColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	o := &PUBLICATION{}
+	if err = randomize.Struct(seed, o, pUBLICATIONDBTypes, true, pUBLICATIONColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -114,7 +114,7 @@ func testPublicationsSliceDeleteAll(t *testing.T) {
 		t.Error(err)
 	}
 
-	slice := PublicationSlice{o}
+	slice := PUBLICATIONSlice{o}
 
 	if rowsAff, err := slice.DeleteAll(ctx, tx); err != nil {
 		t.Error(err)
@@ -122,7 +122,7 @@ func testPublicationsSliceDeleteAll(t *testing.T) {
 		t.Error("should only have deleted one row, but affected:", rowsAff)
 	}
 
-	count, err := Publications().Count(ctx, tx)
+	count, err := PUBLICATIONS().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -132,14 +132,14 @@ func testPublicationsSliceDeleteAll(t *testing.T) {
 	}
 }
 
-func testPublicationsExists(t *testing.T) {
+func testPUBLICATIONSExists(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &Publication{}
-	if err = randomize.Struct(seed, o, publicationDBTypes, true, publicationColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	o := &PUBLICATION{}
+	if err = randomize.Struct(seed, o, pUBLICATIONDBTypes, true, pUBLICATIONColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -149,23 +149,23 @@ func testPublicationsExists(t *testing.T) {
 		t.Error(err)
 	}
 
-	e, err := PublicationExists(ctx, tx, o.ID)
+	e, err := PUBLICATIONExists(ctx, tx, o.ID)
 	if err != nil {
-		t.Errorf("Unable to check if Publication exists: %s", err)
+		t.Errorf("Unable to check if PUBLICATION exists: %s", err)
 	}
 	if !e {
-		t.Errorf("Expected PublicationExists to return true, but got false.")
+		t.Errorf("Expected PUBLICATIONExists to return true, but got false.")
 	}
 }
 
-func testPublicationsFind(t *testing.T) {
+func testPUBLICATIONSFind(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &Publication{}
-	if err = randomize.Struct(seed, o, publicationDBTypes, true, publicationColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	o := &PUBLICATION{}
+	if err = randomize.Struct(seed, o, pUBLICATIONDBTypes, true, pUBLICATIONColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -175,24 +175,24 @@ func testPublicationsFind(t *testing.T) {
 		t.Error(err)
 	}
 
-	publicationFound, err := FindPublication(ctx, tx, o.ID)
+	pUBLICATIONFound, err := FindPUBLICATION(ctx, tx, o.ID)
 	if err != nil {
 		t.Error(err)
 	}
 
-	if publicationFound == nil {
+	if pUBLICATIONFound == nil {
 		t.Error("want a record, got nil")
 	}
 }
 
-func testPublicationsBind(t *testing.T) {
+func testPUBLICATIONSBind(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &Publication{}
-	if err = randomize.Struct(seed, o, publicationDBTypes, true, publicationColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	o := &PUBLICATION{}
+	if err = randomize.Struct(seed, o, pUBLICATIONDBTypes, true, pUBLICATIONColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -202,19 +202,19 @@ func testPublicationsBind(t *testing.T) {
 		t.Error(err)
 	}
 
-	if err = Publications().Bind(ctx, tx, o); err != nil {
+	if err = PUBLICATIONS().Bind(ctx, tx, o); err != nil {
 		t.Error(err)
 	}
 }
 
-func testPublicationsOne(t *testing.T) {
+func testPUBLICATIONSOne(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &Publication{}
-	if err = randomize.Struct(seed, o, publicationDBTypes, true, publicationColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	o := &PUBLICATION{}
+	if err = randomize.Struct(seed, o, pUBLICATIONDBTypes, true, pUBLICATIONColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -224,38 +224,38 @@ func testPublicationsOne(t *testing.T) {
 		t.Error(err)
 	}
 
-	if x, err := Publications().One(ctx, tx); err != nil {
+	if x, err := PUBLICATIONS().One(ctx, tx); err != nil {
 		t.Error(err)
 	} else if x == nil {
 		t.Error("expected to get a non nil record")
 	}
 }
 
-func testPublicationsAll(t *testing.T) {
+func testPUBLICATIONSAll(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	publicationOne := &Publication{}
-	publicationTwo := &Publication{}
-	if err = randomize.Struct(seed, publicationOne, publicationDBTypes, false, publicationColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	pUBLICATIONOne := &PUBLICATION{}
+	pUBLICATIONTwo := &PUBLICATION{}
+	if err = randomize.Struct(seed, pUBLICATIONOne, pUBLICATIONDBTypes, false, pUBLICATIONColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
-	if err = randomize.Struct(seed, publicationTwo, publicationDBTypes, false, publicationColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	if err = randomize.Struct(seed, pUBLICATIONTwo, pUBLICATIONDBTypes, false, pUBLICATIONColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
 
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
-	if err = publicationOne.Insert(ctx, tx, boil.Infer()); err != nil {
+	if err = pUBLICATIONOne.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Error(err)
 	}
-	if err = publicationTwo.Insert(ctx, tx, boil.Infer()); err != nil {
+	if err = pUBLICATIONTwo.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Error(err)
 	}
 
-	slice, err := Publications().All(ctx, tx)
+	slice, err := PUBLICATIONS().All(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -265,31 +265,31 @@ func testPublicationsAll(t *testing.T) {
 	}
 }
 
-func testPublicationsCount(t *testing.T) {
+func testPUBLICATIONSCount(t *testing.T) {
 	t.Parallel()
 
 	var err error
 	seed := randomize.NewSeed()
-	publicationOne := &Publication{}
-	publicationTwo := &Publication{}
-	if err = randomize.Struct(seed, publicationOne, publicationDBTypes, false, publicationColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	pUBLICATIONOne := &PUBLICATION{}
+	pUBLICATIONTwo := &PUBLICATION{}
+	if err = randomize.Struct(seed, pUBLICATIONOne, pUBLICATIONDBTypes, false, pUBLICATIONColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
-	if err = randomize.Struct(seed, publicationTwo, publicationDBTypes, false, publicationColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	if err = randomize.Struct(seed, pUBLICATIONTwo, pUBLICATIONDBTypes, false, pUBLICATIONColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
 
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
-	if err = publicationOne.Insert(ctx, tx, boil.Infer()); err != nil {
+	if err = pUBLICATIONOne.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Error(err)
 	}
-	if err = publicationTwo.Insert(ctx, tx, boil.Infer()); err != nil {
+	if err = pUBLICATIONTwo.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Error(err)
 	}
 
-	count, err := Publications().Count(ctx, tx)
+	count, err := PUBLICATIONS().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -299,155 +299,155 @@ func testPublicationsCount(t *testing.T) {
 	}
 }
 
-func publicationBeforeInsertHook(ctx context.Context, e boil.ContextExecutor, o *Publication) error {
-	*o = Publication{}
+func pUBLICATIONBeforeInsertHook(ctx context.Context, e boil.ContextExecutor, o *PUBLICATION) error {
+	*o = PUBLICATION{}
 	return nil
 }
 
-func publicationAfterInsertHook(ctx context.Context, e boil.ContextExecutor, o *Publication) error {
-	*o = Publication{}
+func pUBLICATIONAfterInsertHook(ctx context.Context, e boil.ContextExecutor, o *PUBLICATION) error {
+	*o = PUBLICATION{}
 	return nil
 }
 
-func publicationAfterSelectHook(ctx context.Context, e boil.ContextExecutor, o *Publication) error {
-	*o = Publication{}
+func pUBLICATIONAfterSelectHook(ctx context.Context, e boil.ContextExecutor, o *PUBLICATION) error {
+	*o = PUBLICATION{}
 	return nil
 }
 
-func publicationBeforeUpdateHook(ctx context.Context, e boil.ContextExecutor, o *Publication) error {
-	*o = Publication{}
+func pUBLICATIONBeforeUpdateHook(ctx context.Context, e boil.ContextExecutor, o *PUBLICATION) error {
+	*o = PUBLICATION{}
 	return nil
 }
 
-func publicationAfterUpdateHook(ctx context.Context, e boil.ContextExecutor, o *Publication) error {
-	*o = Publication{}
+func pUBLICATIONAfterUpdateHook(ctx context.Context, e boil.ContextExecutor, o *PUBLICATION) error {
+	*o = PUBLICATION{}
 	return nil
 }
 
-func publicationBeforeDeleteHook(ctx context.Context, e boil.ContextExecutor, o *Publication) error {
-	*o = Publication{}
+func pUBLICATIONBeforeDeleteHook(ctx context.Context, e boil.ContextExecutor, o *PUBLICATION) error {
+	*o = PUBLICATION{}
 	return nil
 }
 
-func publicationAfterDeleteHook(ctx context.Context, e boil.ContextExecutor, o *Publication) error {
-	*o = Publication{}
+func pUBLICATIONAfterDeleteHook(ctx context.Context, e boil.ContextExecutor, o *PUBLICATION) error {
+	*o = PUBLICATION{}
 	return nil
 }
 
-func publicationBeforeUpsertHook(ctx context.Context, e boil.ContextExecutor, o *Publication) error {
-	*o = Publication{}
+func pUBLICATIONBeforeUpsertHook(ctx context.Context, e boil.ContextExecutor, o *PUBLICATION) error {
+	*o = PUBLICATION{}
 	return nil
 }
 
-func publicationAfterUpsertHook(ctx context.Context, e boil.ContextExecutor, o *Publication) error {
-	*o = Publication{}
+func pUBLICATIONAfterUpsertHook(ctx context.Context, e boil.ContextExecutor, o *PUBLICATION) error {
+	*o = PUBLICATION{}
 	return nil
 }
 
-func testPublicationsHooks(t *testing.T) {
+func testPUBLICATIONSHooks(t *testing.T) {
 	t.Parallel()
 
 	var err error
 
 	ctx := context.Background()
-	empty := &Publication{}
-	o := &Publication{}
+	empty := &PUBLICATION{}
+	o := &PUBLICATION{}
 
 	seed := randomize.NewSeed()
-	if err = randomize.Struct(seed, o, publicationDBTypes, false); err != nil {
-		t.Errorf("Unable to randomize Publication object: %s", err)
+	if err = randomize.Struct(seed, o, pUBLICATIONDBTypes, false); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION object: %s", err)
 	}
 
-	AddPublicationHook(boil.BeforeInsertHook, publicationBeforeInsertHook)
+	AddPUBLICATIONHook(boil.BeforeInsertHook, pUBLICATIONBeforeInsertHook)
 	if err = o.doBeforeInsertHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doBeforeInsertHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected BeforeInsertHook function to empty object, but got: %#v", o)
 	}
-	publicationBeforeInsertHooks = []PublicationHook{}
+	pUBLICATIONBeforeInsertHooks = []PUBLICATIONHook{}
 
-	AddPublicationHook(boil.AfterInsertHook, publicationAfterInsertHook)
+	AddPUBLICATIONHook(boil.AfterInsertHook, pUBLICATIONAfterInsertHook)
 	if err = o.doAfterInsertHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doAfterInsertHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected AfterInsertHook function to empty object, but got: %#v", o)
 	}
-	publicationAfterInsertHooks = []PublicationHook{}
+	pUBLICATIONAfterInsertHooks = []PUBLICATIONHook{}
 
-	AddPublicationHook(boil.AfterSelectHook, publicationAfterSelectHook)
+	AddPUBLICATIONHook(boil.AfterSelectHook, pUBLICATIONAfterSelectHook)
 	if err = o.doAfterSelectHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doAfterSelectHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected AfterSelectHook function to empty object, but got: %#v", o)
 	}
-	publicationAfterSelectHooks = []PublicationHook{}
+	pUBLICATIONAfterSelectHooks = []PUBLICATIONHook{}
 
-	AddPublicationHook(boil.BeforeUpdateHook, publicationBeforeUpdateHook)
+	AddPUBLICATIONHook(boil.BeforeUpdateHook, pUBLICATIONBeforeUpdateHook)
 	if err = o.doBeforeUpdateHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doBeforeUpdateHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected BeforeUpdateHook function to empty object, but got: %#v", o)
 	}
-	publicationBeforeUpdateHooks = []PublicationHook{}
+	pUBLICATIONBeforeUpdateHooks = []PUBLICATIONHook{}
 
-	AddPublicationHook(boil.AfterUpdateHook, publicationAfterUpdateHook)
+	AddPUBLICATIONHook(boil.AfterUpdateHook, pUBLICATIONAfterUpdateHook)
 	if err = o.doAfterUpdateHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doAfterUpdateHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected AfterUpdateHook function to empty object, but got: %#v", o)
 	}
-	publicationAfterUpdateHooks = []PublicationHook{}
+	pUBLICATIONAfterUpdateHooks = []PUBLICATIONHook{}
 
-	AddPublicationHook(boil.BeforeDeleteHook, publicationBeforeDeleteHook)
+	AddPUBLICATIONHook(boil.BeforeDeleteHook, pUBLICATIONBeforeDeleteHook)
 	if err = o.doBeforeDeleteHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doBeforeDeleteHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected BeforeDeleteHook function to empty object, but got: %#v", o)
 	}
-	publicationBeforeDeleteHooks = []PublicationHook{}
+	pUBLICATIONBeforeDeleteHooks = []PUBLICATIONHook{}
 
-	AddPublicationHook(boil.AfterDeleteHook, publicationAfterDeleteHook)
+	AddPUBLICATIONHook(boil.AfterDeleteHook, pUBLICATIONAfterDeleteHook)
 	if err = o.doAfterDeleteHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doAfterDeleteHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected AfterDeleteHook function to empty object, but got: %#v", o)
 	}
-	publicationAfterDeleteHooks = []PublicationHook{}
+	pUBLICATIONAfterDeleteHooks = []PUBLICATIONHook{}
 
-	AddPublicationHook(boil.BeforeUpsertHook, publicationBeforeUpsertHook)
+	AddPUBLICATIONHook(boil.BeforeUpsertHook, pUBLICATIONBeforeUpsertHook)
 	if err = o.doBeforeUpsertHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doBeforeUpsertHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected BeforeUpsertHook function to empty object, but got: %#v", o)
 	}
-	publicationBeforeUpsertHooks = []PublicationHook{}
+	pUBLICATIONBeforeUpsertHooks = []PUBLICATIONHook{}
 
-	AddPublicationHook(boil.AfterUpsertHook, publicationAfterUpsertHook)
+	AddPUBLICATIONHook(boil.AfterUpsertHook, pUBLICATIONAfterUpsertHook)
 	if err = o.doAfterUpsertHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doAfterUpsertHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected AfterUpsertHook function to empty object, but got: %#v", o)
 	}
-	publicationAfterUpsertHooks = []PublicationHook{}
+	pUBLICATIONAfterUpsertHooks = []PUBLICATIONHook{}
 }
 
-func testPublicationsInsert(t *testing.T) {
+func testPUBLICATIONSInsert(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &Publication{}
-	if err = randomize.Struct(seed, o, publicationDBTypes, true, publicationColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	o := &PUBLICATION{}
+	if err = randomize.Struct(seed, o, pUBLICATIONDBTypes, true, pUBLICATIONColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -457,7 +457,7 @@ func testPublicationsInsert(t *testing.T) {
 		t.Error(err)
 	}
 
-	count, err := Publications().Count(ctx, tx)
+	count, err := PUBLICATIONS().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -467,24 +467,24 @@ func testPublicationsInsert(t *testing.T) {
 	}
 }
 
-func testPublicationsInsertWhitelist(t *testing.T) {
+func testPUBLICATIONSInsertWhitelist(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &Publication{}
-	if err = randomize.Struct(seed, o, publicationDBTypes, true); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	o := &PUBLICATION{}
+	if err = randomize.Struct(seed, o, pUBLICATIONDBTypes, true); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
 
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
-	if err = o.Insert(ctx, tx, boil.Whitelist(publicationColumnsWithoutDefault...)); err != nil {
+	if err = o.Insert(ctx, tx, boil.Whitelist(pUBLICATIONColumnsWithoutDefault...)); err != nil {
 		t.Error(err)
 	}
 
-	count, err := Publications().Count(ctx, tx)
+	count, err := PUBLICATIONS().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -494,32 +494,32 @@ func testPublicationsInsertWhitelist(t *testing.T) {
 	}
 }
 
-func testPublicationToOneUserUsingAuthIdUser(t *testing.T) {
+func testPUBLICATIONToOneUSERUsingAuth(t *testing.T) {
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
 
-	var local Publication
-	var foreign User
+	var local PUBLICATION
+	var foreign USER
 
 	seed := randomize.NewSeed()
-	if err := randomize.Struct(seed, &local, publicationDBTypes, false, publicationColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	if err := randomize.Struct(seed, &local, pUBLICATIONDBTypes, false, pUBLICATIONColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
-	if err := randomize.Struct(seed, &foreign, userDBTypes, false, userColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	if err := randomize.Struct(seed, &foreign, uSERDBTypes, false, uSERColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	if err := foreign.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Fatal(err)
 	}
 
-	local.AuthId = foreign.ID
+	local.AuthID = foreign.ID
 	if err := local.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Fatal(err)
 	}
 
-	check, err := local.AuthIdUser().One(ctx, tx)
+	check, err := local.Auth().One(ctx, tx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -529,24 +529,24 @@ func testPublicationToOneUserUsingAuthIdUser(t *testing.T) {
 	}
 
 	ranAfterSelectHook := false
-	AddUserHook(boil.AfterSelectHook, func(ctx context.Context, e boil.ContextExecutor, o *User) error {
+	AddUSERHook(boil.AfterSelectHook, func(ctx context.Context, e boil.ContextExecutor, o *USER) error {
 		ranAfterSelectHook = true
 		return nil
 	})
 
-	slice := PublicationSlice{&local}
-	if err = local.L.LoadAuthIdUser(ctx, tx, false, (*[]*Publication)(&slice), nil); err != nil {
+	slice := PUBLICATIONSlice{&local}
+	if err = local.L.LoadAuth(ctx, tx, false, (*[]*PUBLICATION)(&slice), nil); err != nil {
 		t.Fatal(err)
 	}
-	if local.R.AuthIdUser == nil {
+	if local.R.Auth == nil {
 		t.Error("struct should have been eager loaded")
 	}
 
-	local.R.AuthIdUser = nil
-	if err = local.L.LoadAuthIdUser(ctx, tx, true, &local, nil); err != nil {
+	local.R.Auth = nil
+	if err = local.L.LoadAuth(ctx, tx, true, &local, nil); err != nil {
 		t.Fatal(err)
 	}
-	if local.R.AuthIdUser == nil {
+	if local.R.Auth == nil {
 		t.Error("struct should have been eager loaded")
 	}
 
@@ -555,24 +555,24 @@ func testPublicationToOneUserUsingAuthIdUser(t *testing.T) {
 	}
 }
 
-func testPublicationToOneSetOpUserUsingAuthIdUser(t *testing.T) {
+func testPUBLICATIONToOneSetOpUSERUsingAuth(t *testing.T) {
 	var err error
 
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
 
-	var a Publication
-	var b, c User
+	var a PUBLICATION
+	var b, c USER
 
 	seed := randomize.NewSeed()
-	if err = randomize.Struct(seed, &a, publicationDBTypes, false, strmangle.SetComplement(publicationPrimaryKeyColumns, publicationColumnsWithoutDefault)...); err != nil {
+	if err = randomize.Struct(seed, &a, pUBLICATIONDBTypes, false, strmangle.SetComplement(pUBLICATIONPrimaryKeyColumns, pUBLICATIONColumnsWithoutDefault)...); err != nil {
 		t.Fatal(err)
 	}
-	if err = randomize.Struct(seed, &b, userDBTypes, false, strmangle.SetComplement(userPrimaryKeyColumns, userColumnsWithoutDefault)...); err != nil {
+	if err = randomize.Struct(seed, &b, uSERDBTypes, false, strmangle.SetComplement(uSERPrimaryKeyColumns, uSERColumnsWithoutDefault)...); err != nil {
 		t.Fatal(err)
 	}
-	if err = randomize.Struct(seed, &c, userDBTypes, false, strmangle.SetComplement(userPrimaryKeyColumns, userColumnsWithoutDefault)...); err != nil {
+	if err = randomize.Struct(seed, &c, uSERDBTypes, false, strmangle.SetComplement(uSERPrimaryKeyColumns, uSERColumnsWithoutDefault)...); err != nil {
 		t.Fatal(err)
 	}
 
@@ -583,44 +583,44 @@ func testPublicationToOneSetOpUserUsingAuthIdUser(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	for i, x := range []*User{&b, &c} {
-		err = a.SetAuthIdUser(ctx, tx, i != 0, x)
+	for i, x := range []*USER{&b, &c} {
+		err = a.SetAuth(ctx, tx, i != 0, x)
 		if err != nil {
 			t.Fatal(err)
 		}
 
-		if a.R.AuthIdUser != x {
+		if a.R.Auth != x {
 			t.Error("relationship struct not set to correct value")
 		}
 
-		if x.R.AuthIdPublications[0] != &a {
+		if x.R.AuthPUBLICATIONS[0] != &a {
 			t.Error("failed to append to foreign relationship struct")
 		}
-		if a.AuthId != x.ID {
-			t.Error("foreign key was wrong value", a.AuthId)
+		if a.AuthID != x.ID {
+			t.Error("foreign key was wrong value", a.AuthID)
 		}
 
-		zero := reflect.Zero(reflect.TypeOf(a.AuthId))
-		reflect.Indirect(reflect.ValueOf(&a.AuthId)).Set(zero)
+		zero := reflect.Zero(reflect.TypeOf(a.AuthID))
+		reflect.Indirect(reflect.ValueOf(&a.AuthID)).Set(zero)
 
 		if err = a.Reload(ctx, tx); err != nil {
 			t.Fatal("failed to reload", err)
 		}
 
-		if a.AuthId != x.ID {
-			t.Error("foreign key was wrong value", a.AuthId, x.ID)
+		if a.AuthID != x.ID {
+			t.Error("foreign key was wrong value", a.AuthID, x.ID)
 		}
 	}
 }
 
-func testPublicationsReload(t *testing.T) {
+func testPUBLICATIONSReload(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &Publication{}
-	if err = randomize.Struct(seed, o, publicationDBTypes, true, publicationColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	o := &PUBLICATION{}
+	if err = randomize.Struct(seed, o, pUBLICATIONDBTypes, true, pUBLICATIONColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -635,14 +635,14 @@ func testPublicationsReload(t *testing.T) {
 	}
 }
 
-func testPublicationsReloadAll(t *testing.T) {
+func testPUBLICATIONSReloadAll(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &Publication{}
-	if err = randomize.Struct(seed, o, publicationDBTypes, true, publicationColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	o := &PUBLICATION{}
+	if err = randomize.Struct(seed, o, pUBLICATIONDBTypes, true, pUBLICATIONColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -652,21 +652,21 @@ func testPublicationsReloadAll(t *testing.T) {
 		t.Error(err)
 	}
 
-	slice := PublicationSlice{o}
+	slice := PUBLICATIONSlice{o}
 
 	if err = slice.ReloadAll(ctx, tx); err != nil {
 		t.Error(err)
 	}
 }
 
-func testPublicationsSelect(t *testing.T) {
+func testPUBLICATIONSSelect(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &Publication{}
-	if err = randomize.Struct(seed, o, publicationDBTypes, true, publicationColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	o := &PUBLICATION{}
+	if err = randomize.Struct(seed, o, pUBLICATIONDBTypes, true, pUBLICATIONColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -676,7 +676,7 @@ func testPublicationsSelect(t *testing.T) {
 		t.Error(err)
 	}
 
-	slice, err := Publications().All(ctx, tx)
+	slice, err := PUBLICATIONS().All(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -687,25 +687,25 @@ func testPublicationsSelect(t *testing.T) {
 }
 
 var (
-	publicationDBTypes = map[string]string{`ID`: `varchar`, `Title`: `varchar`, `Description`: `varchar`, `Content`: `varchar`, `Like`: `int`, `AuthId`: `varchar`, `CreatedAt`: `datetime`, `UpdatedAt`: `datetime`}
+	pUBLICATIONDBTypes = map[string]string{`ID`: `int`, `Title`: `varchar`, `AuthID`: `int`, `Description`: `varchar`, `Content`: `varchar`, `Like`: `int`, `CreatedAt`: `timestamp`, `UpdatedAt`: `timestamp`}
 	_                  = bytes.MinRead
 )
 
-func testPublicationsUpdate(t *testing.T) {
+func testPUBLICATIONSUpdate(t *testing.T) {
 	t.Parallel()
 
-	if 0 == len(publicationPrimaryKeyColumns) {
+	if 0 == len(pUBLICATIONPrimaryKeyColumns) {
 		t.Skip("Skipping table with no primary key columns")
 	}
-	if len(publicationAllColumns) == len(publicationPrimaryKeyColumns) {
+	if len(pUBLICATIONAllColumns) == len(pUBLICATIONPrimaryKeyColumns) {
 		t.Skip("Skipping table with only primary key columns")
 	}
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &Publication{}
-	if err = randomize.Struct(seed, o, publicationDBTypes, true, publicationColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	o := &PUBLICATION{}
+	if err = randomize.Struct(seed, o, pUBLICATIONDBTypes, true, pUBLICATIONColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -715,7 +715,7 @@ func testPublicationsUpdate(t *testing.T) {
 		t.Error(err)
 	}
 
-	count, err := Publications().Count(ctx, tx)
+	count, err := PUBLICATIONS().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -724,8 +724,8 @@ func testPublicationsUpdate(t *testing.T) {
 		t.Error("want one record, got:", count)
 	}
 
-	if err = randomize.Struct(seed, o, publicationDBTypes, true, publicationPrimaryKeyColumns...); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	if err = randomize.Struct(seed, o, pUBLICATIONDBTypes, true, pUBLICATIONPrimaryKeyColumns...); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
 
 	if rowsAff, err := o.Update(ctx, tx, boil.Infer()); err != nil {
@@ -735,18 +735,18 @@ func testPublicationsUpdate(t *testing.T) {
 	}
 }
 
-func testPublicationsSliceUpdateAll(t *testing.T) {
+func testPUBLICATIONSSliceUpdateAll(t *testing.T) {
 	t.Parallel()
 
-	if len(publicationAllColumns) == len(publicationPrimaryKeyColumns) {
+	if len(pUBLICATIONAllColumns) == len(pUBLICATIONPrimaryKeyColumns) {
 		t.Skip("Skipping table with only primary key columns")
 	}
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &Publication{}
-	if err = randomize.Struct(seed, o, publicationDBTypes, true, publicationColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	o := &PUBLICATION{}
+	if err = randomize.Struct(seed, o, pUBLICATIONDBTypes, true, pUBLICATIONColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -756,7 +756,7 @@ func testPublicationsSliceUpdateAll(t *testing.T) {
 		t.Error(err)
 	}
 
-	count, err := Publications().Count(ctx, tx)
+	count, err := PUBLICATIONS().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -765,18 +765,18 @@ func testPublicationsSliceUpdateAll(t *testing.T) {
 		t.Error("want one record, got:", count)
 	}
 
-	if err = randomize.Struct(seed, o, publicationDBTypes, true, publicationPrimaryKeyColumns...); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	if err = randomize.Struct(seed, o, pUBLICATIONDBTypes, true, pUBLICATIONPrimaryKeyColumns...); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
 
 	// Remove Primary keys and unique columns from what we plan to update
 	var fields []string
-	if strmangle.StringSliceMatch(publicationAllColumns, publicationPrimaryKeyColumns) {
-		fields = publicationAllColumns
+	if strmangle.StringSliceMatch(pUBLICATIONAllColumns, pUBLICATIONPrimaryKeyColumns) {
+		fields = pUBLICATIONAllColumns
 	} else {
 		fields = strmangle.SetComplement(
-			publicationAllColumns,
-			publicationPrimaryKeyColumns,
+			pUBLICATIONAllColumns,
+			pUBLICATIONPrimaryKeyColumns,
 		)
 	}
 
@@ -794,7 +794,7 @@ func testPublicationsSliceUpdateAll(t *testing.T) {
 		}
 	}
 
-	slice := PublicationSlice{o}
+	slice := PUBLICATIONSlice{o}
 	if rowsAff, err := slice.UpdateAll(ctx, tx, updateMap); err != nil {
 		t.Error(err)
 	} else if rowsAff != 1 {
@@ -802,32 +802,32 @@ func testPublicationsSliceUpdateAll(t *testing.T) {
 	}
 }
 
-func testPublicationsUpsert(t *testing.T) {
+func testPUBLICATIONSUpsert(t *testing.T) {
 	t.Parallel()
 
-	if len(publicationAllColumns) == len(publicationPrimaryKeyColumns) {
+	if len(pUBLICATIONAllColumns) == len(pUBLICATIONPrimaryKeyColumns) {
 		t.Skip("Skipping table with only primary key columns")
 	}
-	if len(mySQLPublicationUniqueColumns) == 0 {
+	if len(mySQLPUBLICATIONUniqueColumns) == 0 {
 		t.Skip("Skipping table with no unique columns to conflict on")
 	}
 
 	seed := randomize.NewSeed()
 	var err error
 	// Attempt the INSERT side of an UPSERT
-	o := Publication{}
-	if err = randomize.Struct(seed, &o, publicationDBTypes, false); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	o := PUBLICATION{}
+	if err = randomize.Struct(seed, &o, pUBLICATIONDBTypes, false); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
 
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
 	if err = o.Upsert(ctx, tx, boil.Infer(), boil.Infer()); err != nil {
-		t.Errorf("Unable to upsert Publication: %s", err)
+		t.Errorf("Unable to upsert PUBLICATION: %s", err)
 	}
 
-	count, err := Publications().Count(ctx, tx)
+	count, err := PUBLICATIONS().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -836,15 +836,15 @@ func testPublicationsUpsert(t *testing.T) {
 	}
 
 	// Attempt the UPDATE side of an UPSERT
-	if err = randomize.Struct(seed, &o, publicationDBTypes, false, publicationPrimaryKeyColumns...); err != nil {
-		t.Errorf("Unable to randomize Publication struct: %s", err)
+	if err = randomize.Struct(seed, &o, pUBLICATIONDBTypes, false, pUBLICATIONPrimaryKeyColumns...); err != nil {
+		t.Errorf("Unable to randomize PUBLICATION struct: %s", err)
 	}
 
 	if err = o.Upsert(ctx, tx, boil.Infer(), boil.Infer()); err != nil {
-		t.Errorf("Unable to upsert Publication: %s", err)
+		t.Errorf("Unable to upsert PUBLICATION: %s", err)
 	}
 
-	count, err = Publications().Count(ctx, tx)
+	count, err = PUBLICATIONS().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}

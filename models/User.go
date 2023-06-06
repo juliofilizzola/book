@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/friendsofgo/errors"
+	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
@@ -21,154 +22,154 @@ import (
 	"github.com/volatiletech/strmangle"
 )
 
-// User is an object representing the database table.
-type User struct {
-	ID        string    `boil:"id" json:"id" toml:"id" yaml:"id"`
+// USER is an object representing the database table.
+type USER struct {
+	ID        int       `boil:"id" json:"id" toml:"id" yaml:"id"`
 	Name      string    `boil:"name" json:"name" toml:"name" yaml:"name"`
 	Nick      string    `boil:"nick" json:"nick" toml:"nick" yaml:"nick"`
-	Password  string    `boil:"password" json:"password" toml:"password" yaml:"password"`
 	Email     string    `boil:"email" json:"email" toml:"email" yaml:"email"`
-	CreatedAt time.Time `boil:"createdAt" json:"createdAt" toml:"createdAt" yaml:"createdAt"`
-	UpdatedAt time.Time `boil:"updatedAt" json:"updatedAt" toml:"updatedAt" yaml:"updatedAt"`
+	Password  string    `boil:"password" json:"password" toml:"password" yaml:"password"`
+	CreatedAt null.Time `boil:"created_at" json:"created_at,omitempty" toml:"created_at" yaml:"created_at,omitempty"`
+	UpdatedAt null.Time `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
 
-	R *userR `boil:"-" json:"-" toml:"-" yaml:"-"`
-	L userL  `boil:"-" json:"-" toml:"-" yaml:"-"`
+	R *uSERR `boil:"-" json:"-" toml:"-" yaml:"-"`
+	L uSERL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
-var UserColumns = struct {
+var USERColumns = struct {
 	ID        string
 	Name      string
 	Nick      string
-	Password  string
 	Email     string
+	Password  string
 	CreatedAt string
 	UpdatedAt string
 }{
 	ID:        "id",
 	Name:      "name",
 	Nick:      "nick",
-	Password:  "password",
 	Email:     "email",
-	CreatedAt: "createdAt",
-	UpdatedAt: "updatedAt",
+	Password:  "password",
+	CreatedAt: "created_at",
+	UpdatedAt: "updated_at",
 }
 
-var UserTableColumns = struct {
+var USERTableColumns = struct {
 	ID        string
 	Name      string
 	Nick      string
-	Password  string
 	Email     string
+	Password  string
 	CreatedAt string
 	UpdatedAt string
 }{
-	ID:        "User.id",
-	Name:      "User.name",
-	Nick:      "User.nick",
-	Password:  "User.password",
-	Email:     "User.email",
-	CreatedAt: "User.createdAt",
-	UpdatedAt: "User.updatedAt",
+	ID:        "USER.id",
+	Name:      "USER.name",
+	Nick:      "USER.nick",
+	Email:     "USER.email",
+	Password:  "USER.password",
+	CreatedAt: "USER.created_at",
+	UpdatedAt: "USER.updated_at",
 }
 
 // Generated where
 
-var UserWhere = struct {
-	ID        whereHelperstring
+var USERWhere = struct {
+	ID        whereHelperint
 	Name      whereHelperstring
 	Nick      whereHelperstring
-	Password  whereHelperstring
 	Email     whereHelperstring
-	CreatedAt whereHelpertime_Time
-	UpdatedAt whereHelpertime_Time
+	Password  whereHelperstring
+	CreatedAt whereHelpernull_Time
+	UpdatedAt whereHelpernull_Time
 }{
-	ID:        whereHelperstring{field: "`User`.`id`"},
-	Name:      whereHelperstring{field: "`User`.`name`"},
-	Nick:      whereHelperstring{field: "`User`.`nick`"},
-	Password:  whereHelperstring{field: "`User`.`password`"},
-	Email:     whereHelperstring{field: "`User`.`email`"},
-	CreatedAt: whereHelpertime_Time{field: "`User`.`createdAt`"},
-	UpdatedAt: whereHelpertime_Time{field: "`User`.`updatedAt`"},
+	ID:        whereHelperint{field: "`USER`.`id`"},
+	Name:      whereHelperstring{field: "`USER`.`name`"},
+	Nick:      whereHelperstring{field: "`USER`.`nick`"},
+	Email:     whereHelperstring{field: "`USER`.`email`"},
+	Password:  whereHelperstring{field: "`USER`.`password`"},
+	CreatedAt: whereHelpernull_Time{field: "`USER`.`created_at`"},
+	UpdatedAt: whereHelpernull_Time{field: "`USER`.`updated_at`"},
 }
 
-// UserRels is where relationship names are stored.
-var UserRels = struct {
-	FollowingIdUsers   string
-	FollowerIdUsers    string
-	AuthIdPublications string
+// USERRels is where relationship names are stored.
+var USERRels = struct {
+	FollowerUSERS    string
+	UserUSERS        string
+	AuthPUBLICATIONS string
 }{
-	FollowingIdUsers:   "FollowingIdUsers",
-	FollowerIdUsers:    "FollowerIdUsers",
-	AuthIdPublications: "AuthIdPublications",
+	FollowerUSERS:    "FollowerUSERS",
+	UserUSERS:        "UserUSERS",
+	AuthPUBLICATIONS: "AuthPUBLICATIONS",
 }
 
-// userR is where relationships are stored.
-type userR struct {
-	FollowingIdUsers   UserSlice        `boil:"FollowingIdUsers" json:"FollowingIdUsers" toml:"FollowingIdUsers" yaml:"FollowingIdUsers"`
-	FollowerIdUsers    UserSlice        `boil:"FollowerIdUsers" json:"FollowerIdUsers" toml:"FollowerIdUsers" yaml:"FollowerIdUsers"`
-	AuthIdPublications PublicationSlice `boil:"AuthIdPublications" json:"AuthIdPublications" toml:"AuthIdPublications" yaml:"AuthIdPublications"`
+// uSERR is where relationships are stored.
+type uSERR struct {
+	FollowerUSERS    USERSlice        `boil:"FollowerUSERS" json:"FollowerUSERS" toml:"FollowerUSERS" yaml:"FollowerUSERS"`
+	UserUSERS        USERSlice        `boil:"UserUSERS" json:"UserUSERS" toml:"UserUSERS" yaml:"UserUSERS"`
+	AuthPUBLICATIONS PUBLICATIONSlice `boil:"AuthPUBLICATIONS" json:"AuthPUBLICATIONS" toml:"AuthPUBLICATIONS" yaml:"AuthPUBLICATIONS"`
 }
 
 // NewStruct creates a new relationship struct
-func (*userR) NewStruct() *userR {
-	return &userR{}
+func (*uSERR) NewStruct() *uSERR {
+	return &uSERR{}
 }
 
-func (r *userR) GetFollowingIdUsers() UserSlice {
+func (r *uSERR) GetFollowerUSERS() USERSlice {
 	if r == nil {
 		return nil
 	}
-	return r.FollowingIdUsers
+	return r.FollowerUSERS
 }
 
-func (r *userR) GetFollowerIdUsers() UserSlice {
+func (r *uSERR) GetUserUSERS() USERSlice {
 	if r == nil {
 		return nil
 	}
-	return r.FollowerIdUsers
+	return r.UserUSERS
 }
 
-func (r *userR) GetAuthIdPublications() PublicationSlice {
+func (r *uSERR) GetAuthPUBLICATIONS() PUBLICATIONSlice {
 	if r == nil {
 		return nil
 	}
-	return r.AuthIdPublications
+	return r.AuthPUBLICATIONS
 }
 
-// userL is where Load methods for each relationship are stored.
-type userL struct{}
+// uSERL is where Load methods for each relationship are stored.
+type uSERL struct{}
 
 var (
-	userAllColumns            = []string{"id", "name", "nick", "password", "email", "createdAt", "updatedAt"}
-	userColumnsWithoutDefault = []string{"id", "name", "nick", "password", "email", "updatedAt"}
-	userColumnsWithDefault    = []string{"createdAt"}
-	userPrimaryKeyColumns     = []string{"id"}
-	userGeneratedColumns      = []string{}
+	uSERAllColumns            = []string{"id", "name", "nick", "email", "password", "created_at", "updated_at"}
+	uSERColumnsWithoutDefault = []string{"name", "nick", "email", "password", "updated_at"}
+	uSERColumnsWithDefault    = []string{"id", "created_at"}
+	uSERPrimaryKeyColumns     = []string{"id"}
+	uSERGeneratedColumns      = []string{}
 )
 
 type (
-	// UserSlice is an alias for a slice of pointers to User.
-	// This should almost always be used instead of []User.
-	UserSlice []*User
-	// UserHook is the signature for custom User hook methods
-	UserHook func(context.Context, boil.ContextExecutor, *User) error
+	// USERSlice is an alias for a slice of pointers to USER.
+	// This should almost always be used instead of []USER.
+	USERSlice []*USER
+	// USERHook is the signature for custom USER hook methods
+	USERHook func(context.Context, boil.ContextExecutor, *USER) error
 
-	userQuery struct {
+	uSERQuery struct {
 		*queries.Query
 	}
 )
 
 // Cache for insert, update and upsert
 var (
-	userType                 = reflect.TypeOf(&User{})
-	userMapping              = queries.MakeStructMapping(userType)
-	userPrimaryKeyMapping, _ = queries.BindMapping(userType, userMapping, userPrimaryKeyColumns)
-	userInsertCacheMut       sync.RWMutex
-	userInsertCache          = make(map[string]insertCache)
-	userUpdateCacheMut       sync.RWMutex
-	userUpdateCache          = make(map[string]updateCache)
-	userUpsertCacheMut       sync.RWMutex
-	userUpsertCache          = make(map[string]insertCache)
+	uSERType                 = reflect.TypeOf(&USER{})
+	uSERMapping              = queries.MakeStructMapping(uSERType)
+	uSERPrimaryKeyMapping, _ = queries.BindMapping(uSERType, uSERMapping, uSERPrimaryKeyColumns)
+	uSERInsertCacheMut       sync.RWMutex
+	uSERInsertCache          = make(map[string]insertCache)
+	uSERUpdateCacheMut       sync.RWMutex
+	uSERUpdateCache          = make(map[string]updateCache)
+	uSERUpsertCacheMut       sync.RWMutex
+	uSERUpsertCache          = make(map[string]insertCache)
 )
 
 var (
@@ -179,27 +180,27 @@ var (
 	_ = qmhelper.Where
 )
 
-var userAfterSelectHooks []UserHook
+var uSERAfterSelectHooks []USERHook
 
-var userBeforeInsertHooks []UserHook
-var userAfterInsertHooks []UserHook
+var uSERBeforeInsertHooks []USERHook
+var uSERAfterInsertHooks []USERHook
 
-var userBeforeUpdateHooks []UserHook
-var userAfterUpdateHooks []UserHook
+var uSERBeforeUpdateHooks []USERHook
+var uSERAfterUpdateHooks []USERHook
 
-var userBeforeDeleteHooks []UserHook
-var userAfterDeleteHooks []UserHook
+var uSERBeforeDeleteHooks []USERHook
+var uSERAfterDeleteHooks []USERHook
 
-var userBeforeUpsertHooks []UserHook
-var userAfterUpsertHooks []UserHook
+var uSERBeforeUpsertHooks []USERHook
+var uSERAfterUpsertHooks []USERHook
 
 // doAfterSelectHooks executes all "after Select" hooks.
-func (o *User) doAfterSelectHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *USER) doAfterSelectHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range userAfterSelectHooks {
+	for _, hook := range uSERAfterSelectHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -209,12 +210,12 @@ func (o *User) doAfterSelectHooks(ctx context.Context, exec boil.ContextExecutor
 }
 
 // doBeforeInsertHooks executes all "before insert" hooks.
-func (o *User) doBeforeInsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *USER) doBeforeInsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range userBeforeInsertHooks {
+	for _, hook := range uSERBeforeInsertHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -224,12 +225,12 @@ func (o *User) doBeforeInsertHooks(ctx context.Context, exec boil.ContextExecuto
 }
 
 // doAfterInsertHooks executes all "after Insert" hooks.
-func (o *User) doAfterInsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *USER) doAfterInsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range userAfterInsertHooks {
+	for _, hook := range uSERAfterInsertHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -239,12 +240,12 @@ func (o *User) doAfterInsertHooks(ctx context.Context, exec boil.ContextExecutor
 }
 
 // doBeforeUpdateHooks executes all "before Update" hooks.
-func (o *User) doBeforeUpdateHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *USER) doBeforeUpdateHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range userBeforeUpdateHooks {
+	for _, hook := range uSERBeforeUpdateHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -254,12 +255,12 @@ func (o *User) doBeforeUpdateHooks(ctx context.Context, exec boil.ContextExecuto
 }
 
 // doAfterUpdateHooks executes all "after Update" hooks.
-func (o *User) doAfterUpdateHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *USER) doAfterUpdateHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range userAfterUpdateHooks {
+	for _, hook := range uSERAfterUpdateHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -269,12 +270,12 @@ func (o *User) doAfterUpdateHooks(ctx context.Context, exec boil.ContextExecutor
 }
 
 // doBeforeDeleteHooks executes all "before Delete" hooks.
-func (o *User) doBeforeDeleteHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *USER) doBeforeDeleteHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range userBeforeDeleteHooks {
+	for _, hook := range uSERBeforeDeleteHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -284,12 +285,12 @@ func (o *User) doBeforeDeleteHooks(ctx context.Context, exec boil.ContextExecuto
 }
 
 // doAfterDeleteHooks executes all "after Delete" hooks.
-func (o *User) doAfterDeleteHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *USER) doAfterDeleteHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range userAfterDeleteHooks {
+	for _, hook := range uSERAfterDeleteHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -299,12 +300,12 @@ func (o *User) doAfterDeleteHooks(ctx context.Context, exec boil.ContextExecutor
 }
 
 // doBeforeUpsertHooks executes all "before Upsert" hooks.
-func (o *User) doBeforeUpsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *USER) doBeforeUpsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range userBeforeUpsertHooks {
+	for _, hook := range uSERBeforeUpsertHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -314,12 +315,12 @@ func (o *User) doBeforeUpsertHooks(ctx context.Context, exec boil.ContextExecuto
 }
 
 // doAfterUpsertHooks executes all "after Upsert" hooks.
-func (o *User) doAfterUpsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
+func (o *USER) doAfterUpsertHooks(ctx context.Context, exec boil.ContextExecutor) (err error) {
 	if boil.HooksAreSkipped(ctx) {
 		return nil
 	}
 
-	for _, hook := range userAfterUpsertHooks {
+	for _, hook := range uSERAfterUpsertHooks {
 		if err := hook(ctx, exec, o); err != nil {
 			return err
 		}
@@ -328,33 +329,33 @@ func (o *User) doAfterUpsertHooks(ctx context.Context, exec boil.ContextExecutor
 	return nil
 }
 
-// AddUserHook registers your hook function for all future operations.
-func AddUserHook(hookPoint boil.HookPoint, userHook UserHook) {
+// AddUSERHook registers your hook function for all future operations.
+func AddUSERHook(hookPoint boil.HookPoint, uSERHook USERHook) {
 	switch hookPoint {
 	case boil.AfterSelectHook:
-		userAfterSelectHooks = append(userAfterSelectHooks, userHook)
+		uSERAfterSelectHooks = append(uSERAfterSelectHooks, uSERHook)
 	case boil.BeforeInsertHook:
-		userBeforeInsertHooks = append(userBeforeInsertHooks, userHook)
+		uSERBeforeInsertHooks = append(uSERBeforeInsertHooks, uSERHook)
 	case boil.AfterInsertHook:
-		userAfterInsertHooks = append(userAfterInsertHooks, userHook)
+		uSERAfterInsertHooks = append(uSERAfterInsertHooks, uSERHook)
 	case boil.BeforeUpdateHook:
-		userBeforeUpdateHooks = append(userBeforeUpdateHooks, userHook)
+		uSERBeforeUpdateHooks = append(uSERBeforeUpdateHooks, uSERHook)
 	case boil.AfterUpdateHook:
-		userAfterUpdateHooks = append(userAfterUpdateHooks, userHook)
+		uSERAfterUpdateHooks = append(uSERAfterUpdateHooks, uSERHook)
 	case boil.BeforeDeleteHook:
-		userBeforeDeleteHooks = append(userBeforeDeleteHooks, userHook)
+		uSERBeforeDeleteHooks = append(uSERBeforeDeleteHooks, uSERHook)
 	case boil.AfterDeleteHook:
-		userAfterDeleteHooks = append(userAfterDeleteHooks, userHook)
+		uSERAfterDeleteHooks = append(uSERAfterDeleteHooks, uSERHook)
 	case boil.BeforeUpsertHook:
-		userBeforeUpsertHooks = append(userBeforeUpsertHooks, userHook)
+		uSERBeforeUpsertHooks = append(uSERBeforeUpsertHooks, uSERHook)
 	case boil.AfterUpsertHook:
-		userAfterUpsertHooks = append(userAfterUpsertHooks, userHook)
+		uSERAfterUpsertHooks = append(uSERAfterUpsertHooks, uSERHook)
 	}
 }
 
-// One returns a single user record from the query.
-func (q userQuery) One(ctx context.Context, exec boil.ContextExecutor) (*User, error) {
-	o := &User{}
+// One returns a single uSER record from the query.
+func (q uSERQuery) One(ctx context.Context, exec boil.ContextExecutor) (*USER, error) {
+	o := &USER{}
 
 	queries.SetLimit(q.Query, 1)
 
@@ -363,7 +364,7 @@ func (q userQuery) One(ctx context.Context, exec boil.ContextExecutor) (*User, e
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, sql.ErrNoRows
 		}
-		return nil, errors.Wrap(err, "models: failed to execute a one query for User")
+		return nil, errors.Wrap(err, "models: failed to execute a one query for USER")
 	}
 
 	if err := o.doAfterSelectHooks(ctx, exec); err != nil {
@@ -373,16 +374,16 @@ func (q userQuery) One(ctx context.Context, exec boil.ContextExecutor) (*User, e
 	return o, nil
 }
 
-// All returns all User records from the query.
-func (q userQuery) All(ctx context.Context, exec boil.ContextExecutor) (UserSlice, error) {
-	var o []*User
+// All returns all USER records from the query.
+func (q uSERQuery) All(ctx context.Context, exec boil.ContextExecutor) (USERSlice, error) {
+	var o []*USER
 
 	err := q.Bind(ctx, exec, &o)
 	if err != nil {
-		return nil, errors.Wrap(err, "models: failed to assign all query results to User slice")
+		return nil, errors.Wrap(err, "models: failed to assign all query results to USER slice")
 	}
 
-	if len(userAfterSelectHooks) != 0 {
+	if len(uSERAfterSelectHooks) != 0 {
 		for _, obj := range o {
 			if err := obj.doAfterSelectHooks(ctx, exec); err != nil {
 				return o, err
@@ -393,8 +394,8 @@ func (q userQuery) All(ctx context.Context, exec boil.ContextExecutor) (UserSlic
 	return o, nil
 }
 
-// Count returns the count of all User records in the query.
-func (q userQuery) Count(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+// Count returns the count of all USER records in the query.
+func (q uSERQuery) Count(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
 	var count int64
 
 	queries.SetSelect(q.Query, nil)
@@ -402,14 +403,14 @@ func (q userQuery) Count(ctx context.Context, exec boil.ContextExecutor) (int64,
 
 	err := q.Query.QueryRowContext(ctx, exec).Scan(&count)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: failed to count User rows")
+		return 0, errors.Wrap(err, "models: failed to count USER rows")
 	}
 
 	return count, nil
 }
 
 // Exists checks if the row exists in the table.
-func (q userQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, error) {
+func (q uSERQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, error) {
 	var count int64
 
 	queries.SetSelect(q.Query, nil)
@@ -418,80 +419,80 @@ func (q userQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool,
 
 	err := q.Query.QueryRowContext(ctx, exec).Scan(&count)
 	if err != nil {
-		return false, errors.Wrap(err, "models: failed to check if User exists")
+		return false, errors.Wrap(err, "models: failed to check if USER exists")
 	}
 
 	return count > 0, nil
 }
 
-// FollowingIdUsers retrieves all the User's Users with an executor via id column.
-func (o *User) FollowingIdUsers(mods ...qm.QueryMod) userQuery {
+// FollowerUSERS retrieves all the USER's USERS with an executor via id column.
+func (o *USER) FollowerUSERS(mods ...qm.QueryMod) uSERQuery {
 	var queryMods []qm.QueryMod
 	if len(mods) != 0 {
 		queryMods = append(queryMods, mods...)
 	}
 
 	queryMods = append(queryMods,
-		qm.InnerJoin("`Followers` on `User`.`id` = `Followers`.`followingId`"),
-		qm.Where("`Followers`.`followerId`=?", o.ID),
+		qm.InnerJoin("`FOLLOWERS` on `USER`.`id` = `FOLLOWERS`.`follower_id`"),
+		qm.Where("`FOLLOWERS`.`user_id`=?", o.ID),
 	)
 
-	return Users(queryMods...)
+	return USERS(queryMods...)
 }
 
-// FollowerIdUsers retrieves all the User's Users with an executor via id column.
-func (o *User) FollowerIdUsers(mods ...qm.QueryMod) userQuery {
+// UserUSERS retrieves all the USER's USERS with an executor via id column.
+func (o *USER) UserUSERS(mods ...qm.QueryMod) uSERQuery {
 	var queryMods []qm.QueryMod
 	if len(mods) != 0 {
 		queryMods = append(queryMods, mods...)
 	}
 
 	queryMods = append(queryMods,
-		qm.InnerJoin("`Followers` on `User`.`id` = `Followers`.`followerId`"),
-		qm.Where("`Followers`.`followingId`=?", o.ID),
+		qm.InnerJoin("`FOLLOWERS` on `USER`.`id` = `FOLLOWERS`.`user_id`"),
+		qm.Where("`FOLLOWERS`.`follower_id`=?", o.ID),
 	)
 
-	return Users(queryMods...)
+	return USERS(queryMods...)
 }
 
-// AuthIdPublications retrieves all the Publication's Publications with an executor via authId column.
-func (o *User) AuthIdPublications(mods ...qm.QueryMod) publicationQuery {
+// AuthPUBLICATIONS retrieves all the PUBLICATION's PUBLICATIONS with an executor via auth_id column.
+func (o *USER) AuthPUBLICATIONS(mods ...qm.QueryMod) pUBLICATIONQuery {
 	var queryMods []qm.QueryMod
 	if len(mods) != 0 {
 		queryMods = append(queryMods, mods...)
 	}
 
 	queryMods = append(queryMods,
-		qm.Where("`Publication`.`authId`=?", o.ID),
+		qm.Where("`PUBLICATION`.`auth_id`=?", o.ID),
 	)
 
-	return Publications(queryMods...)
+	return PUBLICATIONS(queryMods...)
 }
 
-// LoadFollowingIdUsers allows an eager lookup of values, cached into the
+// LoadFollowerUSERS allows an eager lookup of values, cached into the
 // loaded structs of the objects. This is for a 1-M or N-M relationship.
-func (userL) LoadFollowingIdUsers(ctx context.Context, e boil.ContextExecutor, singular bool, maybeUser interface{}, mods queries.Applicator) error {
-	var slice []*User
-	var object *User
+func (uSERL) LoadFollowerUSERS(ctx context.Context, e boil.ContextExecutor, singular bool, maybeUSER interface{}, mods queries.Applicator) error {
+	var slice []*USER
+	var object *USER
 
 	if singular {
 		var ok bool
-		object, ok = maybeUser.(*User)
+		object, ok = maybeUSER.(*USER)
 		if !ok {
-			object = new(User)
-			ok = queries.SetFromEmbeddedStruct(&object, &maybeUser)
+			object = new(USER)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeUSER)
 			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeUser))
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeUSER))
 			}
 		}
 	} else {
-		s, ok := maybeUser.(*[]*User)
+		s, ok := maybeUSER.(*[]*USER)
 		if ok {
 			slice = *s
 		} else {
-			ok = queries.SetFromEmbeddedStruct(&slice, maybeUser)
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeUSER)
 			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeUser))
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeUSER))
 			}
 		}
 	}
@@ -499,14 +500,14 @@ func (userL) LoadFollowingIdUsers(ctx context.Context, e boil.ContextExecutor, s
 	args := make([]interface{}, 0, 1)
 	if singular {
 		if object.R == nil {
-			object.R = &userR{}
+			object.R = &uSERR{}
 		}
 		args = append(args, object.ID)
 	} else {
 	Outer:
 		for _, obj := range slice {
 			if obj.R == nil {
-				obj.R = &userR{}
+				obj.R = &uSERR{}
 			}
 
 			for _, a := range args {
@@ -524,10 +525,10 @@ func (userL) LoadFollowingIdUsers(ctx context.Context, e boil.ContextExecutor, s
 	}
 
 	query := NewQuery(
-		qm.Select("`User`.`id`, `User`.`name`, `User`.`nick`, `User`.`password`, `User`.`email`, `User`.`createdAt`, `User`.`updatedAt`, `a`.`followerId`"),
-		qm.From("`User`"),
-		qm.InnerJoin("`Followers` as `a` on `User`.`id` = `a`.`followingId`"),
-		qm.WhereIn("`a`.`followerId` in ?", args...),
+		qm.Select("`USER`.`id`, `USER`.`name`, `USER`.`nick`, `USER`.`email`, `USER`.`password`, `USER`.`created_at`, `USER`.`updated_at`, `a`.`user_id`"),
+		qm.From("`USER`"),
+		qm.InnerJoin("`FOLLOWERS` as `a` on `USER`.`id` = `a`.`follower_id`"),
+		qm.WhereIn("`a`.`user_id` in ?", args...),
 	)
 	if mods != nil {
 		mods.Apply(query)
@@ -535,22 +536,22 @@ func (userL) LoadFollowingIdUsers(ctx context.Context, e boil.ContextExecutor, s
 
 	results, err := query.QueryContext(ctx, e)
 	if err != nil {
-		return errors.Wrap(err, "failed to eager load User")
+		return errors.Wrap(err, "failed to eager load USER")
 	}
 
-	var resultSlice []*User
+	var resultSlice []*USER
 
-	var localJoinCols []string
+	var localJoinCols []int
 	for results.Next() {
-		one := new(User)
-		var localJoinCol string
+		one := new(USER)
+		var localJoinCol int
 
-		err = results.Scan(&one.ID, &one.Name, &one.Nick, &one.Password, &one.Email, &one.CreatedAt, &one.UpdatedAt, &localJoinCol)
+		err = results.Scan(&one.ID, &one.Name, &one.Nick, &one.Email, &one.Password, &one.CreatedAt, &one.UpdatedAt, &localJoinCol)
 		if err != nil {
-			return errors.Wrap(err, "failed to scan eager loaded results for User")
+			return errors.Wrap(err, "failed to scan eager loaded results for USER")
 		}
 		if err = results.Err(); err != nil {
-			return errors.Wrap(err, "failed to plebian-bind eager loaded slice User")
+			return errors.Wrap(err, "failed to plebian-bind eager loaded slice USER")
 		}
 
 		resultSlice = append(resultSlice, one)
@@ -558,13 +559,13 @@ func (userL) LoadFollowingIdUsers(ctx context.Context, e boil.ContextExecutor, s
 	}
 
 	if err = results.Close(); err != nil {
-		return errors.Wrap(err, "failed to close results in eager load on User")
+		return errors.Wrap(err, "failed to close results in eager load on USER")
 	}
 	if err = results.Err(); err != nil {
-		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for User")
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for USER")
 	}
 
-	if len(userAfterSelectHooks) != 0 {
+	if len(uSERAfterSelectHooks) != 0 {
 		for _, obj := range resultSlice {
 			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
 				return err
@@ -572,12 +573,12 @@ func (userL) LoadFollowingIdUsers(ctx context.Context, e boil.ContextExecutor, s
 		}
 	}
 	if singular {
-		object.R.FollowingIdUsers = resultSlice
+		object.R.FollowerUSERS = resultSlice
 		for _, foreign := range resultSlice {
 			if foreign.R == nil {
-				foreign.R = &userR{}
+				foreign.R = &uSERR{}
 			}
-			foreign.R.FollowerIdUsers = append(foreign.R.FollowerIdUsers, object)
+			foreign.R.UserUSERS = append(foreign.R.UserUSERS, object)
 		}
 		return nil
 	}
@@ -586,11 +587,11 @@ func (userL) LoadFollowingIdUsers(ctx context.Context, e boil.ContextExecutor, s
 		localJoinCol := localJoinCols[i]
 		for _, local := range slice {
 			if local.ID == localJoinCol {
-				local.R.FollowingIdUsers = append(local.R.FollowingIdUsers, foreign)
+				local.R.FollowerUSERS = append(local.R.FollowerUSERS, foreign)
 				if foreign.R == nil {
-					foreign.R = &userR{}
+					foreign.R = &uSERR{}
 				}
-				foreign.R.FollowerIdUsers = append(foreign.R.FollowerIdUsers, local)
+				foreign.R.UserUSERS = append(foreign.R.UserUSERS, local)
 				break
 			}
 		}
@@ -599,30 +600,30 @@ func (userL) LoadFollowingIdUsers(ctx context.Context, e boil.ContextExecutor, s
 	return nil
 }
 
-// LoadFollowerIdUsers allows an eager lookup of values, cached into the
+// LoadUserUSERS allows an eager lookup of values, cached into the
 // loaded structs of the objects. This is for a 1-M or N-M relationship.
-func (userL) LoadFollowerIdUsers(ctx context.Context, e boil.ContextExecutor, singular bool, maybeUser interface{}, mods queries.Applicator) error {
-	var slice []*User
-	var object *User
+func (uSERL) LoadUserUSERS(ctx context.Context, e boil.ContextExecutor, singular bool, maybeUSER interface{}, mods queries.Applicator) error {
+	var slice []*USER
+	var object *USER
 
 	if singular {
 		var ok bool
-		object, ok = maybeUser.(*User)
+		object, ok = maybeUSER.(*USER)
 		if !ok {
-			object = new(User)
-			ok = queries.SetFromEmbeddedStruct(&object, &maybeUser)
+			object = new(USER)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeUSER)
 			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeUser))
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeUSER))
 			}
 		}
 	} else {
-		s, ok := maybeUser.(*[]*User)
+		s, ok := maybeUSER.(*[]*USER)
 		if ok {
 			slice = *s
 		} else {
-			ok = queries.SetFromEmbeddedStruct(&slice, maybeUser)
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeUSER)
 			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeUser))
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeUSER))
 			}
 		}
 	}
@@ -630,14 +631,14 @@ func (userL) LoadFollowerIdUsers(ctx context.Context, e boil.ContextExecutor, si
 	args := make([]interface{}, 0, 1)
 	if singular {
 		if object.R == nil {
-			object.R = &userR{}
+			object.R = &uSERR{}
 		}
 		args = append(args, object.ID)
 	} else {
 	Outer:
 		for _, obj := range slice {
 			if obj.R == nil {
-				obj.R = &userR{}
+				obj.R = &uSERR{}
 			}
 
 			for _, a := range args {
@@ -655,10 +656,10 @@ func (userL) LoadFollowerIdUsers(ctx context.Context, e boil.ContextExecutor, si
 	}
 
 	query := NewQuery(
-		qm.Select("`User`.`id`, `User`.`name`, `User`.`nick`, `User`.`password`, `User`.`email`, `User`.`createdAt`, `User`.`updatedAt`, `a`.`followingId`"),
-		qm.From("`User`"),
-		qm.InnerJoin("`Followers` as `a` on `User`.`id` = `a`.`followerId`"),
-		qm.WhereIn("`a`.`followingId` in ?", args...),
+		qm.Select("`USER`.`id`, `USER`.`name`, `USER`.`nick`, `USER`.`email`, `USER`.`password`, `USER`.`created_at`, `USER`.`updated_at`, `a`.`follower_id`"),
+		qm.From("`USER`"),
+		qm.InnerJoin("`FOLLOWERS` as `a` on `USER`.`id` = `a`.`user_id`"),
+		qm.WhereIn("`a`.`follower_id` in ?", args...),
 	)
 	if mods != nil {
 		mods.Apply(query)
@@ -666,22 +667,22 @@ func (userL) LoadFollowerIdUsers(ctx context.Context, e boil.ContextExecutor, si
 
 	results, err := query.QueryContext(ctx, e)
 	if err != nil {
-		return errors.Wrap(err, "failed to eager load User")
+		return errors.Wrap(err, "failed to eager load USER")
 	}
 
-	var resultSlice []*User
+	var resultSlice []*USER
 
-	var localJoinCols []string
+	var localJoinCols []int
 	for results.Next() {
-		one := new(User)
-		var localJoinCol string
+		one := new(USER)
+		var localJoinCol int
 
-		err = results.Scan(&one.ID, &one.Name, &one.Nick, &one.Password, &one.Email, &one.CreatedAt, &one.UpdatedAt, &localJoinCol)
+		err = results.Scan(&one.ID, &one.Name, &one.Nick, &one.Email, &one.Password, &one.CreatedAt, &one.UpdatedAt, &localJoinCol)
 		if err != nil {
-			return errors.Wrap(err, "failed to scan eager loaded results for User")
+			return errors.Wrap(err, "failed to scan eager loaded results for USER")
 		}
 		if err = results.Err(); err != nil {
-			return errors.Wrap(err, "failed to plebian-bind eager loaded slice User")
+			return errors.Wrap(err, "failed to plebian-bind eager loaded slice USER")
 		}
 
 		resultSlice = append(resultSlice, one)
@@ -689,13 +690,13 @@ func (userL) LoadFollowerIdUsers(ctx context.Context, e boil.ContextExecutor, si
 	}
 
 	if err = results.Close(); err != nil {
-		return errors.Wrap(err, "failed to close results in eager load on User")
+		return errors.Wrap(err, "failed to close results in eager load on USER")
 	}
 	if err = results.Err(); err != nil {
-		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for User")
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for USER")
 	}
 
-	if len(userAfterSelectHooks) != 0 {
+	if len(uSERAfterSelectHooks) != 0 {
 		for _, obj := range resultSlice {
 			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
 				return err
@@ -703,12 +704,12 @@ func (userL) LoadFollowerIdUsers(ctx context.Context, e boil.ContextExecutor, si
 		}
 	}
 	if singular {
-		object.R.FollowerIdUsers = resultSlice
+		object.R.UserUSERS = resultSlice
 		for _, foreign := range resultSlice {
 			if foreign.R == nil {
-				foreign.R = &userR{}
+				foreign.R = &uSERR{}
 			}
-			foreign.R.FollowingIdUsers = append(foreign.R.FollowingIdUsers, object)
+			foreign.R.FollowerUSERS = append(foreign.R.FollowerUSERS, object)
 		}
 		return nil
 	}
@@ -717,11 +718,11 @@ func (userL) LoadFollowerIdUsers(ctx context.Context, e boil.ContextExecutor, si
 		localJoinCol := localJoinCols[i]
 		for _, local := range slice {
 			if local.ID == localJoinCol {
-				local.R.FollowerIdUsers = append(local.R.FollowerIdUsers, foreign)
+				local.R.UserUSERS = append(local.R.UserUSERS, foreign)
 				if foreign.R == nil {
-					foreign.R = &userR{}
+					foreign.R = &uSERR{}
 				}
-				foreign.R.FollowingIdUsers = append(foreign.R.FollowingIdUsers, local)
+				foreign.R.FollowerUSERS = append(foreign.R.FollowerUSERS, local)
 				break
 			}
 		}
@@ -730,30 +731,30 @@ func (userL) LoadFollowerIdUsers(ctx context.Context, e boil.ContextExecutor, si
 	return nil
 }
 
-// LoadAuthIdPublications allows an eager lookup of values, cached into the
+// LoadAuthPUBLICATIONS allows an eager lookup of values, cached into the
 // loaded structs of the objects. This is for a 1-M or N-M relationship.
-func (userL) LoadAuthIdPublications(ctx context.Context, e boil.ContextExecutor, singular bool, maybeUser interface{}, mods queries.Applicator) error {
-	var slice []*User
-	var object *User
+func (uSERL) LoadAuthPUBLICATIONS(ctx context.Context, e boil.ContextExecutor, singular bool, maybeUSER interface{}, mods queries.Applicator) error {
+	var slice []*USER
+	var object *USER
 
 	if singular {
 		var ok bool
-		object, ok = maybeUser.(*User)
+		object, ok = maybeUSER.(*USER)
 		if !ok {
-			object = new(User)
-			ok = queries.SetFromEmbeddedStruct(&object, &maybeUser)
+			object = new(USER)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeUSER)
 			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeUser))
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeUSER))
 			}
 		}
 	} else {
-		s, ok := maybeUser.(*[]*User)
+		s, ok := maybeUSER.(*[]*USER)
 		if ok {
 			slice = *s
 		} else {
-			ok = queries.SetFromEmbeddedStruct(&slice, maybeUser)
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeUSER)
 			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeUser))
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeUSER))
 			}
 		}
 	}
@@ -761,14 +762,14 @@ func (userL) LoadAuthIdPublications(ctx context.Context, e boil.ContextExecutor,
 	args := make([]interface{}, 0, 1)
 	if singular {
 		if object.R == nil {
-			object.R = &userR{}
+			object.R = &uSERR{}
 		}
 		args = append(args, object.ID)
 	} else {
 	Outer:
 		for _, obj := range slice {
 			if obj.R == nil {
-				obj.R = &userR{}
+				obj.R = &uSERR{}
 			}
 
 			for _, a := range args {
@@ -786,8 +787,8 @@ func (userL) LoadAuthIdPublications(ctx context.Context, e boil.ContextExecutor,
 	}
 
 	query := NewQuery(
-		qm.From(`Publication`),
-		qm.WhereIn(`Publication.authId in ?`, args...),
+		qm.From(`PUBLICATION`),
+		qm.WhereIn(`PUBLICATION.auth_id in ?`, args...),
 	)
 	if mods != nil {
 		mods.Apply(query)
@@ -795,22 +796,22 @@ func (userL) LoadAuthIdPublications(ctx context.Context, e boil.ContextExecutor,
 
 	results, err := query.QueryContext(ctx, e)
 	if err != nil {
-		return errors.Wrap(err, "failed to eager load Publication")
+		return errors.Wrap(err, "failed to eager load PUBLICATION")
 	}
 
-	var resultSlice []*Publication
+	var resultSlice []*PUBLICATION
 	if err = queries.Bind(results, &resultSlice); err != nil {
-		return errors.Wrap(err, "failed to bind eager loaded slice Publication")
+		return errors.Wrap(err, "failed to bind eager loaded slice PUBLICATION")
 	}
 
 	if err = results.Close(); err != nil {
-		return errors.Wrap(err, "failed to close results in eager load on Publication")
+		return errors.Wrap(err, "failed to close results in eager load on PUBLICATION")
 	}
 	if err = results.Err(); err != nil {
-		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for Publication")
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for PUBLICATION")
 	}
 
-	if len(publicationAfterSelectHooks) != 0 {
+	if len(pUBLICATIONAfterSelectHooks) != 0 {
 		for _, obj := range resultSlice {
 			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
 				return err
@@ -818,24 +819,24 @@ func (userL) LoadAuthIdPublications(ctx context.Context, e boil.ContextExecutor,
 		}
 	}
 	if singular {
-		object.R.AuthIdPublications = resultSlice
+		object.R.AuthPUBLICATIONS = resultSlice
 		for _, foreign := range resultSlice {
 			if foreign.R == nil {
-				foreign.R = &publicationR{}
+				foreign.R = &pUBLICATIONR{}
 			}
-			foreign.R.AuthIdUser = object
+			foreign.R.Auth = object
 		}
 		return nil
 	}
 
 	for _, foreign := range resultSlice {
 		for _, local := range slice {
-			if local.ID == foreign.AuthId {
-				local.R.AuthIdPublications = append(local.R.AuthIdPublications, foreign)
+			if local.ID == foreign.AuthID {
+				local.R.AuthPUBLICATIONS = append(local.R.AuthPUBLICATIONS, foreign)
 				if foreign.R == nil {
-					foreign.R = &publicationR{}
+					foreign.R = &pUBLICATIONR{}
 				}
-				foreign.R.AuthIdUser = local
+				foreign.R.Auth = local
 				break
 			}
 		}
@@ -844,11 +845,11 @@ func (userL) LoadAuthIdPublications(ctx context.Context, e boil.ContextExecutor,
 	return nil
 }
 
-// AddFollowingIdUsers adds the given related objects to the existing relationships
-// of the User, optionally inserting them as new records.
-// Appends related to o.R.FollowingIdUsers.
-// Sets related.R.FollowerIdUsers appropriately.
-func (o *User) AddFollowingIdUsers(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*User) error {
+// AddFollowerUSERS adds the given related objects to the existing relationships
+// of the USER, optionally inserting them as new records.
+// Appends related to o.R.FollowerUSERS.
+// Sets related.R.UserUSERS appropriately.
+func (o *USER) AddFollowerUSERS(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*USER) error {
 	var err error
 	for _, rel := range related {
 		if insert {
@@ -859,7 +860,7 @@ func (o *User) AddFollowingIdUsers(ctx context.Context, exec boil.ContextExecuto
 	}
 
 	for _, rel := range related {
-		query := "insert into `Followers` (`followerId`, `followingId`) values (?, ?)"
+		query := "insert into `FOLLOWERS` (`user_id`, `follower_id`) values (?, ?)"
 		values := []interface{}{o.ID, rel.ID}
 
 		if boil.IsDebug(ctx) {
@@ -873,33 +874,33 @@ func (o *User) AddFollowingIdUsers(ctx context.Context, exec boil.ContextExecuto
 		}
 	}
 	if o.R == nil {
-		o.R = &userR{
-			FollowingIdUsers: related,
+		o.R = &uSERR{
+			FollowerUSERS: related,
 		}
 	} else {
-		o.R.FollowingIdUsers = append(o.R.FollowingIdUsers, related...)
+		o.R.FollowerUSERS = append(o.R.FollowerUSERS, related...)
 	}
 
 	for _, rel := range related {
 		if rel.R == nil {
-			rel.R = &userR{
-				FollowerIdUsers: UserSlice{o},
+			rel.R = &uSERR{
+				UserUSERS: USERSlice{o},
 			}
 		} else {
-			rel.R.FollowerIdUsers = append(rel.R.FollowerIdUsers, o)
+			rel.R.UserUSERS = append(rel.R.UserUSERS, o)
 		}
 	}
 	return nil
 }
 
-// SetFollowingIdUsers removes all previously related items of the
-// User replacing them completely with the passed
+// SetFollowerUSERS removes all previously related items of the
+// USER replacing them completely with the passed
 // in related items, optionally inserting them as new records.
-// Sets o.R.FollowerIdUsers's FollowingIdUsers accordingly.
-// Replaces o.R.FollowingIdUsers with related.
-// Sets related.R.FollowerIdUsers's FollowingIdUsers accordingly.
-func (o *User) SetFollowingIdUsers(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*User) error {
-	query := "delete from `Followers` where `followerId` = ?"
+// Sets o.R.UserUSERS's FollowerUSERS accordingly.
+// Replaces o.R.FollowerUSERS with related.
+// Sets related.R.UserUSERS's FollowerUSERS accordingly.
+func (o *USER) SetFollowerUSERS(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*USER) error {
+	query := "delete from `FOLLOWERS` where `user_id` = ?"
 	values := []interface{}{o.ID}
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -911,25 +912,25 @@ func (o *User) SetFollowingIdUsers(ctx context.Context, exec boil.ContextExecuto
 		return errors.Wrap(err, "failed to remove relationships before set")
 	}
 
-	removeFollowingIdUsersFromFollowerIdUsersSlice(o, related)
+	removeFollowerUSERSFromUserUSERSSlice(o, related)
 	if o.R != nil {
-		o.R.FollowingIdUsers = nil
+		o.R.FollowerUSERS = nil
 	}
 
-	return o.AddFollowingIdUsers(ctx, exec, insert, related...)
+	return o.AddFollowerUSERS(ctx, exec, insert, related...)
 }
 
-// RemoveFollowingIdUsers relationships from objects passed in.
-// Removes related items from R.FollowingIdUsers (uses pointer comparison, removal does not keep order)
-// Sets related.R.FollowerIdUsers.
-func (o *User) RemoveFollowingIdUsers(ctx context.Context, exec boil.ContextExecutor, related ...*User) error {
+// RemoveFollowerUSERS relationships from objects passed in.
+// Removes related items from R.FollowerUSERS (uses pointer comparison, removal does not keep order)
+// Sets related.R.UserUSERS.
+func (o *USER) RemoveFollowerUSERS(ctx context.Context, exec boil.ContextExecutor, related ...*USER) error {
 	if len(related) == 0 {
 		return nil
 	}
 
 	var err error
 	query := fmt.Sprintf(
-		"delete from `Followers` where `followerId` = ? and `followingId` in (%s)",
+		"delete from `FOLLOWERS` where `user_id` = ? and `follower_id` in (%s)",
 		strmangle.Placeholders(dialect.UseIndexPlaceholders, len(related), 2, 1),
 	)
 	values := []interface{}{o.ID}
@@ -946,22 +947,22 @@ func (o *User) RemoveFollowingIdUsers(ctx context.Context, exec boil.ContextExec
 	if err != nil {
 		return errors.Wrap(err, "failed to remove relationships before set")
 	}
-	removeFollowingIdUsersFromFollowerIdUsersSlice(o, related)
+	removeFollowerUSERSFromUserUSERSSlice(o, related)
 	if o.R == nil {
 		return nil
 	}
 
 	for _, rel := range related {
-		for i, ri := range o.R.FollowingIdUsers {
+		for i, ri := range o.R.FollowerUSERS {
 			if rel != ri {
 				continue
 			}
 
-			ln := len(o.R.FollowingIdUsers)
+			ln := len(o.R.FollowerUSERS)
 			if ln > 1 && i < ln-1 {
-				o.R.FollowingIdUsers[i] = o.R.FollowingIdUsers[ln-1]
+				o.R.FollowerUSERS[i] = o.R.FollowerUSERS[ln-1]
 			}
-			o.R.FollowingIdUsers = o.R.FollowingIdUsers[:ln-1]
+			o.R.FollowerUSERS = o.R.FollowerUSERS[:ln-1]
 			break
 		}
 	}
@@ -969,31 +970,31 @@ func (o *User) RemoveFollowingIdUsers(ctx context.Context, exec boil.ContextExec
 	return nil
 }
 
-func removeFollowingIdUsersFromFollowerIdUsersSlice(o *User, related []*User) {
+func removeFollowerUSERSFromUserUSERSSlice(o *USER, related []*USER) {
 	for _, rel := range related {
 		if rel.R == nil {
 			continue
 		}
-		for i, ri := range rel.R.FollowerIdUsers {
+		for i, ri := range rel.R.UserUSERS {
 			if o.ID != ri.ID {
 				continue
 			}
 
-			ln := len(rel.R.FollowerIdUsers)
+			ln := len(rel.R.UserUSERS)
 			if ln > 1 && i < ln-1 {
-				rel.R.FollowerIdUsers[i] = rel.R.FollowerIdUsers[ln-1]
+				rel.R.UserUSERS[i] = rel.R.UserUSERS[ln-1]
 			}
-			rel.R.FollowerIdUsers = rel.R.FollowerIdUsers[:ln-1]
+			rel.R.UserUSERS = rel.R.UserUSERS[:ln-1]
 			break
 		}
 	}
 }
 
-// AddFollowerIdUsers adds the given related objects to the existing relationships
-// of the User, optionally inserting them as new records.
-// Appends related to o.R.FollowerIdUsers.
-// Sets related.R.FollowingIdUsers appropriately.
-func (o *User) AddFollowerIdUsers(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*User) error {
+// AddUserUSERS adds the given related objects to the existing relationships
+// of the USER, optionally inserting them as new records.
+// Appends related to o.R.UserUSERS.
+// Sets related.R.FollowerUSERS appropriately.
+func (o *USER) AddUserUSERS(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*USER) error {
 	var err error
 	for _, rel := range related {
 		if insert {
@@ -1004,7 +1005,7 @@ func (o *User) AddFollowerIdUsers(ctx context.Context, exec boil.ContextExecutor
 	}
 
 	for _, rel := range related {
-		query := "insert into `Followers` (`followingId`, `followerId`) values (?, ?)"
+		query := "insert into `FOLLOWERS` (`follower_id`, `user_id`) values (?, ?)"
 		values := []interface{}{o.ID, rel.ID}
 
 		if boil.IsDebug(ctx) {
@@ -1018,33 +1019,33 @@ func (o *User) AddFollowerIdUsers(ctx context.Context, exec boil.ContextExecutor
 		}
 	}
 	if o.R == nil {
-		o.R = &userR{
-			FollowerIdUsers: related,
+		o.R = &uSERR{
+			UserUSERS: related,
 		}
 	} else {
-		o.R.FollowerIdUsers = append(o.R.FollowerIdUsers, related...)
+		o.R.UserUSERS = append(o.R.UserUSERS, related...)
 	}
 
 	for _, rel := range related {
 		if rel.R == nil {
-			rel.R = &userR{
-				FollowingIdUsers: UserSlice{o},
+			rel.R = &uSERR{
+				FollowerUSERS: USERSlice{o},
 			}
 		} else {
-			rel.R.FollowingIdUsers = append(rel.R.FollowingIdUsers, o)
+			rel.R.FollowerUSERS = append(rel.R.FollowerUSERS, o)
 		}
 	}
 	return nil
 }
 
-// SetFollowerIdUsers removes all previously related items of the
-// User replacing them completely with the passed
+// SetUserUSERS removes all previously related items of the
+// USER replacing them completely with the passed
 // in related items, optionally inserting them as new records.
-// Sets o.R.FollowingIdUsers's FollowerIdUsers accordingly.
-// Replaces o.R.FollowerIdUsers with related.
-// Sets related.R.FollowingIdUsers's FollowerIdUsers accordingly.
-func (o *User) SetFollowerIdUsers(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*User) error {
-	query := "delete from `Followers` where `followingId` = ?"
+// Sets o.R.FollowerUSERS's UserUSERS accordingly.
+// Replaces o.R.UserUSERS with related.
+// Sets related.R.FollowerUSERS's UserUSERS accordingly.
+func (o *USER) SetUserUSERS(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*USER) error {
+	query := "delete from `FOLLOWERS` where `follower_id` = ?"
 	values := []interface{}{o.ID}
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1056,25 +1057,25 @@ func (o *User) SetFollowerIdUsers(ctx context.Context, exec boil.ContextExecutor
 		return errors.Wrap(err, "failed to remove relationships before set")
 	}
 
-	removeFollowerIdUsersFromFollowingIdUsersSlice(o, related)
+	removeUserUSERSFromFollowerUSERSSlice(o, related)
 	if o.R != nil {
-		o.R.FollowerIdUsers = nil
+		o.R.UserUSERS = nil
 	}
 
-	return o.AddFollowerIdUsers(ctx, exec, insert, related...)
+	return o.AddUserUSERS(ctx, exec, insert, related...)
 }
 
-// RemoveFollowerIdUsers relationships from objects passed in.
-// Removes related items from R.FollowerIdUsers (uses pointer comparison, removal does not keep order)
-// Sets related.R.FollowingIdUsers.
-func (o *User) RemoveFollowerIdUsers(ctx context.Context, exec boil.ContextExecutor, related ...*User) error {
+// RemoveUserUSERS relationships from objects passed in.
+// Removes related items from R.UserUSERS (uses pointer comparison, removal does not keep order)
+// Sets related.R.FollowerUSERS.
+func (o *USER) RemoveUserUSERS(ctx context.Context, exec boil.ContextExecutor, related ...*USER) error {
 	if len(related) == 0 {
 		return nil
 	}
 
 	var err error
 	query := fmt.Sprintf(
-		"delete from `Followers` where `followingId` = ? and `followerId` in (%s)",
+		"delete from `FOLLOWERS` where `follower_id` = ? and `user_id` in (%s)",
 		strmangle.Placeholders(dialect.UseIndexPlaceholders, len(related), 2, 1),
 	)
 	values := []interface{}{o.ID}
@@ -1091,22 +1092,22 @@ func (o *User) RemoveFollowerIdUsers(ctx context.Context, exec boil.ContextExecu
 	if err != nil {
 		return errors.Wrap(err, "failed to remove relationships before set")
 	}
-	removeFollowerIdUsersFromFollowingIdUsersSlice(o, related)
+	removeUserUSERSFromFollowerUSERSSlice(o, related)
 	if o.R == nil {
 		return nil
 	}
 
 	for _, rel := range related {
-		for i, ri := range o.R.FollowerIdUsers {
+		for i, ri := range o.R.UserUSERS {
 			if rel != ri {
 				continue
 			}
 
-			ln := len(o.R.FollowerIdUsers)
+			ln := len(o.R.UserUSERS)
 			if ln > 1 && i < ln-1 {
-				o.R.FollowerIdUsers[i] = o.R.FollowerIdUsers[ln-1]
+				o.R.UserUSERS[i] = o.R.UserUSERS[ln-1]
 			}
-			o.R.FollowerIdUsers = o.R.FollowerIdUsers[:ln-1]
+			o.R.UserUSERS = o.R.UserUSERS[:ln-1]
 			break
 		}
 	}
@@ -1114,43 +1115,43 @@ func (o *User) RemoveFollowerIdUsers(ctx context.Context, exec boil.ContextExecu
 	return nil
 }
 
-func removeFollowerIdUsersFromFollowingIdUsersSlice(o *User, related []*User) {
+func removeUserUSERSFromFollowerUSERSSlice(o *USER, related []*USER) {
 	for _, rel := range related {
 		if rel.R == nil {
 			continue
 		}
-		for i, ri := range rel.R.FollowingIdUsers {
+		for i, ri := range rel.R.FollowerUSERS {
 			if o.ID != ri.ID {
 				continue
 			}
 
-			ln := len(rel.R.FollowingIdUsers)
+			ln := len(rel.R.FollowerUSERS)
 			if ln > 1 && i < ln-1 {
-				rel.R.FollowingIdUsers[i] = rel.R.FollowingIdUsers[ln-1]
+				rel.R.FollowerUSERS[i] = rel.R.FollowerUSERS[ln-1]
 			}
-			rel.R.FollowingIdUsers = rel.R.FollowingIdUsers[:ln-1]
+			rel.R.FollowerUSERS = rel.R.FollowerUSERS[:ln-1]
 			break
 		}
 	}
 }
 
-// AddAuthIdPublications adds the given related objects to the existing relationships
-// of the User, optionally inserting them as new records.
-// Appends related to o.R.AuthIdPublications.
-// Sets related.R.AuthIdUser appropriately.
-func (o *User) AddAuthIdPublications(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Publication) error {
+// AddAuthPUBLICATIONS adds the given related objects to the existing relationships
+// of the USER, optionally inserting them as new records.
+// Appends related to o.R.AuthPUBLICATIONS.
+// Sets related.R.Auth appropriately.
+func (o *USER) AddAuthPUBLICATIONS(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*PUBLICATION) error {
 	var err error
 	for _, rel := range related {
 		if insert {
-			rel.AuthId = o.ID
+			rel.AuthID = o.ID
 			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
 				return errors.Wrap(err, "failed to insert into foreign table")
 			}
 		} else {
 			updateQuery := fmt.Sprintf(
-				"UPDATE `Publication` SET %s WHERE %s",
-				strmangle.SetParamNames("`", "`", 0, []string{"authId"}),
-				strmangle.WhereClause("`", "`", 0, publicationPrimaryKeyColumns),
+				"UPDATE `PUBLICATION` SET %s WHERE %s",
+				strmangle.SetParamNames("`", "`", 0, []string{"auth_id"}),
+				strmangle.WhereClause("`", "`", 0, pUBLICATIONPrimaryKeyColumns),
 			)
 			values := []interface{}{o.ID, rel.ID}
 
@@ -1163,117 +1164,127 @@ func (o *User) AddAuthIdPublications(ctx context.Context, exec boil.ContextExecu
 				return errors.Wrap(err, "failed to update foreign table")
 			}
 
-			rel.AuthId = o.ID
+			rel.AuthID = o.ID
 		}
 	}
 
 	if o.R == nil {
-		o.R = &userR{
-			AuthIdPublications: related,
+		o.R = &uSERR{
+			AuthPUBLICATIONS: related,
 		}
 	} else {
-		o.R.AuthIdPublications = append(o.R.AuthIdPublications, related...)
+		o.R.AuthPUBLICATIONS = append(o.R.AuthPUBLICATIONS, related...)
 	}
 
 	for _, rel := range related {
 		if rel.R == nil {
-			rel.R = &publicationR{
-				AuthIdUser: o,
+			rel.R = &pUBLICATIONR{
+				Auth: o,
 			}
 		} else {
-			rel.R.AuthIdUser = o
+			rel.R.Auth = o
 		}
 	}
 	return nil
 }
 
-// Users retrieves all the records using an executor.
-func Users(mods ...qm.QueryMod) userQuery {
-	mods = append(mods, qm.From("`User`"))
+// USERS retrieves all the records using an executor.
+func USERS(mods ...qm.QueryMod) uSERQuery {
+	mods = append(mods, qm.From("`USER`"))
 	q := NewQuery(mods...)
 	if len(queries.GetSelect(q)) == 0 {
-		queries.SetSelect(q, []string{"`User`.*"})
+		queries.SetSelect(q, []string{"`USER`.*"})
 	}
 
-	return userQuery{q}
+	return uSERQuery{q}
 }
 
-// FindUser retrieves a single record by ID with an executor.
+// FindUSER retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindUser(ctx context.Context, exec boil.ContextExecutor, iD string, selectCols ...string) (*User, error) {
-	userObj := &User{}
+func FindUSER(ctx context.Context, exec boil.ContextExecutor, iD int, selectCols ...string) (*USER, error) {
+	uSERObj := &USER{}
 
 	sel := "*"
 	if len(selectCols) > 0 {
 		sel = strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, selectCols), ",")
 	}
 	query := fmt.Sprintf(
-		"select %s from `User` where `id`=?", sel,
+		"select %s from `USER` where `id`=?", sel,
 	)
 
 	q := queries.Raw(query, iD)
 
-	err := q.Bind(ctx, exec, userObj)
+	err := q.Bind(ctx, exec, uSERObj)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, sql.ErrNoRows
 		}
-		return nil, errors.Wrap(err, "models: unable to select from User")
+		return nil, errors.Wrap(err, "models: unable to select from USER")
 	}
 
-	if err = userObj.doAfterSelectHooks(ctx, exec); err != nil {
-		return userObj, err
+	if err = uSERObj.doAfterSelectHooks(ctx, exec); err != nil {
+		return uSERObj, err
 	}
 
-	return userObj, nil
+	return uSERObj, nil
 }
 
 // Insert a single record using an executor.
 // See boil.Columns.InsertColumnSet documentation to understand column list inference for inserts.
-func (o *User) Insert(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) error {
+func (o *USER) Insert(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) error {
 	if o == nil {
-		return errors.New("models: no User provided for insertion")
+		return errors.New("models: no USER provided for insertion")
 	}
 
 	var err error
+	if !boil.TimestampsAreSkipped(ctx) {
+		currTime := time.Now().In(boil.GetLocation())
+
+		if queries.MustTime(o.CreatedAt).IsZero() {
+			queries.SetScanner(&o.CreatedAt, currTime)
+		}
+		if queries.MustTime(o.UpdatedAt).IsZero() {
+			queries.SetScanner(&o.UpdatedAt, currTime)
+		}
+	}
 
 	if err := o.doBeforeInsertHooks(ctx, exec); err != nil {
 		return err
 	}
 
-	nzDefaults := queries.NonZeroDefaultSet(userColumnsWithDefault, o)
+	nzDefaults := queries.NonZeroDefaultSet(uSERColumnsWithDefault, o)
 
 	key := makeCacheKey(columns, nzDefaults)
-	userInsertCacheMut.RLock()
-	cache, cached := userInsertCache[key]
-	userInsertCacheMut.RUnlock()
+	uSERInsertCacheMut.RLock()
+	cache, cached := uSERInsertCache[key]
+	uSERInsertCacheMut.RUnlock()
 
 	if !cached {
 		wl, returnColumns := columns.InsertColumnSet(
-			userAllColumns,
-			userColumnsWithDefault,
-			userColumnsWithoutDefault,
+			uSERAllColumns,
+			uSERColumnsWithDefault,
+			uSERColumnsWithoutDefault,
 			nzDefaults,
 		)
 
-		cache.valueMapping, err = queries.BindMapping(userType, userMapping, wl)
+		cache.valueMapping, err = queries.BindMapping(uSERType, uSERMapping, wl)
 		if err != nil {
 			return err
 		}
-		cache.retMapping, err = queries.BindMapping(userType, userMapping, returnColumns)
+		cache.retMapping, err = queries.BindMapping(uSERType, uSERMapping, returnColumns)
 		if err != nil {
 			return err
 		}
 		if len(wl) != 0 {
-			cache.query = fmt.Sprintf("INSERT INTO `User` (`%s`) %%sVALUES (%s)%%s", strings.Join(wl, "`,`"), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
+			cache.query = fmt.Sprintf("INSERT INTO `USER` (`%s`) %%sVALUES (%s)%%s", strings.Join(wl, "`,`"), strmangle.Placeholders(dialect.UseIndexPlaceholders, len(wl), 1, 1))
 		} else {
-			cache.query = "INSERT INTO `User` () VALUES ()%s%s"
+			cache.query = "INSERT INTO `USER` () VALUES ()%s%s"
 		}
 
 		var queryOutput, queryReturning string
 
 		if len(cache.retMapping) != 0 {
-			cache.retQuery = fmt.Sprintf("SELECT `%s` FROM `User` WHERE %s", strings.Join(returnColumns, "`,`"), strmangle.WhereClause("`", "`", 0, userPrimaryKeyColumns))
+			cache.retQuery = fmt.Sprintf("SELECT `%s` FROM `USER` WHERE %s", strings.Join(returnColumns, "`,`"), strmangle.WhereClause("`", "`", 0, uSERPrimaryKeyColumns))
 		}
 
 		cache.query = fmt.Sprintf(cache.query, queryOutput, queryReturning)
@@ -1287,15 +1298,26 @@ func (o *User) Insert(ctx context.Context, exec boil.ContextExecutor, columns bo
 		fmt.Fprintln(writer, cache.query)
 		fmt.Fprintln(writer, vals)
 	}
-	_, err = exec.ExecContext(ctx, cache.query, vals...)
+	result, err := exec.ExecContext(ctx, cache.query, vals...)
 
 	if err != nil {
-		return errors.Wrap(err, "models: unable to insert into User")
+		return errors.Wrap(err, "models: unable to insert into USER")
 	}
 
+	var lastID int64
 	var identifierCols []interface{}
 
 	if len(cache.retMapping) == 0 {
+		goto CacheNoHooks
+	}
+
+	lastID, err = result.LastInsertId()
+	if err != nil {
+		return ErrSyncFail
+	}
+
+	o.ID = int(lastID)
+	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == uSERMapping["id"] {
 		goto CacheNoHooks
 	}
 
@@ -1310,50 +1332,56 @@ func (o *User) Insert(ctx context.Context, exec boil.ContextExecutor, columns bo
 	}
 	err = exec.QueryRowContext(ctx, cache.retQuery, identifierCols...).Scan(queries.PtrsFromMapping(value, cache.retMapping)...)
 	if err != nil {
-		return errors.Wrap(err, "models: unable to populate default values for User")
+		return errors.Wrap(err, "models: unable to populate default values for USER")
 	}
 
 CacheNoHooks:
 	if !cached {
-		userInsertCacheMut.Lock()
-		userInsertCache[key] = cache
-		userInsertCacheMut.Unlock()
+		uSERInsertCacheMut.Lock()
+		uSERInsertCache[key] = cache
+		uSERInsertCacheMut.Unlock()
 	}
 
 	return o.doAfterInsertHooks(ctx, exec)
 }
 
-// Update uses an executor to update the User.
+// Update uses an executor to update the USER.
 // See boil.Columns.UpdateColumnSet documentation to understand column list inference for updates.
 // Update does not automatically update the record in case of default values. Use .Reload() to refresh the records.
-func (o *User) Update(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) (int64, error) {
+func (o *USER) Update(ctx context.Context, exec boil.ContextExecutor, columns boil.Columns) (int64, error) {
+	if !boil.TimestampsAreSkipped(ctx) {
+		currTime := time.Now().In(boil.GetLocation())
+
+		queries.SetScanner(&o.UpdatedAt, currTime)
+	}
+
 	var err error
 	if err = o.doBeforeUpdateHooks(ctx, exec); err != nil {
 		return 0, err
 	}
 	key := makeCacheKey(columns, nil)
-	userUpdateCacheMut.RLock()
-	cache, cached := userUpdateCache[key]
-	userUpdateCacheMut.RUnlock()
+	uSERUpdateCacheMut.RLock()
+	cache, cached := uSERUpdateCache[key]
+	uSERUpdateCacheMut.RUnlock()
 
 	if !cached {
 		wl := columns.UpdateColumnSet(
-			userAllColumns,
-			userPrimaryKeyColumns,
+			uSERAllColumns,
+			uSERPrimaryKeyColumns,
 		)
 
 		if !columns.IsWhitelist() {
 			wl = strmangle.SetComplement(wl, []string{"created_at"})
 		}
 		if len(wl) == 0 {
-			return 0, errors.New("models: unable to update User, could not build whitelist")
+			return 0, errors.New("models: unable to update USER, could not build whitelist")
 		}
 
-		cache.query = fmt.Sprintf("UPDATE `User` SET %s WHERE %s",
+		cache.query = fmt.Sprintf("UPDATE `USER` SET %s WHERE %s",
 			strmangle.SetParamNames("`", "`", 0, wl),
-			strmangle.WhereClause("`", "`", 0, userPrimaryKeyColumns),
+			strmangle.WhereClause("`", "`", 0, uSERPrimaryKeyColumns),
 		)
-		cache.valueMapping, err = queries.BindMapping(userType, userMapping, append(wl, userPrimaryKeyColumns...))
+		cache.valueMapping, err = queries.BindMapping(uSERType, uSERMapping, append(wl, uSERPrimaryKeyColumns...))
 		if err != nil {
 			return 0, err
 		}
@@ -1369,42 +1397,42 @@ func (o *User) Update(ctx context.Context, exec boil.ContextExecutor, columns bo
 	var result sql.Result
 	result, err = exec.ExecContext(ctx, cache.query, values...)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to update User row")
+		return 0, errors.Wrap(err, "models: unable to update USER row")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: failed to get rows affected by update for User")
+		return 0, errors.Wrap(err, "models: failed to get rows affected by update for USER")
 	}
 
 	if !cached {
-		userUpdateCacheMut.Lock()
-		userUpdateCache[key] = cache
-		userUpdateCacheMut.Unlock()
+		uSERUpdateCacheMut.Lock()
+		uSERUpdateCache[key] = cache
+		uSERUpdateCacheMut.Unlock()
 	}
 
 	return rowsAff, o.doAfterUpdateHooks(ctx, exec)
 }
 
 // UpdateAll updates all rows with the specified column values.
-func (q userQuery) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
+func (q uSERQuery) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
 	queries.SetUpdate(q.Query, cols)
 
 	result, err := q.Query.ExecContext(ctx, exec)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to update all for User")
+		return 0, errors.Wrap(err, "models: unable to update all for USER")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to retrieve rows affected for User")
+		return 0, errors.Wrap(err, "models: unable to retrieve rows affected for USER")
 	}
 
 	return rowsAff, nil
 }
 
 // UpdateAll updates all rows with the specified column values, using an executor.
-func (o UserSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
+func (o USERSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, cols M) (int64, error) {
 	ln := int64(len(o))
 	if ln == 0 {
 		return 0, nil
@@ -1426,13 +1454,13 @@ func (o UserSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, col
 
 	// Append all of the primary key values for each column
 	for _, obj := range o {
-		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), userPrimaryKeyMapping)
+		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), uSERPrimaryKeyMapping)
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := fmt.Sprintf("UPDATE `User` SET %s WHERE %s",
+	sql := fmt.Sprintf("UPDATE `USER` SET %s WHERE %s",
 		strmangle.SetParamNames("`", "`", 0, colNames),
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, userPrimaryKeyColumns, len(o)))
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, uSERPrimaryKeyColumns, len(o)))
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1441,17 +1469,17 @@ func (o UserSlice) UpdateAll(ctx context.Context, exec boil.ContextExecutor, col
 	}
 	result, err := exec.ExecContext(ctx, sql, args...)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to update all in user slice")
+		return 0, errors.Wrap(err, "models: unable to update all in uSER slice")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to retrieve rows affected all in update all user")
+		return 0, errors.Wrap(err, "models: unable to retrieve rows affected all in update all uSER")
 	}
 	return rowsAff, nil
 }
 
-var mySQLUserUniqueColumns = []string{
+var mySQLUSERUniqueColumns = []string{
 	"id",
 	"nick",
 	"email",
@@ -1459,17 +1487,25 @@ var mySQLUserUniqueColumns = []string{
 
 // Upsert attempts an insert using an executor, and does an update or ignore on conflict.
 // See boil.Columns documentation for how to properly use updateColumns and insertColumns.
-func (o *User) Upsert(ctx context.Context, exec boil.ContextExecutor, updateColumns, insertColumns boil.Columns) error {
+func (o *USER) Upsert(ctx context.Context, exec boil.ContextExecutor, updateColumns, insertColumns boil.Columns) error {
 	if o == nil {
-		return errors.New("models: no User provided for upsert")
+		return errors.New("models: no USER provided for upsert")
+	}
+	if !boil.TimestampsAreSkipped(ctx) {
+		currTime := time.Now().In(boil.GetLocation())
+
+		if queries.MustTime(o.CreatedAt).IsZero() {
+			queries.SetScanner(&o.CreatedAt, currTime)
+		}
+		queries.SetScanner(&o.UpdatedAt, currTime)
 	}
 
 	if err := o.doBeforeUpsertHooks(ctx, exec); err != nil {
 		return err
 	}
 
-	nzDefaults := queries.NonZeroDefaultSet(userColumnsWithDefault, o)
-	nzUniques := queries.NonZeroDefaultSet(mySQLUserUniqueColumns, o)
+	nzDefaults := queries.NonZeroDefaultSet(uSERColumnsWithDefault, o)
+	nzUniques := queries.NonZeroDefaultSet(mySQLUSERUniqueColumns, o)
 
 	if len(nzUniques) == 0 {
 		return errors.New("cannot upsert with a table that cannot conflict on a unique column")
@@ -1497,43 +1533,43 @@ func (o *User) Upsert(ctx context.Context, exec boil.ContextExecutor, updateColu
 	key := buf.String()
 	strmangle.PutBuffer(buf)
 
-	userUpsertCacheMut.RLock()
-	cache, cached := userUpsertCache[key]
-	userUpsertCacheMut.RUnlock()
+	uSERUpsertCacheMut.RLock()
+	cache, cached := uSERUpsertCache[key]
+	uSERUpsertCacheMut.RUnlock()
 
 	var err error
 
 	if !cached {
 		insert, ret := insertColumns.InsertColumnSet(
-			userAllColumns,
-			userColumnsWithDefault,
-			userColumnsWithoutDefault,
+			uSERAllColumns,
+			uSERColumnsWithDefault,
+			uSERColumnsWithoutDefault,
 			nzDefaults,
 		)
 
 		update := updateColumns.UpdateColumnSet(
-			userAllColumns,
-			userPrimaryKeyColumns,
+			uSERAllColumns,
+			uSERPrimaryKeyColumns,
 		)
 
 		if !updateColumns.IsNone() && len(update) == 0 {
-			return errors.New("models: unable to upsert User, could not build update column list")
+			return errors.New("models: unable to upsert USER, could not build update column list")
 		}
 
 		ret = strmangle.SetComplement(ret, nzUniques)
-		cache.query = buildUpsertQueryMySQL(dialect, "`User`", update, insert)
+		cache.query = buildUpsertQueryMySQL(dialect, "`USER`", update, insert)
 		cache.retQuery = fmt.Sprintf(
-			"SELECT %s FROM `User` WHERE %s",
+			"SELECT %s FROM `USER` WHERE %s",
 			strings.Join(strmangle.IdentQuoteSlice(dialect.LQ, dialect.RQ, ret), ","),
 			strmangle.WhereClause("`", "`", 0, nzUniques),
 		)
 
-		cache.valueMapping, err = queries.BindMapping(userType, userMapping, insert)
+		cache.valueMapping, err = queries.BindMapping(uSERType, uSERMapping, insert)
 		if err != nil {
 			return err
 		}
 		if len(ret) != 0 {
-			cache.retMapping, err = queries.BindMapping(userType, userMapping, ret)
+			cache.retMapping, err = queries.BindMapping(uSERType, uSERMapping, ret)
 			if err != nil {
 				return err
 			}
@@ -1552,12 +1588,13 @@ func (o *User) Upsert(ctx context.Context, exec boil.ContextExecutor, updateColu
 		fmt.Fprintln(writer, cache.query)
 		fmt.Fprintln(writer, vals)
 	}
-	_, err = exec.ExecContext(ctx, cache.query, vals...)
+	result, err := exec.ExecContext(ctx, cache.query, vals...)
 
 	if err != nil {
-		return errors.Wrap(err, "models: unable to upsert for User")
+		return errors.Wrap(err, "models: unable to upsert for USER")
 	}
 
+	var lastID int64
 	var uniqueMap []uint64
 	var nzUniqueCols []interface{}
 
@@ -1565,9 +1602,19 @@ func (o *User) Upsert(ctx context.Context, exec boil.ContextExecutor, updateColu
 		goto CacheNoHooks
 	}
 
-	uniqueMap, err = queries.BindMapping(userType, userMapping, nzUniques)
+	lastID, err = result.LastInsertId()
 	if err != nil {
-		return errors.Wrap(err, "models: unable to retrieve unique values for User")
+		return ErrSyncFail
+	}
+
+	o.ID = int(lastID)
+	if lastID != 0 && len(cache.retMapping) == 1 && cache.retMapping[0] == uSERMapping["id"] {
+		goto CacheNoHooks
+	}
+
+	uniqueMap, err = queries.BindMapping(uSERType, uSERMapping, nzUniques)
+	if err != nil {
+		return errors.Wrap(err, "models: unable to retrieve unique values for USER")
 	}
 	nzUniqueCols = queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), uniqueMap)
 
@@ -1578,32 +1625,32 @@ func (o *User) Upsert(ctx context.Context, exec boil.ContextExecutor, updateColu
 	}
 	err = exec.QueryRowContext(ctx, cache.retQuery, nzUniqueCols...).Scan(returns...)
 	if err != nil {
-		return errors.Wrap(err, "models: unable to populate default values for User")
+		return errors.Wrap(err, "models: unable to populate default values for USER")
 	}
 
 CacheNoHooks:
 	if !cached {
-		userUpsertCacheMut.Lock()
-		userUpsertCache[key] = cache
-		userUpsertCacheMut.Unlock()
+		uSERUpsertCacheMut.Lock()
+		uSERUpsertCache[key] = cache
+		uSERUpsertCacheMut.Unlock()
 	}
 
 	return o.doAfterUpsertHooks(ctx, exec)
 }
 
-// Delete deletes a single User record with an executor.
+// Delete deletes a single USER record with an executor.
 // Delete will match against the primary key column to find the record to delete.
-func (o *User) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+func (o *USER) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
 	if o == nil {
-		return 0, errors.New("models: no User provided for delete")
+		return 0, errors.New("models: no USER provided for delete")
 	}
 
 	if err := o.doBeforeDeleteHooks(ctx, exec); err != nil {
 		return 0, err
 	}
 
-	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), userPrimaryKeyMapping)
-	sql := "DELETE FROM `User` WHERE `id`=?"
+	args := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(o)), uSERPrimaryKeyMapping)
+	sql := "DELETE FROM `USER` WHERE `id`=?"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1612,12 +1659,12 @@ func (o *User) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, er
 	}
 	result, err := exec.ExecContext(ctx, sql, args...)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to delete from User")
+		return 0, errors.Wrap(err, "models: unable to delete from USER")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: failed to get rows affected by delete for User")
+		return 0, errors.Wrap(err, "models: failed to get rows affected by delete for USER")
 	}
 
 	if err := o.doAfterDeleteHooks(ctx, exec); err != nil {
@@ -1628,33 +1675,33 @@ func (o *User) Delete(ctx context.Context, exec boil.ContextExecutor) (int64, er
 }
 
 // DeleteAll deletes all matching rows.
-func (q userQuery) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+func (q uSERQuery) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
 	if q.Query == nil {
-		return 0, errors.New("models: no userQuery provided for delete all")
+		return 0, errors.New("models: no uSERQuery provided for delete all")
 	}
 
 	queries.SetDelete(q.Query)
 
 	result, err := q.Query.ExecContext(ctx, exec)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to delete all from User")
+		return 0, errors.Wrap(err, "models: unable to delete all from USER")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: failed to get rows affected by deleteall for User")
+		return 0, errors.Wrap(err, "models: failed to get rows affected by deleteall for USER")
 	}
 
 	return rowsAff, nil
 }
 
 // DeleteAll deletes all rows in the slice, using an executor.
-func (o UserSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
+func (o USERSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (int64, error) {
 	if len(o) == 0 {
 		return 0, nil
 	}
 
-	if len(userBeforeDeleteHooks) != 0 {
+	if len(uSERBeforeDeleteHooks) != 0 {
 		for _, obj := range o {
 			if err := obj.doBeforeDeleteHooks(ctx, exec); err != nil {
 				return 0, err
@@ -1664,12 +1711,12 @@ func (o UserSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (in
 
 	var args []interface{}
 	for _, obj := range o {
-		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), userPrimaryKeyMapping)
+		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), uSERPrimaryKeyMapping)
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "DELETE FROM `User` WHERE " +
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, userPrimaryKeyColumns, len(o))
+	sql := "DELETE FROM `USER` WHERE " +
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, uSERPrimaryKeyColumns, len(o))
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1678,15 +1725,15 @@ func (o UserSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (in
 	}
 	result, err := exec.ExecContext(ctx, sql, args...)
 	if err != nil {
-		return 0, errors.Wrap(err, "models: unable to delete all from user slice")
+		return 0, errors.Wrap(err, "models: unable to delete all from uSER slice")
 	}
 
 	rowsAff, err := result.RowsAffected()
 	if err != nil {
-		return 0, errors.Wrap(err, "models: failed to get rows affected by deleteall for User")
+		return 0, errors.Wrap(err, "models: failed to get rows affected by deleteall for USER")
 	}
 
-	if len(userAfterDeleteHooks) != 0 {
+	if len(uSERAfterDeleteHooks) != 0 {
 		for _, obj := range o {
 			if err := obj.doAfterDeleteHooks(ctx, exec); err != nil {
 				return 0, err
@@ -1699,8 +1746,8 @@ func (o UserSlice) DeleteAll(ctx context.Context, exec boil.ContextExecutor) (in
 
 // Reload refetches the object from the database
 // using the primary keys with an executor.
-func (o *User) Reload(ctx context.Context, exec boil.ContextExecutor) error {
-	ret, err := FindUser(ctx, exec, o.ID)
+func (o *USER) Reload(ctx context.Context, exec boil.ContextExecutor) error {
+	ret, err := FindUSER(ctx, exec, o.ID)
 	if err != nil {
 		return err
 	}
@@ -1711,26 +1758,26 @@ func (o *User) Reload(ctx context.Context, exec boil.ContextExecutor) error {
 
 // ReloadAll refetches every row with matching primary key column values
 // and overwrites the original object slice with the newly updated slice.
-func (o *UserSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) error {
+func (o *USERSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) error {
 	if o == nil || len(*o) == 0 {
 		return nil
 	}
 
-	slice := UserSlice{}
+	slice := USERSlice{}
 	var args []interface{}
 	for _, obj := range *o {
-		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), userPrimaryKeyMapping)
+		pkeyArgs := queries.ValuesFromMapping(reflect.Indirect(reflect.ValueOf(obj)), uSERPrimaryKeyMapping)
 		args = append(args, pkeyArgs...)
 	}
 
-	sql := "SELECT `User`.* FROM `User` WHERE " +
-		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, userPrimaryKeyColumns, len(*o))
+	sql := "SELECT `USER`.* FROM `USER` WHERE " +
+		strmangle.WhereClauseRepeated(string(dialect.LQ), string(dialect.RQ), 0, uSERPrimaryKeyColumns, len(*o))
 
 	q := queries.Raw(sql, args...)
 
 	err := q.Bind(ctx, exec, &slice)
 	if err != nil {
-		return errors.Wrap(err, "models: unable to reload all in UserSlice")
+		return errors.Wrap(err, "models: unable to reload all in USERSlice")
 	}
 
 	*o = slice
@@ -1738,10 +1785,10 @@ func (o *UserSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) er
 	return nil
 }
 
-// UserExists checks if the User row exists.
-func UserExists(ctx context.Context, exec boil.ContextExecutor, iD string) (bool, error) {
+// USERExists checks if the USER row exists.
+func USERExists(ctx context.Context, exec boil.ContextExecutor, iD int) (bool, error) {
 	var exists bool
-	sql := "select exists(select 1 from `User` where `id`=? limit 1)"
+	sql := "select exists(select 1 from `USER` where `id`=? limit 1)"
 
 	if boil.IsDebug(ctx) {
 		writer := boil.DebugWriterFrom(ctx)
@@ -1752,13 +1799,13 @@ func UserExists(ctx context.Context, exec boil.ContextExecutor, iD string) (bool
 
 	err := row.Scan(&exists)
 	if err != nil {
-		return false, errors.Wrap(err, "models: unable to check if User exists")
+		return false, errors.Wrap(err, "models: unable to check if USER exists")
 	}
 
 	return exists, nil
 }
 
-// Exists checks if the User row exists.
-func (o *User) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, error) {
-	return UserExists(ctx, exec, o.ID)
+// Exists checks if the USER row exists.
+func (o *USER) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, error) {
+	return USERExists(ctx, exec, o.ID)
 }

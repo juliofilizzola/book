@@ -4,13 +4,11 @@
 package models
 
 var TableNames = struct {
-	Followers        string
-	Publication      string
-	User             string
-	PrismaMigrations string
+	FOLLOWERS   string
+	PUBLICATION string
+	USER        string
 }{
-	Followers:        "Followers",
-	Publication:      "Publication",
-	User:             "User",
-	PrismaMigrations: "_prisma_migrations",
+	FOLLOWERS:   "FOLLOWERS",
+	PUBLICATION: "PUBLICATION",
+	USER:        "USER",
 }
