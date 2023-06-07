@@ -21,24 +21,24 @@ var (
 	_ = queries.Equal
 )
 
-func testUsers(t *testing.T) {
+func testUSERS(t *testing.T) {
 	t.Parallel()
 
-	query := Users()
+	query := USERS()
 
 	if query.Query == nil {
 		t.Error("expected a query, got nothing")
 	}
 }
 
-func testUsersDelete(t *testing.T) {
+func testUSERSDelete(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &User{}
-	if err = randomize.Struct(seed, o, userDBTypes, true, userColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	o := &USER{}
+	if err = randomize.Struct(seed, o, uSERDBTypes, true, uSERColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -54,7 +54,7 @@ func testUsersDelete(t *testing.T) {
 		t.Error("should only have deleted one row, but affected:", rowsAff)
 	}
 
-	count, err := Users().Count(ctx, tx)
+	count, err := USERS().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -64,14 +64,14 @@ func testUsersDelete(t *testing.T) {
 	}
 }
 
-func testUsersQueryDeleteAll(t *testing.T) {
+func testUSERSQueryDeleteAll(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &User{}
-	if err = randomize.Struct(seed, o, userDBTypes, true, userColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	o := &USER{}
+	if err = randomize.Struct(seed, o, uSERDBTypes, true, uSERColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -81,13 +81,13 @@ func testUsersQueryDeleteAll(t *testing.T) {
 		t.Error(err)
 	}
 
-	if rowsAff, err := Users().DeleteAll(ctx, tx); err != nil {
+	if rowsAff, err := USERS().DeleteAll(ctx, tx); err != nil {
 		t.Error(err)
 	} else if rowsAff != 1 {
 		t.Error("should only have deleted one row, but affected:", rowsAff)
 	}
 
-	count, err := Users().Count(ctx, tx)
+	count, err := USERS().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -97,14 +97,14 @@ func testUsersQueryDeleteAll(t *testing.T) {
 	}
 }
 
-func testUsersSliceDeleteAll(t *testing.T) {
+func testUSERSSliceDeleteAll(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &User{}
-	if err = randomize.Struct(seed, o, userDBTypes, true, userColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	o := &USER{}
+	if err = randomize.Struct(seed, o, uSERDBTypes, true, uSERColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -114,7 +114,7 @@ func testUsersSliceDeleteAll(t *testing.T) {
 		t.Error(err)
 	}
 
-	slice := UserSlice{o}
+	slice := USERSlice{o}
 
 	if rowsAff, err := slice.DeleteAll(ctx, tx); err != nil {
 		t.Error(err)
@@ -122,7 +122,7 @@ func testUsersSliceDeleteAll(t *testing.T) {
 		t.Error("should only have deleted one row, but affected:", rowsAff)
 	}
 
-	count, err := Users().Count(ctx, tx)
+	count, err := USERS().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -132,14 +132,14 @@ func testUsersSliceDeleteAll(t *testing.T) {
 	}
 }
 
-func testUsersExists(t *testing.T) {
+func testUSERSExists(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &User{}
-	if err = randomize.Struct(seed, o, userDBTypes, true, userColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	o := &USER{}
+	if err = randomize.Struct(seed, o, uSERDBTypes, true, uSERColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -149,23 +149,23 @@ func testUsersExists(t *testing.T) {
 		t.Error(err)
 	}
 
-	e, err := UserExists(ctx, tx, o.ID)
+	e, err := USERExists(ctx, tx, o.ID)
 	if err != nil {
-		t.Errorf("Unable to check if User exists: %s", err)
+		t.Errorf("Unable to check if USER exists: %s", err)
 	}
 	if !e {
-		t.Errorf("Expected UserExists to return true, but got false.")
+		t.Errorf("Expected USERExists to return true, but got false.")
 	}
 }
 
-func testUsersFind(t *testing.T) {
+func testUSERSFind(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &User{}
-	if err = randomize.Struct(seed, o, userDBTypes, true, userColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	o := &USER{}
+	if err = randomize.Struct(seed, o, uSERDBTypes, true, uSERColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -175,24 +175,24 @@ func testUsersFind(t *testing.T) {
 		t.Error(err)
 	}
 
-	userFound, err := FindUser(ctx, tx, o.ID)
+	uSERFound, err := FindUSER(ctx, tx, o.ID)
 	if err != nil {
 		t.Error(err)
 	}
 
-	if userFound == nil {
+	if uSERFound == nil {
 		t.Error("want a record, got nil")
 	}
 }
 
-func testUsersBind(t *testing.T) {
+func testUSERSBind(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &User{}
-	if err = randomize.Struct(seed, o, userDBTypes, true, userColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	o := &USER{}
+	if err = randomize.Struct(seed, o, uSERDBTypes, true, uSERColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -202,19 +202,19 @@ func testUsersBind(t *testing.T) {
 		t.Error(err)
 	}
 
-	if err = Users().Bind(ctx, tx, o); err != nil {
+	if err = USERS().Bind(ctx, tx, o); err != nil {
 		t.Error(err)
 	}
 }
 
-func testUsersOne(t *testing.T) {
+func testUSERSOne(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &User{}
-	if err = randomize.Struct(seed, o, userDBTypes, true, userColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	o := &USER{}
+	if err = randomize.Struct(seed, o, uSERDBTypes, true, uSERColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -224,38 +224,38 @@ func testUsersOne(t *testing.T) {
 		t.Error(err)
 	}
 
-	if x, err := Users().One(ctx, tx); err != nil {
+	if x, err := USERS().One(ctx, tx); err != nil {
 		t.Error(err)
 	} else if x == nil {
 		t.Error("expected to get a non nil record")
 	}
 }
 
-func testUsersAll(t *testing.T) {
+func testUSERSAll(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	userOne := &User{}
-	userTwo := &User{}
-	if err = randomize.Struct(seed, userOne, userDBTypes, false, userColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	uSEROne := &USER{}
+	uSERTwo := &USER{}
+	if err = randomize.Struct(seed, uSEROne, uSERDBTypes, false, uSERColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
-	if err = randomize.Struct(seed, userTwo, userDBTypes, false, userColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	if err = randomize.Struct(seed, uSERTwo, uSERDBTypes, false, uSERColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
-	if err = userOne.Insert(ctx, tx, boil.Infer()); err != nil {
+	if err = uSEROne.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Error(err)
 	}
-	if err = userTwo.Insert(ctx, tx, boil.Infer()); err != nil {
+	if err = uSERTwo.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Error(err)
 	}
 
-	slice, err := Users().All(ctx, tx)
+	slice, err := USERS().All(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -265,31 +265,31 @@ func testUsersAll(t *testing.T) {
 	}
 }
 
-func testUsersCount(t *testing.T) {
+func testUSERSCount(t *testing.T) {
 	t.Parallel()
 
 	var err error
 	seed := randomize.NewSeed()
-	userOne := &User{}
-	userTwo := &User{}
-	if err = randomize.Struct(seed, userOne, userDBTypes, false, userColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	uSEROne := &USER{}
+	uSERTwo := &USER{}
+	if err = randomize.Struct(seed, uSEROne, uSERDBTypes, false, uSERColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
-	if err = randomize.Struct(seed, userTwo, userDBTypes, false, userColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	if err = randomize.Struct(seed, uSERTwo, uSERDBTypes, false, uSERColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
-	if err = userOne.Insert(ctx, tx, boil.Infer()); err != nil {
+	if err = uSEROne.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Error(err)
 	}
-	if err = userTwo.Insert(ctx, tx, boil.Infer()); err != nil {
+	if err = uSERTwo.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Error(err)
 	}
 
-	count, err := Users().Count(ctx, tx)
+	count, err := USERS().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -299,155 +299,155 @@ func testUsersCount(t *testing.T) {
 	}
 }
 
-func userBeforeInsertHook(ctx context.Context, e boil.ContextExecutor, o *User) error {
-	*o = User{}
+func uSERBeforeInsertHook(ctx context.Context, e boil.ContextExecutor, o *USER) error {
+	*o = USER{}
 	return nil
 }
 
-func userAfterInsertHook(ctx context.Context, e boil.ContextExecutor, o *User) error {
-	*o = User{}
+func uSERAfterInsertHook(ctx context.Context, e boil.ContextExecutor, o *USER) error {
+	*o = USER{}
 	return nil
 }
 
-func userAfterSelectHook(ctx context.Context, e boil.ContextExecutor, o *User) error {
-	*o = User{}
+func uSERAfterSelectHook(ctx context.Context, e boil.ContextExecutor, o *USER) error {
+	*o = USER{}
 	return nil
 }
 
-func userBeforeUpdateHook(ctx context.Context, e boil.ContextExecutor, o *User) error {
-	*o = User{}
+func uSERBeforeUpdateHook(ctx context.Context, e boil.ContextExecutor, o *USER) error {
+	*o = USER{}
 	return nil
 }
 
-func userAfterUpdateHook(ctx context.Context, e boil.ContextExecutor, o *User) error {
-	*o = User{}
+func uSERAfterUpdateHook(ctx context.Context, e boil.ContextExecutor, o *USER) error {
+	*o = USER{}
 	return nil
 }
 
-func userBeforeDeleteHook(ctx context.Context, e boil.ContextExecutor, o *User) error {
-	*o = User{}
+func uSERBeforeDeleteHook(ctx context.Context, e boil.ContextExecutor, o *USER) error {
+	*o = USER{}
 	return nil
 }
 
-func userAfterDeleteHook(ctx context.Context, e boil.ContextExecutor, o *User) error {
-	*o = User{}
+func uSERAfterDeleteHook(ctx context.Context, e boil.ContextExecutor, o *USER) error {
+	*o = USER{}
 	return nil
 }
 
-func userBeforeUpsertHook(ctx context.Context, e boil.ContextExecutor, o *User) error {
-	*o = User{}
+func uSERBeforeUpsertHook(ctx context.Context, e boil.ContextExecutor, o *USER) error {
+	*o = USER{}
 	return nil
 }
 
-func userAfterUpsertHook(ctx context.Context, e boil.ContextExecutor, o *User) error {
-	*o = User{}
+func uSERAfterUpsertHook(ctx context.Context, e boil.ContextExecutor, o *USER) error {
+	*o = USER{}
 	return nil
 }
 
-func testUsersHooks(t *testing.T) {
+func testUSERSHooks(t *testing.T) {
 	t.Parallel()
 
 	var err error
 
 	ctx := context.Background()
-	empty := &User{}
-	o := &User{}
+	empty := &USER{}
+	o := &USER{}
 
 	seed := randomize.NewSeed()
-	if err = randomize.Struct(seed, o, userDBTypes, false); err != nil {
-		t.Errorf("Unable to randomize User object: %s", err)
+	if err = randomize.Struct(seed, o, uSERDBTypes, false); err != nil {
+		t.Errorf("Unable to randomize USER object: %s", err)
 	}
 
-	AddUserHook(boil.BeforeInsertHook, userBeforeInsertHook)
+	AddUSERHook(boil.BeforeInsertHook, uSERBeforeInsertHook)
 	if err = o.doBeforeInsertHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doBeforeInsertHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected BeforeInsertHook function to empty object, but got: %#v", o)
 	}
-	userBeforeInsertHooks = []UserHook{}
+	uSERBeforeInsertHooks = []USERHook{}
 
-	AddUserHook(boil.AfterInsertHook, userAfterInsertHook)
+	AddUSERHook(boil.AfterInsertHook, uSERAfterInsertHook)
 	if err = o.doAfterInsertHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doAfterInsertHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected AfterInsertHook function to empty object, but got: %#v", o)
 	}
-	userAfterInsertHooks = []UserHook{}
+	uSERAfterInsertHooks = []USERHook{}
 
-	AddUserHook(boil.AfterSelectHook, userAfterSelectHook)
+	AddUSERHook(boil.AfterSelectHook, uSERAfterSelectHook)
 	if err = o.doAfterSelectHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doAfterSelectHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected AfterSelectHook function to empty object, but got: %#v", o)
 	}
-	userAfterSelectHooks = []UserHook{}
+	uSERAfterSelectHooks = []USERHook{}
 
-	AddUserHook(boil.BeforeUpdateHook, userBeforeUpdateHook)
+	AddUSERHook(boil.BeforeUpdateHook, uSERBeforeUpdateHook)
 	if err = o.doBeforeUpdateHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doBeforeUpdateHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected BeforeUpdateHook function to empty object, but got: %#v", o)
 	}
-	userBeforeUpdateHooks = []UserHook{}
+	uSERBeforeUpdateHooks = []USERHook{}
 
-	AddUserHook(boil.AfterUpdateHook, userAfterUpdateHook)
+	AddUSERHook(boil.AfterUpdateHook, uSERAfterUpdateHook)
 	if err = o.doAfterUpdateHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doAfterUpdateHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected AfterUpdateHook function to empty object, but got: %#v", o)
 	}
-	userAfterUpdateHooks = []UserHook{}
+	uSERAfterUpdateHooks = []USERHook{}
 
-	AddUserHook(boil.BeforeDeleteHook, userBeforeDeleteHook)
+	AddUSERHook(boil.BeforeDeleteHook, uSERBeforeDeleteHook)
 	if err = o.doBeforeDeleteHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doBeforeDeleteHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected BeforeDeleteHook function to empty object, but got: %#v", o)
 	}
-	userBeforeDeleteHooks = []UserHook{}
+	uSERBeforeDeleteHooks = []USERHook{}
 
-	AddUserHook(boil.AfterDeleteHook, userAfterDeleteHook)
+	AddUSERHook(boil.AfterDeleteHook, uSERAfterDeleteHook)
 	if err = o.doAfterDeleteHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doAfterDeleteHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected AfterDeleteHook function to empty object, but got: %#v", o)
 	}
-	userAfterDeleteHooks = []UserHook{}
+	uSERAfterDeleteHooks = []USERHook{}
 
-	AddUserHook(boil.BeforeUpsertHook, userBeforeUpsertHook)
+	AddUSERHook(boil.BeforeUpsertHook, uSERBeforeUpsertHook)
 	if err = o.doBeforeUpsertHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doBeforeUpsertHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected BeforeUpsertHook function to empty object, but got: %#v", o)
 	}
-	userBeforeUpsertHooks = []UserHook{}
+	uSERBeforeUpsertHooks = []USERHook{}
 
-	AddUserHook(boil.AfterUpsertHook, userAfterUpsertHook)
+	AddUSERHook(boil.AfterUpsertHook, uSERAfterUpsertHook)
 	if err = o.doAfterUpsertHooks(ctx, nil); err != nil {
 		t.Errorf("Unable to execute doAfterUpsertHooks: %s", err)
 	}
 	if !reflect.DeepEqual(o, empty) {
 		t.Errorf("Expected AfterUpsertHook function to empty object, but got: %#v", o)
 	}
-	userAfterUpsertHooks = []UserHook{}
+	uSERAfterUpsertHooks = []USERHook{}
 }
 
-func testUsersInsert(t *testing.T) {
+func testUSERSInsert(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &User{}
-	if err = randomize.Struct(seed, o, userDBTypes, true, userColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	o := &USER{}
+	if err = randomize.Struct(seed, o, uSERDBTypes, true, uSERColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -457,7 +457,7 @@ func testUsersInsert(t *testing.T) {
 		t.Error(err)
 	}
 
-	count, err := Users().Count(ctx, tx)
+	count, err := USERS().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -467,24 +467,24 @@ func testUsersInsert(t *testing.T) {
 	}
 }
 
-func testUsersInsertWhitelist(t *testing.T) {
+func testUSERSInsertWhitelist(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &User{}
-	if err = randomize.Struct(seed, o, userDBTypes, true); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	o := &USER{}
+	if err = randomize.Struct(seed, o, uSERDBTypes, true); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
-	if err = o.Insert(ctx, tx, boil.Whitelist(userColumnsWithoutDefault...)); err != nil {
+	if err = o.Insert(ctx, tx, boil.Whitelist(uSERColumnsWithoutDefault...)); err != nil {
 		t.Error(err)
 	}
 
-	count, err := Users().Count(ctx, tx)
+	count, err := USERS().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -494,28 +494,28 @@ func testUsersInsertWhitelist(t *testing.T) {
 	}
 }
 
-func testUserToManyFollowingIdUsers(t *testing.T) {
+func testUSERToManyFollowerUSERS(t *testing.T) {
 	var err error
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
 
-	var a User
-	var b, c User
+	var a USER
+	var b, c USER
 
 	seed := randomize.NewSeed()
-	if err = randomize.Struct(seed, &a, userDBTypes, true, userColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	if err = randomize.Struct(seed, &a, uSERDBTypes, true, uSERColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	if err := a.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Fatal(err)
 	}
 
-	if err = randomize.Struct(seed, &b, userDBTypes, false, userColumnsWithDefault...); err != nil {
+	if err = randomize.Struct(seed, &b, uSERDBTypes, false, uSERColumnsWithDefault...); err != nil {
 		t.Fatal(err)
 	}
-	if err = randomize.Struct(seed, &c, userDBTypes, false, userColumnsWithDefault...); err != nil {
+	if err = randomize.Struct(seed, &c, uSERDBTypes, false, uSERColumnsWithDefault...); err != nil {
 		t.Fatal(err)
 	}
 
@@ -526,16 +526,16 @@ func testUserToManyFollowingIdUsers(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, err = tx.Exec("insert into `Followers` (`followerId`, `followingId`) values (?, ?)", a.ID, b.ID)
+	_, err = tx.Exec("insert into `FOLLOWERS` (`user_id`, `follower_id`) values (?, ?)", a.ID, b.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = tx.Exec("insert into `Followers` (`followerId`, `followingId`) values (?, ?)", a.ID, c.ID)
+	_, err = tx.Exec("insert into `FOLLOWERS` (`user_id`, `follower_id`) values (?, ?)", a.ID, c.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	check, err := a.FollowingIdUsers().All(ctx, tx)
+	check, err := a.FollowerUSERS().All(ctx, tx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -557,19 +557,19 @@ func testUserToManyFollowingIdUsers(t *testing.T) {
 		t.Error("expected to find c")
 	}
 
-	slice := UserSlice{&a}
-	if err = a.L.LoadFollowingIdUsers(ctx, tx, false, (*[]*User)(&slice), nil); err != nil {
+	slice := USERSlice{&a}
+	if err = a.L.LoadFollowerUSERS(ctx, tx, false, (*[]*USER)(&slice), nil); err != nil {
 		t.Fatal(err)
 	}
-	if got := len(a.R.FollowingIdUsers); got != 2 {
+	if got := len(a.R.FollowerUSERS); got != 2 {
 		t.Error("number of eager loaded records wrong, got:", got)
 	}
 
-	a.R.FollowingIdUsers = nil
-	if err = a.L.LoadFollowingIdUsers(ctx, tx, true, &a, nil); err != nil {
+	a.R.FollowerUSERS = nil
+	if err = a.L.LoadFollowerUSERS(ctx, tx, true, &a, nil); err != nil {
 		t.Fatal(err)
 	}
-	if got := len(a.R.FollowingIdUsers); got != 2 {
+	if got := len(a.R.FollowerUSERS); got != 2 {
 		t.Error("number of eager loaded records wrong, got:", got)
 	}
 
@@ -578,28 +578,28 @@ func testUserToManyFollowingIdUsers(t *testing.T) {
 	}
 }
 
-func testUserToManyFollowerIdUsers(t *testing.T) {
+func testUSERToManyUserUSERS(t *testing.T) {
 	var err error
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
 
-	var a User
-	var b, c User
+	var a USER
+	var b, c USER
 
 	seed := randomize.NewSeed()
-	if err = randomize.Struct(seed, &a, userDBTypes, true, userColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	if err = randomize.Struct(seed, &a, uSERDBTypes, true, uSERColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	if err := a.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Fatal(err)
 	}
 
-	if err = randomize.Struct(seed, &b, userDBTypes, false, userColumnsWithDefault...); err != nil {
+	if err = randomize.Struct(seed, &b, uSERDBTypes, false, uSERColumnsWithDefault...); err != nil {
 		t.Fatal(err)
 	}
-	if err = randomize.Struct(seed, &c, userDBTypes, false, userColumnsWithDefault...); err != nil {
+	if err = randomize.Struct(seed, &c, uSERDBTypes, false, uSERColumnsWithDefault...); err != nil {
 		t.Fatal(err)
 	}
 
@@ -610,16 +610,16 @@ func testUserToManyFollowerIdUsers(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, err = tx.Exec("insert into `Followers` (`followingId`, `followerId`) values (?, ?)", a.ID, b.ID)
+	_, err = tx.Exec("insert into `FOLLOWERS` (`follower_id`, `user_id`) values (?, ?)", a.ID, b.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = tx.Exec("insert into `Followers` (`followingId`, `followerId`) values (?, ?)", a.ID, c.ID)
+	_, err = tx.Exec("insert into `FOLLOWERS` (`follower_id`, `user_id`) values (?, ?)", a.ID, c.ID)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	check, err := a.FollowerIdUsers().All(ctx, tx)
+	check, err := a.UserUSERS().All(ctx, tx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -641,19 +641,19 @@ func testUserToManyFollowerIdUsers(t *testing.T) {
 		t.Error("expected to find c")
 	}
 
-	slice := UserSlice{&a}
-	if err = a.L.LoadFollowerIdUsers(ctx, tx, false, (*[]*User)(&slice), nil); err != nil {
+	slice := USERSlice{&a}
+	if err = a.L.LoadUserUSERS(ctx, tx, false, (*[]*USER)(&slice), nil); err != nil {
 		t.Fatal(err)
 	}
-	if got := len(a.R.FollowerIdUsers); got != 2 {
+	if got := len(a.R.UserUSERS); got != 2 {
 		t.Error("number of eager loaded records wrong, got:", got)
 	}
 
-	a.R.FollowerIdUsers = nil
-	if err = a.L.LoadFollowerIdUsers(ctx, tx, true, &a, nil); err != nil {
+	a.R.UserUSERS = nil
+	if err = a.L.LoadUserUSERS(ctx, tx, true, &a, nil); err != nil {
 		t.Fatal(err)
 	}
-	if got := len(a.R.FollowerIdUsers); got != 2 {
+	if got := len(a.R.UserUSERS); got != 2 {
 		t.Error("number of eager loaded records wrong, got:", got)
 	}
 
@@ -662,33 +662,33 @@ func testUserToManyFollowerIdUsers(t *testing.T) {
 	}
 }
 
-func testUserToManyAuthIdPublications(t *testing.T) {
+func testUSERToManyAuthPUBLICATIONS(t *testing.T) {
 	var err error
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
 
-	var a User
-	var b, c Publication
+	var a USER
+	var b, c PUBLICATION
 
 	seed := randomize.NewSeed()
-	if err = randomize.Struct(seed, &a, userDBTypes, true, userColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	if err = randomize.Struct(seed, &a, uSERDBTypes, true, uSERColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	if err := a.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Fatal(err)
 	}
 
-	if err = randomize.Struct(seed, &b, publicationDBTypes, false, publicationColumnsWithDefault...); err != nil {
+	if err = randomize.Struct(seed, &b, pUBLICATIONDBTypes, false, pUBLICATIONColumnsWithDefault...); err != nil {
 		t.Fatal(err)
 	}
-	if err = randomize.Struct(seed, &c, publicationDBTypes, false, publicationColumnsWithDefault...); err != nil {
+	if err = randomize.Struct(seed, &c, pUBLICATIONDBTypes, false, pUBLICATIONColumnsWithDefault...); err != nil {
 		t.Fatal(err)
 	}
 
-	b.AuthId = a.ID
-	c.AuthId = a.ID
+	b.AuthID = a.ID
+	c.AuthID = a.ID
 
 	if err = b.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Fatal(err)
@@ -697,17 +697,17 @@ func testUserToManyAuthIdPublications(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	check, err := a.AuthIdPublications().All(ctx, tx)
+	check, err := a.AuthPUBLICATIONS().All(ctx, tx)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	bFound, cFound := false, false
 	for _, v := range check {
-		if v.AuthId == b.AuthId {
+		if v.AuthID == b.AuthID {
 			bFound = true
 		}
-		if v.AuthId == c.AuthId {
+		if v.AuthID == c.AuthID {
 			cFound = true
 		}
 	}
@@ -719,19 +719,19 @@ func testUserToManyAuthIdPublications(t *testing.T) {
 		t.Error("expected to find c")
 	}
 
-	slice := UserSlice{&a}
-	if err = a.L.LoadAuthIdPublications(ctx, tx, false, (*[]*User)(&slice), nil); err != nil {
+	slice := USERSlice{&a}
+	if err = a.L.LoadAuthPUBLICATIONS(ctx, tx, false, (*[]*USER)(&slice), nil); err != nil {
 		t.Fatal(err)
 	}
-	if got := len(a.R.AuthIdPublications); got != 2 {
+	if got := len(a.R.AuthPUBLICATIONS); got != 2 {
 		t.Error("number of eager loaded records wrong, got:", got)
 	}
 
-	a.R.AuthIdPublications = nil
-	if err = a.L.LoadAuthIdPublications(ctx, tx, true, &a, nil); err != nil {
+	a.R.AuthPUBLICATIONS = nil
+	if err = a.L.LoadAuthPUBLICATIONS(ctx, tx, true, &a, nil); err != nil {
 		t.Fatal(err)
 	}
-	if got := len(a.R.AuthIdPublications); got != 2 {
+	if got := len(a.R.AuthPUBLICATIONS); got != 2 {
 		t.Error("number of eager loaded records wrong, got:", got)
 	}
 
@@ -740,23 +740,23 @@ func testUserToManyAuthIdPublications(t *testing.T) {
 	}
 }
 
-func testUserToManyAddOpFollowingIdUsers(t *testing.T) {
+func testUSERToManyAddOpFollowerUSERS(t *testing.T) {
 	var err error
 
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
 
-	var a User
-	var b, c, d, e User
+	var a USER
+	var b, c, d, e USER
 
 	seed := randomize.NewSeed()
-	if err = randomize.Struct(seed, &a, userDBTypes, false, strmangle.SetComplement(userPrimaryKeyColumns, userColumnsWithoutDefault)...); err != nil {
+	if err = randomize.Struct(seed, &a, uSERDBTypes, false, strmangle.SetComplement(uSERPrimaryKeyColumns, uSERColumnsWithoutDefault)...); err != nil {
 		t.Fatal(err)
 	}
-	foreigners := []*User{&b, &c, &d, &e}
+	foreigners := []*USER{&b, &c, &d, &e}
 	for _, x := range foreigners {
-		if err = randomize.Struct(seed, x, userDBTypes, false, strmangle.SetComplement(userPrimaryKeyColumns, userColumnsWithoutDefault)...); err != nil {
+		if err = randomize.Struct(seed, x, uSERDBTypes, false, strmangle.SetComplement(uSERPrimaryKeyColumns, uSERColumnsWithoutDefault)...); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -771,13 +771,13 @@ func testUserToManyAddOpFollowingIdUsers(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	foreignersSplitByInsertion := [][]*User{
+	foreignersSplitByInsertion := [][]*USER{
 		{&b, &c},
 		{&d, &e},
 	}
 
 	for i, x := range foreignersSplitByInsertion {
-		err = a.AddFollowingIdUsers(ctx, tx, i != 0, x...)
+		err = a.AddFollowerUSERS(ctx, tx, i != 0, x...)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -785,21 +785,21 @@ func testUserToManyAddOpFollowingIdUsers(t *testing.T) {
 		first := x[0]
 		second := x[1]
 
-		if first.R.FollowerIdUsers[0] != &a {
+		if first.R.UserUSERS[0] != &a {
 			t.Error("relationship was not added properly to the slice")
 		}
-		if second.R.FollowerIdUsers[0] != &a {
+		if second.R.UserUSERS[0] != &a {
 			t.Error("relationship was not added properly to the slice")
 		}
 
-		if a.R.FollowingIdUsers[i*2] != first {
+		if a.R.FollowerUSERS[i*2] != first {
 			t.Error("relationship struct slice not set to correct value")
 		}
-		if a.R.FollowingIdUsers[i*2+1] != second {
+		if a.R.FollowerUSERS[i*2+1] != second {
 			t.Error("relationship struct slice not set to correct value")
 		}
 
-		count, err := a.FollowingIdUsers().Count(ctx, tx)
+		count, err := a.FollowerUSERS().Count(ctx, tx)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -809,23 +809,23 @@ func testUserToManyAddOpFollowingIdUsers(t *testing.T) {
 	}
 }
 
-func testUserToManySetOpFollowingIdUsers(t *testing.T) {
+func testUSERToManySetOpFollowerUSERS(t *testing.T) {
 	var err error
 
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
 
-	var a User
-	var b, c, d, e User
+	var a USER
+	var b, c, d, e USER
 
 	seed := randomize.NewSeed()
-	if err = randomize.Struct(seed, &a, userDBTypes, false, strmangle.SetComplement(userPrimaryKeyColumns, userColumnsWithoutDefault)...); err != nil {
+	if err = randomize.Struct(seed, &a, uSERDBTypes, false, strmangle.SetComplement(uSERPrimaryKeyColumns, uSERColumnsWithoutDefault)...); err != nil {
 		t.Fatal(err)
 	}
-	foreigners := []*User{&b, &c, &d, &e}
+	foreigners := []*USER{&b, &c, &d, &e}
 	for _, x := range foreigners {
-		if err = randomize.Struct(seed, x, userDBTypes, false, strmangle.SetComplement(userPrimaryKeyColumns, userColumnsWithoutDefault)...); err != nil {
+		if err = randomize.Struct(seed, x, uSERDBTypes, false, strmangle.SetComplement(uSERPrimaryKeyColumns, uSERColumnsWithoutDefault)...); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -840,12 +840,12 @@ func testUserToManySetOpFollowingIdUsers(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = a.SetFollowingIdUsers(ctx, tx, false, &b, &c)
+	err = a.SetFollowerUSERS(ctx, tx, false, &b, &c)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	count, err := a.FollowingIdUsers().Count(ctx, tx)
+	count, err := a.FollowerUSERS().Count(ctx, tx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -853,12 +853,12 @@ func testUserToManySetOpFollowingIdUsers(t *testing.T) {
 		t.Error("count was wrong:", count)
 	}
 
-	err = a.SetFollowingIdUsers(ctx, tx, true, &d, &e)
+	err = a.SetFollowerUSERS(ctx, tx, true, &d, &e)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	count, err = a.FollowingIdUsers().Count(ctx, tx)
+	count, err = a.FollowerUSERS().Count(ctx, tx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -870,44 +870,44 @@ func testUserToManySetOpFollowingIdUsers(t *testing.T) {
 	// to these when we call Set(). Leaving them here as wishful thinking
 	// and to let people know there's dragons.
 	//
-	// if len(b.R.FollowerIdUsers) != 0 {
+	// if len(b.R.UserUSERS) != 0 {
 	// 	t.Error("relationship was not removed properly from the slice")
 	// }
-	// if len(c.R.FollowerIdUsers) != 0 {
+	// if len(c.R.UserUSERS) != 0 {
 	// 	t.Error("relationship was not removed properly from the slice")
 	// }
-	if d.R.FollowerIdUsers[0] != &a {
+	if d.R.UserUSERS[0] != &a {
 		t.Error("relationship was not added properly to the slice")
 	}
-	if e.R.FollowerIdUsers[0] != &a {
+	if e.R.UserUSERS[0] != &a {
 		t.Error("relationship was not added properly to the slice")
 	}
 
-	if a.R.FollowingIdUsers[0] != &d {
+	if a.R.FollowerUSERS[0] != &d {
 		t.Error("relationship struct slice not set to correct value")
 	}
-	if a.R.FollowingIdUsers[1] != &e {
+	if a.R.FollowerUSERS[1] != &e {
 		t.Error("relationship struct slice not set to correct value")
 	}
 }
 
-func testUserToManyRemoveOpFollowingIdUsers(t *testing.T) {
+func testUSERToManyRemoveOpFollowerUSERS(t *testing.T) {
 	var err error
 
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
 
-	var a User
-	var b, c, d, e User
+	var a USER
+	var b, c, d, e USER
 
 	seed := randomize.NewSeed()
-	if err = randomize.Struct(seed, &a, userDBTypes, false, strmangle.SetComplement(userPrimaryKeyColumns, userColumnsWithoutDefault)...); err != nil {
+	if err = randomize.Struct(seed, &a, uSERDBTypes, false, strmangle.SetComplement(uSERPrimaryKeyColumns, uSERColumnsWithoutDefault)...); err != nil {
 		t.Fatal(err)
 	}
-	foreigners := []*User{&b, &c, &d, &e}
+	foreigners := []*USER{&b, &c, &d, &e}
 	for _, x := range foreigners {
-		if err = randomize.Struct(seed, x, userDBTypes, false, strmangle.SetComplement(userPrimaryKeyColumns, userColumnsWithoutDefault)...); err != nil {
+		if err = randomize.Struct(seed, x, uSERDBTypes, false, strmangle.SetComplement(uSERPrimaryKeyColumns, uSERColumnsWithoutDefault)...); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -916,12 +916,12 @@ func testUserToManyRemoveOpFollowingIdUsers(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = a.AddFollowingIdUsers(ctx, tx, true, foreigners...)
+	err = a.AddFollowerUSERS(ctx, tx, true, foreigners...)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	count, err := a.FollowingIdUsers().Count(ctx, tx)
+	count, err := a.FollowerUSERS().Count(ctx, tx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -929,12 +929,12 @@ func testUserToManyRemoveOpFollowingIdUsers(t *testing.T) {
 		t.Error("count was wrong:", count)
 	}
 
-	err = a.RemoveFollowingIdUsers(ctx, tx, foreigners[:2]...)
+	err = a.RemoveFollowerUSERS(ctx, tx, foreigners[:2]...)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	count, err = a.FollowingIdUsers().Count(ctx, tx)
+	count, err = a.FollowerUSERS().Count(ctx, tx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -942,49 +942,49 @@ func testUserToManyRemoveOpFollowingIdUsers(t *testing.T) {
 		t.Error("count was wrong:", count)
 	}
 
-	if len(b.R.FollowerIdUsers) != 0 {
+	if len(b.R.UserUSERS) != 0 {
 		t.Error("relationship was not removed properly from the slice")
 	}
-	if len(c.R.FollowerIdUsers) != 0 {
+	if len(c.R.UserUSERS) != 0 {
 		t.Error("relationship was not removed properly from the slice")
 	}
-	if d.R.FollowerIdUsers[0] != &a {
+	if d.R.UserUSERS[0] != &a {
 		t.Error("relationship was not added properly to the foreign struct")
 	}
-	if e.R.FollowerIdUsers[0] != &a {
+	if e.R.UserUSERS[0] != &a {
 		t.Error("relationship was not added properly to the foreign struct")
 	}
 
-	if len(a.R.FollowingIdUsers) != 2 {
+	if len(a.R.FollowerUSERS) != 2 {
 		t.Error("should have preserved two relationships")
 	}
 
 	// Removal doesn't do a stable deletion for performance so we have to flip the order
-	if a.R.FollowingIdUsers[1] != &d {
+	if a.R.FollowerUSERS[1] != &d {
 		t.Error("relationship to d should have been preserved")
 	}
-	if a.R.FollowingIdUsers[0] != &e {
+	if a.R.FollowerUSERS[0] != &e {
 		t.Error("relationship to e should have been preserved")
 	}
 }
 
-func testUserToManyAddOpFollowerIdUsers(t *testing.T) {
+func testUSERToManyAddOpUserUSERS(t *testing.T) {
 	var err error
 
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
 
-	var a User
-	var b, c, d, e User
+	var a USER
+	var b, c, d, e USER
 
 	seed := randomize.NewSeed()
-	if err = randomize.Struct(seed, &a, userDBTypes, false, strmangle.SetComplement(userPrimaryKeyColumns, userColumnsWithoutDefault)...); err != nil {
+	if err = randomize.Struct(seed, &a, uSERDBTypes, false, strmangle.SetComplement(uSERPrimaryKeyColumns, uSERColumnsWithoutDefault)...); err != nil {
 		t.Fatal(err)
 	}
-	foreigners := []*User{&b, &c, &d, &e}
+	foreigners := []*USER{&b, &c, &d, &e}
 	for _, x := range foreigners {
-		if err = randomize.Struct(seed, x, userDBTypes, false, strmangle.SetComplement(userPrimaryKeyColumns, userColumnsWithoutDefault)...); err != nil {
+		if err = randomize.Struct(seed, x, uSERDBTypes, false, strmangle.SetComplement(uSERPrimaryKeyColumns, uSERColumnsWithoutDefault)...); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -999,13 +999,13 @@ func testUserToManyAddOpFollowerIdUsers(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	foreignersSplitByInsertion := [][]*User{
+	foreignersSplitByInsertion := [][]*USER{
 		{&b, &c},
 		{&d, &e},
 	}
 
 	for i, x := range foreignersSplitByInsertion {
-		err = a.AddFollowerIdUsers(ctx, tx, i != 0, x...)
+		err = a.AddUserUSERS(ctx, tx, i != 0, x...)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1013,21 +1013,21 @@ func testUserToManyAddOpFollowerIdUsers(t *testing.T) {
 		first := x[0]
 		second := x[1]
 
-		if first.R.FollowingIdUsers[0] != &a {
+		if first.R.FollowerUSERS[0] != &a {
 			t.Error("relationship was not added properly to the slice")
 		}
-		if second.R.FollowingIdUsers[0] != &a {
+		if second.R.FollowerUSERS[0] != &a {
 			t.Error("relationship was not added properly to the slice")
 		}
 
-		if a.R.FollowerIdUsers[i*2] != first {
+		if a.R.UserUSERS[i*2] != first {
 			t.Error("relationship struct slice not set to correct value")
 		}
-		if a.R.FollowerIdUsers[i*2+1] != second {
+		if a.R.UserUSERS[i*2+1] != second {
 			t.Error("relationship struct slice not set to correct value")
 		}
 
-		count, err := a.FollowerIdUsers().Count(ctx, tx)
+		count, err := a.UserUSERS().Count(ctx, tx)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1037,23 +1037,23 @@ func testUserToManyAddOpFollowerIdUsers(t *testing.T) {
 	}
 }
 
-func testUserToManySetOpFollowerIdUsers(t *testing.T) {
+func testUSERToManySetOpUserUSERS(t *testing.T) {
 	var err error
 
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
 
-	var a User
-	var b, c, d, e User
+	var a USER
+	var b, c, d, e USER
 
 	seed := randomize.NewSeed()
-	if err = randomize.Struct(seed, &a, userDBTypes, false, strmangle.SetComplement(userPrimaryKeyColumns, userColumnsWithoutDefault)...); err != nil {
+	if err = randomize.Struct(seed, &a, uSERDBTypes, false, strmangle.SetComplement(uSERPrimaryKeyColumns, uSERColumnsWithoutDefault)...); err != nil {
 		t.Fatal(err)
 	}
-	foreigners := []*User{&b, &c, &d, &e}
+	foreigners := []*USER{&b, &c, &d, &e}
 	for _, x := range foreigners {
-		if err = randomize.Struct(seed, x, userDBTypes, false, strmangle.SetComplement(userPrimaryKeyColumns, userColumnsWithoutDefault)...); err != nil {
+		if err = randomize.Struct(seed, x, uSERDBTypes, false, strmangle.SetComplement(uSERPrimaryKeyColumns, uSERColumnsWithoutDefault)...); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -1068,12 +1068,12 @@ func testUserToManySetOpFollowerIdUsers(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = a.SetFollowerIdUsers(ctx, tx, false, &b, &c)
+	err = a.SetUserUSERS(ctx, tx, false, &b, &c)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	count, err := a.FollowerIdUsers().Count(ctx, tx)
+	count, err := a.UserUSERS().Count(ctx, tx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1081,12 +1081,12 @@ func testUserToManySetOpFollowerIdUsers(t *testing.T) {
 		t.Error("count was wrong:", count)
 	}
 
-	err = a.SetFollowerIdUsers(ctx, tx, true, &d, &e)
+	err = a.SetUserUSERS(ctx, tx, true, &d, &e)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	count, err = a.FollowerIdUsers().Count(ctx, tx)
+	count, err = a.UserUSERS().Count(ctx, tx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1098,44 +1098,44 @@ func testUserToManySetOpFollowerIdUsers(t *testing.T) {
 	// to these when we call Set(). Leaving them here as wishful thinking
 	// and to let people know there's dragons.
 	//
-	// if len(b.R.FollowingIdUsers) != 0 {
+	// if len(b.R.FollowerUSERS) != 0 {
 	// 	t.Error("relationship was not removed properly from the slice")
 	// }
-	// if len(c.R.FollowingIdUsers) != 0 {
+	// if len(c.R.FollowerUSERS) != 0 {
 	// 	t.Error("relationship was not removed properly from the slice")
 	// }
-	if d.R.FollowingIdUsers[0] != &a {
+	if d.R.FollowerUSERS[0] != &a {
 		t.Error("relationship was not added properly to the slice")
 	}
-	if e.R.FollowingIdUsers[0] != &a {
+	if e.R.FollowerUSERS[0] != &a {
 		t.Error("relationship was not added properly to the slice")
 	}
 
-	if a.R.FollowerIdUsers[0] != &d {
+	if a.R.UserUSERS[0] != &d {
 		t.Error("relationship struct slice not set to correct value")
 	}
-	if a.R.FollowerIdUsers[1] != &e {
+	if a.R.UserUSERS[1] != &e {
 		t.Error("relationship struct slice not set to correct value")
 	}
 }
 
-func testUserToManyRemoveOpFollowerIdUsers(t *testing.T) {
+func testUSERToManyRemoveOpUserUSERS(t *testing.T) {
 	var err error
 
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
 
-	var a User
-	var b, c, d, e User
+	var a USER
+	var b, c, d, e USER
 
 	seed := randomize.NewSeed()
-	if err = randomize.Struct(seed, &a, userDBTypes, false, strmangle.SetComplement(userPrimaryKeyColumns, userColumnsWithoutDefault)...); err != nil {
+	if err = randomize.Struct(seed, &a, uSERDBTypes, false, strmangle.SetComplement(uSERPrimaryKeyColumns, uSERColumnsWithoutDefault)...); err != nil {
 		t.Fatal(err)
 	}
-	foreigners := []*User{&b, &c, &d, &e}
+	foreigners := []*USER{&b, &c, &d, &e}
 	for _, x := range foreigners {
-		if err = randomize.Struct(seed, x, userDBTypes, false, strmangle.SetComplement(userPrimaryKeyColumns, userColumnsWithoutDefault)...); err != nil {
+		if err = randomize.Struct(seed, x, uSERDBTypes, false, strmangle.SetComplement(uSERPrimaryKeyColumns, uSERColumnsWithoutDefault)...); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -1144,12 +1144,12 @@ func testUserToManyRemoveOpFollowerIdUsers(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = a.AddFollowerIdUsers(ctx, tx, true, foreigners...)
+	err = a.AddUserUSERS(ctx, tx, true, foreigners...)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	count, err := a.FollowerIdUsers().Count(ctx, tx)
+	count, err := a.UserUSERS().Count(ctx, tx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1157,12 +1157,12 @@ func testUserToManyRemoveOpFollowerIdUsers(t *testing.T) {
 		t.Error("count was wrong:", count)
 	}
 
-	err = a.RemoveFollowerIdUsers(ctx, tx, foreigners[:2]...)
+	err = a.RemoveUserUSERS(ctx, tx, foreigners[:2]...)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	count, err = a.FollowerIdUsers().Count(ctx, tx)
+	count, err = a.UserUSERS().Count(ctx, tx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1170,49 +1170,49 @@ func testUserToManyRemoveOpFollowerIdUsers(t *testing.T) {
 		t.Error("count was wrong:", count)
 	}
 
-	if len(b.R.FollowingIdUsers) != 0 {
+	if len(b.R.FollowerUSERS) != 0 {
 		t.Error("relationship was not removed properly from the slice")
 	}
-	if len(c.R.FollowingIdUsers) != 0 {
+	if len(c.R.FollowerUSERS) != 0 {
 		t.Error("relationship was not removed properly from the slice")
 	}
-	if d.R.FollowingIdUsers[0] != &a {
+	if d.R.FollowerUSERS[0] != &a {
 		t.Error("relationship was not added properly to the foreign struct")
 	}
-	if e.R.FollowingIdUsers[0] != &a {
+	if e.R.FollowerUSERS[0] != &a {
 		t.Error("relationship was not added properly to the foreign struct")
 	}
 
-	if len(a.R.FollowerIdUsers) != 2 {
+	if len(a.R.UserUSERS) != 2 {
 		t.Error("should have preserved two relationships")
 	}
 
 	// Removal doesn't do a stable deletion for performance so we have to flip the order
-	if a.R.FollowerIdUsers[1] != &d {
+	if a.R.UserUSERS[1] != &d {
 		t.Error("relationship to d should have been preserved")
 	}
-	if a.R.FollowerIdUsers[0] != &e {
+	if a.R.UserUSERS[0] != &e {
 		t.Error("relationship to e should have been preserved")
 	}
 }
 
-func testUserToManyAddOpAuthIdPublications(t *testing.T) {
+func testUSERToManyAddOpAuthPUBLICATIONS(t *testing.T) {
 	var err error
 
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
 
-	var a User
-	var b, c, d, e Publication
+	var a USER
+	var b, c, d, e PUBLICATION
 
 	seed := randomize.NewSeed()
-	if err = randomize.Struct(seed, &a, userDBTypes, false, strmangle.SetComplement(userPrimaryKeyColumns, userColumnsWithoutDefault)...); err != nil {
+	if err = randomize.Struct(seed, &a, uSERDBTypes, false, strmangle.SetComplement(uSERPrimaryKeyColumns, uSERColumnsWithoutDefault)...); err != nil {
 		t.Fatal(err)
 	}
-	foreigners := []*Publication{&b, &c, &d, &e}
+	foreigners := []*PUBLICATION{&b, &c, &d, &e}
 	for _, x := range foreigners {
-		if err = randomize.Struct(seed, x, publicationDBTypes, false, strmangle.SetComplement(publicationPrimaryKeyColumns, publicationColumnsWithoutDefault)...); err != nil {
+		if err = randomize.Struct(seed, x, pUBLICATIONDBTypes, false, strmangle.SetComplement(pUBLICATIONPrimaryKeyColumns, pUBLICATIONColumnsWithoutDefault)...); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -1227,13 +1227,13 @@ func testUserToManyAddOpAuthIdPublications(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	foreignersSplitByInsertion := [][]*Publication{
+	foreignersSplitByInsertion := [][]*PUBLICATION{
 		{&b, &c},
 		{&d, &e},
 	}
 
 	for i, x := range foreignersSplitByInsertion {
-		err = a.AddAuthIdPublications(ctx, tx, i != 0, x...)
+		err = a.AddAuthPUBLICATIONS(ctx, tx, i != 0, x...)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1241,28 +1241,28 @@ func testUserToManyAddOpAuthIdPublications(t *testing.T) {
 		first := x[0]
 		second := x[1]
 
-		if a.ID != first.AuthId {
-			t.Error("foreign key was wrong value", a.ID, first.AuthId)
+		if a.ID != first.AuthID {
+			t.Error("foreign key was wrong value", a.ID, first.AuthID)
 		}
-		if a.ID != second.AuthId {
-			t.Error("foreign key was wrong value", a.ID, second.AuthId)
+		if a.ID != second.AuthID {
+			t.Error("foreign key was wrong value", a.ID, second.AuthID)
 		}
 
-		if first.R.AuthIdUser != &a {
+		if first.R.Auth != &a {
 			t.Error("relationship was not added properly to the foreign slice")
 		}
-		if second.R.AuthIdUser != &a {
+		if second.R.Auth != &a {
 			t.Error("relationship was not added properly to the foreign slice")
 		}
 
-		if a.R.AuthIdPublications[i*2] != first {
+		if a.R.AuthPUBLICATIONS[i*2] != first {
 			t.Error("relationship struct slice not set to correct value")
 		}
-		if a.R.AuthIdPublications[i*2+1] != second {
+		if a.R.AuthPUBLICATIONS[i*2+1] != second {
 			t.Error("relationship struct slice not set to correct value")
 		}
 
-		count, err := a.AuthIdPublications().Count(ctx, tx)
+		count, err := a.AuthPUBLICATIONS().Count(ctx, tx)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1272,14 +1272,14 @@ func testUserToManyAddOpAuthIdPublications(t *testing.T) {
 	}
 }
 
-func testUsersReload(t *testing.T) {
+func testUSERSReload(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &User{}
-	if err = randomize.Struct(seed, o, userDBTypes, true, userColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	o := &USER{}
+	if err = randomize.Struct(seed, o, uSERDBTypes, true, uSERColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -1294,14 +1294,14 @@ func testUsersReload(t *testing.T) {
 	}
 }
 
-func testUsersReloadAll(t *testing.T) {
+func testUSERSReloadAll(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &User{}
-	if err = randomize.Struct(seed, o, userDBTypes, true, userColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	o := &USER{}
+	if err = randomize.Struct(seed, o, uSERDBTypes, true, uSERColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -1311,21 +1311,21 @@ func testUsersReloadAll(t *testing.T) {
 		t.Error(err)
 	}
 
-	slice := UserSlice{o}
+	slice := USERSlice{o}
 
 	if err = slice.ReloadAll(ctx, tx); err != nil {
 		t.Error(err)
 	}
 }
 
-func testUsersSelect(t *testing.T) {
+func testUSERSSelect(t *testing.T) {
 	t.Parallel()
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &User{}
-	if err = randomize.Struct(seed, o, userDBTypes, true, userColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	o := &USER{}
+	if err = randomize.Struct(seed, o, uSERDBTypes, true, uSERColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -1335,7 +1335,7 @@ func testUsersSelect(t *testing.T) {
 		t.Error(err)
 	}
 
-	slice, err := Users().All(ctx, tx)
+	slice, err := USERS().All(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -1346,25 +1346,25 @@ func testUsersSelect(t *testing.T) {
 }
 
 var (
-	userDBTypes = map[string]string{`ID`: `varchar`, `Name`: `varchar`, `Nick`: `varchar`, `Password`: `varchar`, `Email`: `varchar`, `CreatedAt`: `datetime`, `UpdatedAt`: `datetime`}
+	uSERDBTypes = map[string]string{`ID`: `int`, `Name`: `varchar`, `Nick`: `varchar`, `Email`: `varchar`, `Password`: `varchar`, `CreatedAt`: `timestamp`, `UpdatedAt`: `timestamp`}
 	_           = bytes.MinRead
 )
 
-func testUsersUpdate(t *testing.T) {
+func testUSERSUpdate(t *testing.T) {
 	t.Parallel()
 
-	if 0 == len(userPrimaryKeyColumns) {
+	if 0 == len(uSERPrimaryKeyColumns) {
 		t.Skip("Skipping table with no primary key columns")
 	}
-	if len(userAllColumns) == len(userPrimaryKeyColumns) {
+	if len(uSERAllColumns) == len(uSERPrimaryKeyColumns) {
 		t.Skip("Skipping table with only primary key columns")
 	}
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &User{}
-	if err = randomize.Struct(seed, o, userDBTypes, true, userColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	o := &USER{}
+	if err = randomize.Struct(seed, o, uSERDBTypes, true, uSERColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -1374,7 +1374,7 @@ func testUsersUpdate(t *testing.T) {
 		t.Error(err)
 	}
 
-	count, err := Users().Count(ctx, tx)
+	count, err := USERS().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -1383,8 +1383,8 @@ func testUsersUpdate(t *testing.T) {
 		t.Error("want one record, got:", count)
 	}
 
-	if err = randomize.Struct(seed, o, userDBTypes, true, userPrimaryKeyColumns...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	if err = randomize.Struct(seed, o, uSERDBTypes, true, uSERPrimaryKeyColumns...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	if rowsAff, err := o.Update(ctx, tx, boil.Infer()); err != nil {
@@ -1394,18 +1394,18 @@ func testUsersUpdate(t *testing.T) {
 	}
 }
 
-func testUsersSliceUpdateAll(t *testing.T) {
+func testUSERSSliceUpdateAll(t *testing.T) {
 	t.Parallel()
 
-	if len(userAllColumns) == len(userPrimaryKeyColumns) {
+	if len(uSERAllColumns) == len(uSERPrimaryKeyColumns) {
 		t.Skip("Skipping table with only primary key columns")
 	}
 
 	seed := randomize.NewSeed()
 	var err error
-	o := &User{}
-	if err = randomize.Struct(seed, o, userDBTypes, true, userColumnsWithDefault...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	o := &USER{}
+	if err = randomize.Struct(seed, o, uSERDBTypes, true, uSERColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	ctx := context.Background()
@@ -1415,7 +1415,7 @@ func testUsersSliceUpdateAll(t *testing.T) {
 		t.Error(err)
 	}
 
-	count, err := Users().Count(ctx, tx)
+	count, err := USERS().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -1424,18 +1424,18 @@ func testUsersSliceUpdateAll(t *testing.T) {
 		t.Error("want one record, got:", count)
 	}
 
-	if err = randomize.Struct(seed, o, userDBTypes, true, userPrimaryKeyColumns...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	if err = randomize.Struct(seed, o, uSERDBTypes, true, uSERPrimaryKeyColumns...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	// Remove Primary keys and unique columns from what we plan to update
 	var fields []string
-	if strmangle.StringSliceMatch(userAllColumns, userPrimaryKeyColumns) {
-		fields = userAllColumns
+	if strmangle.StringSliceMatch(uSERAllColumns, uSERPrimaryKeyColumns) {
+		fields = uSERAllColumns
 	} else {
 		fields = strmangle.SetComplement(
-			userAllColumns,
-			userPrimaryKeyColumns,
+			uSERAllColumns,
+			uSERPrimaryKeyColumns,
 		)
 	}
 
@@ -1453,7 +1453,7 @@ func testUsersSliceUpdateAll(t *testing.T) {
 		}
 	}
 
-	slice := UserSlice{o}
+	slice := USERSlice{o}
 	if rowsAff, err := slice.UpdateAll(ctx, tx, updateMap); err != nil {
 		t.Error(err)
 	} else if rowsAff != 1 {
@@ -1461,32 +1461,32 @@ func testUsersSliceUpdateAll(t *testing.T) {
 	}
 }
 
-func testUsersUpsert(t *testing.T) {
+func testUSERSUpsert(t *testing.T) {
 	t.Parallel()
 
-	if len(userAllColumns) == len(userPrimaryKeyColumns) {
+	if len(uSERAllColumns) == len(uSERPrimaryKeyColumns) {
 		t.Skip("Skipping table with only primary key columns")
 	}
-	if len(mySQLUserUniqueColumns) == 0 {
+	if len(mySQLUSERUniqueColumns) == 0 {
 		t.Skip("Skipping table with no unique columns to conflict on")
 	}
 
 	seed := randomize.NewSeed()
 	var err error
 	// Attempt the INSERT side of an UPSERT
-	o := User{}
-	if err = randomize.Struct(seed, &o, userDBTypes, false); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	o := USER{}
+	if err = randomize.Struct(seed, &o, uSERDBTypes, false); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
 	if err = o.Upsert(ctx, tx, boil.Infer(), boil.Infer()); err != nil {
-		t.Errorf("Unable to upsert User: %s", err)
+		t.Errorf("Unable to upsert USER: %s", err)
 	}
 
-	count, err := Users().Count(ctx, tx)
+	count, err := USERS().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}
@@ -1495,15 +1495,15 @@ func testUsersUpsert(t *testing.T) {
 	}
 
 	// Attempt the UPDATE side of an UPSERT
-	if err = randomize.Struct(seed, &o, userDBTypes, false, userPrimaryKeyColumns...); err != nil {
-		t.Errorf("Unable to randomize User struct: %s", err)
+	if err = randomize.Struct(seed, &o, uSERDBTypes, false, uSERPrimaryKeyColumns...); err != nil {
+		t.Errorf("Unable to randomize USER struct: %s", err)
 	}
 
 	if err = o.Upsert(ctx, tx, boil.Infer(), boil.Infer()); err != nil {
-		t.Errorf("Unable to upsert User: %s", err)
+		t.Errorf("Unable to upsert USER: %s", err)
 	}
 
-	count, err = Users().Count(ctx, tx)
+	count, err = USERS().Count(ctx, tx)
 	if err != nil {
 		t.Error(err)
 	}

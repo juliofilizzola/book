@@ -12,84 +12,71 @@ import "testing"
 // It does NOT run each operation group in parallel.
 // Separating the tests thusly grants avoidance of Postgres deadlocks.
 func TestParent(t *testing.T) {
-	t.Run("Publications", testPublications)
-	t.Run("Users", testUsers)
-	t.Run("PrismaMigrations", testPrismaMigrations)
+	t.Run("PUBLICATIONS", testPUBLICATIONS)
+	t.Run("USERS", testUSERS)
 }
 
 func TestDelete(t *testing.T) {
-	t.Run("Publications", testPublicationsDelete)
-	t.Run("Users", testUsersDelete)
-	t.Run("PrismaMigrations", testPrismaMigrationsDelete)
+	t.Run("PUBLICATIONS", testPUBLICATIONSDelete)
+	t.Run("USERS", testUSERSDelete)
 }
 
 func TestQueryDeleteAll(t *testing.T) {
-	t.Run("Publications", testPublicationsQueryDeleteAll)
-	t.Run("Users", testUsersQueryDeleteAll)
-	t.Run("PrismaMigrations", testPrismaMigrationsQueryDeleteAll)
+	t.Run("PUBLICATIONS", testPUBLICATIONSQueryDeleteAll)
+	t.Run("USERS", testUSERSQueryDeleteAll)
 }
 
 func TestSliceDeleteAll(t *testing.T) {
-	t.Run("Publications", testPublicationsSliceDeleteAll)
-	t.Run("Users", testUsersSliceDeleteAll)
-	t.Run("PrismaMigrations", testPrismaMigrationsSliceDeleteAll)
+	t.Run("PUBLICATIONS", testPUBLICATIONSSliceDeleteAll)
+	t.Run("USERS", testUSERSSliceDeleteAll)
 }
 
 func TestExists(t *testing.T) {
-	t.Run("Publications", testPublicationsExists)
-	t.Run("Users", testUsersExists)
-	t.Run("PrismaMigrations", testPrismaMigrationsExists)
+	t.Run("PUBLICATIONS", testPUBLICATIONSExists)
+	t.Run("USERS", testUSERSExists)
 }
 
 func TestFind(t *testing.T) {
-	t.Run("Publications", testPublicationsFind)
-	t.Run("Users", testUsersFind)
-	t.Run("PrismaMigrations", testPrismaMigrationsFind)
+	t.Run("PUBLICATIONS", testPUBLICATIONSFind)
+	t.Run("USERS", testUSERSFind)
 }
 
 func TestBind(t *testing.T) {
-	t.Run("Publications", testPublicationsBind)
-	t.Run("Users", testUsersBind)
-	t.Run("PrismaMigrations", testPrismaMigrationsBind)
+	t.Run("PUBLICATIONS", testPUBLICATIONSBind)
+	t.Run("USERS", testUSERSBind)
 }
 
 func TestOne(t *testing.T) {
-	t.Run("Publications", testPublicationsOne)
-	t.Run("Users", testUsersOne)
-	t.Run("PrismaMigrations", testPrismaMigrationsOne)
+	t.Run("PUBLICATIONS", testPUBLICATIONSOne)
+	t.Run("USERS", testUSERSOne)
 }
 
 func TestAll(t *testing.T) {
-	t.Run("Publications", testPublicationsAll)
-	t.Run("Users", testUsersAll)
-	t.Run("PrismaMigrations", testPrismaMigrationsAll)
+	t.Run("PUBLICATIONS", testPUBLICATIONSAll)
+	t.Run("USERS", testUSERSAll)
 }
 
 func TestCount(t *testing.T) {
-	t.Run("Publications", testPublicationsCount)
-	t.Run("Users", testUsersCount)
-	t.Run("PrismaMigrations", testPrismaMigrationsCount)
+	t.Run("PUBLICATIONS", testPUBLICATIONSCount)
+	t.Run("USERS", testUSERSCount)
 }
 
 func TestHooks(t *testing.T) {
-	t.Run("Publications", testPublicationsHooks)
-	t.Run("Users", testUsersHooks)
-	t.Run("PrismaMigrations", testPrismaMigrationsHooks)
+	t.Run("PUBLICATIONS", testPUBLICATIONSHooks)
+	t.Run("USERS", testUSERSHooks)
 }
 
 func TestInsert(t *testing.T) {
-	t.Run("Publications", testPublicationsInsert)
-	t.Run("Publications", testPublicationsInsertWhitelist)
-	t.Run("Users", testUsersInsert)
-	t.Run("Users", testUsersInsertWhitelist)
-	t.Run("PrismaMigrations", testPrismaMigrationsInsert)
-	t.Run("PrismaMigrations", testPrismaMigrationsInsertWhitelist)
+	t.Run("PUBLICATIONS", testPUBLICATIONSInsert)
+	t.Run("PUBLICATIONS", testPUBLICATIONSInsertWhitelist)
+	t.Run("USERS", testUSERSInsert)
+	t.Run("USERS", testUSERSInsertWhitelist)
 }
 
 // TestToOne tests cannot be run in parallel
 // or deadlocks can occur.
 func TestToOne(t *testing.T) {
-	t.Run("PublicationToUserUsingAuthIdUser", testPublicationToOneUserUsingAuthIdUser)
+	t.Run("PUBLICATIONToUSERUsingAuth", testPUBLICATIONToOneUSERUsingAuth)
 }
 
 // TestOneToOne tests cannot be run in parallel
@@ -99,15 +86,15 @@ func TestOneToOne(t *testing.T) {}
 // TestToMany tests cannot be run in parallel
 // or deadlocks can occur.
 func TestToMany(t *testing.T) {
-	t.Run("UserToFollowingIdUsers", testUserToManyFollowingIdUsers)
-	t.Run("UserToFollowerIdUsers", testUserToManyFollowerIdUsers)
-	t.Run("UserToAuthIdPublications", testUserToManyAuthIdPublications)
+	t.Run("USERToFollowerUSERS", testUSERToManyFollowerUSERS)
+	t.Run("USERToUserUSERS", testUSERToManyUserUSERS)
+	t.Run("USERToAuthPUBLICATIONS", testUSERToManyAuthPUBLICATIONS)
 }
 
 // TestToOneSet tests cannot be run in parallel
 // or deadlocks can occur.
 func TestToOneSet(t *testing.T) {
-	t.Run("PublicationToUserUsingAuthIdPublications", testPublicationToOneSetOpUserUsingAuthIdUser)
+	t.Run("PUBLICATIONToUSERUsingAuthPUBLICATIONS", testPUBLICATIONToOneSetOpUSERUsingAuth)
 }
 
 // TestToOneRemove tests cannot be run in parallel
@@ -125,51 +112,46 @@ func TestOneToOneRemove(t *testing.T) {}
 // TestToManyAdd tests cannot be run in parallel
 // or deadlocks can occur.
 func TestToManyAdd(t *testing.T) {
-	t.Run("UserToFollowingIdUsers", testUserToManyAddOpFollowingIdUsers)
-	t.Run("UserToFollowerIdUsers", testUserToManyAddOpFollowerIdUsers)
-	t.Run("UserToAuthIdPublications", testUserToManyAddOpAuthIdPublications)
+	t.Run("USERToFollowerUSERS", testUSERToManyAddOpFollowerUSERS)
+	t.Run("USERToUserUSERS", testUSERToManyAddOpUserUSERS)
+	t.Run("USERToAuthPUBLICATIONS", testUSERToManyAddOpAuthPUBLICATIONS)
 }
 
 // TestToManySet tests cannot be run in parallel
 // or deadlocks can occur.
 func TestToManySet(t *testing.T) {
-	t.Run("UserToFollowingIdUsers", testUserToManySetOpFollowingIdUsers)
-	t.Run("UserToFollowerIdUsers", testUserToManySetOpFollowerIdUsers)
+	t.Run("USERToFollowerUSERS", testUSERToManySetOpFollowerUSERS)
+	t.Run("USERToUserUSERS", testUSERToManySetOpUserUSERS)
 }
 
 // TestToManyRemove tests cannot be run in parallel
 // or deadlocks can occur.
 func TestToManyRemove(t *testing.T) {
-	t.Run("UserToFollowingIdUsers", testUserToManyRemoveOpFollowingIdUsers)
-	t.Run("UserToFollowerIdUsers", testUserToManyRemoveOpFollowerIdUsers)
+	t.Run("USERToFollowerUSERS", testUSERToManyRemoveOpFollowerUSERS)
+	t.Run("USERToUserUSERS", testUSERToManyRemoveOpUserUSERS)
 }
 
 func TestReload(t *testing.T) {
-	t.Run("Publications", testPublicationsReload)
-	t.Run("Users", testUsersReload)
-	t.Run("PrismaMigrations", testPrismaMigrationsReload)
+	t.Run("PUBLICATIONS", testPUBLICATIONSReload)
+	t.Run("USERS", testUSERSReload)
 }
 
 func TestReloadAll(t *testing.T) {
-	t.Run("Publications", testPublicationsReloadAll)
-	t.Run("Users", testUsersReloadAll)
-	t.Run("PrismaMigrations", testPrismaMigrationsReloadAll)
+	t.Run("PUBLICATIONS", testPUBLICATIONSReloadAll)
+	t.Run("USERS", testUSERSReloadAll)
 }
 
 func TestSelect(t *testing.T) {
-	t.Run("Publications", testPublicationsSelect)
-	t.Run("Users", testUsersSelect)
-	t.Run("PrismaMigrations", testPrismaMigrationsSelect)
+	t.Run("PUBLICATIONS", testPUBLICATIONSSelect)
+	t.Run("USERS", testUSERSSelect)
 }
 
 func TestUpdate(t *testing.T) {
-	t.Run("Publications", testPublicationsUpdate)
-	t.Run("Users", testUsersUpdate)
-	t.Run("PrismaMigrations", testPrismaMigrationsUpdate)
+	t.Run("PUBLICATIONS", testPUBLICATIONSUpdate)
+	t.Run("USERS", testUSERSUpdate)
 }
 
 func TestSliceUpdateAll(t *testing.T) {
-	t.Run("Publications", testPublicationsSliceUpdateAll)
-	t.Run("Users", testUsersSliceUpdateAll)
-	t.Run("PrismaMigrations", testPrismaMigrationsSliceUpdateAll)
+	t.Run("PUBLICATIONS", testPUBLICATIONSSliceUpdateAll)
+	t.Run("USERS", testUSERSSliceUpdateAll)
 }
