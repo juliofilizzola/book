@@ -34,25 +34,30 @@ func (u User) Create(user models.User) (string, error) {
 	//}
 	//
 	//return result.ID, nil
-
-	statement, err := u.db.Prepare("insert into user (name, nick, email, password) values (?, ?, ?, ?)")
+	fmt.Println(user)
+	statement, err := u.db.Prepare("insert into book.USER (name, nick, email, password) values (?, ?, ?, ?)")
 	if err != nil {
+		fmt.Println("aqui no error")
 		return "", err
 	}
 	defer func(statement *sql.Stmt) {
 		err := statement.Close()
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("Xablau")
 		}
 	}(statement)
 
 	insert, err := statement.Exec(user.Name, user.Nick, user.Email, user.Password)
+
+	fmt.Println(err)
+	fmt.Println(insert)
 
 	if err != nil {
 		return "", err
 	}
 
 	idInsert, err := insert.LastInsertId()
+
 	if err != nil {
 		return "", err
 	}

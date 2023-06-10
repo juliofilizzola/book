@@ -3,12 +3,15 @@ package internal
 import (
 	"api/cmd/config"
 	"database/sql"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
 )
 
 func ClientDB() (*sql.DB, error) {
+	fmt.Println(config.UrlDatabase)
 	db, err := sql.Open("mysql", config.UrlDatabase)
+	fmt.Println(err, "E32")
 	if err != nil {
 		return nil, err
 	}

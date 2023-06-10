@@ -9,14 +9,19 @@ import (
 	internal "api/internal/db"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/gorilla/mux"
 	"io"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 )
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
+	var waitGroup sync.WaitGroup
+
+	waitGroup.Add(3)
 	body, err := io.ReadAll(r.Body)
 	validation.Err(w, http.StatusUnprocessableEntity, err)
 
@@ -32,6 +37,8 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Println("chegou aqui")
+
 	db, err := internal.ClientDB()
 
 	validation.Err(w, http.StatusInternalServerError, err)
@@ -40,7 +47,11 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	user.ID, err = repo.Create(user)
 
-	validation.Err(w, http.StatusInternalServerError, err)
+	validation.Err(
+		w,
+		http.StatusInternalServerError,
+		err,
+	)
 
 	response.JSON(w, http.StatusCreated, struct {
 		ID        string    `json:"id"`
@@ -60,6 +71,9 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
+	var waitGroup sync.WaitGroup
+
+	waitGroup.Add(3)
 	params := strings.ToLower(r.URL.Query().Get("user"))
 
 	db, err := internal.ClientDB()
@@ -76,6 +90,10 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
+	var waitGroup sync.WaitGroup
+
+	waitGroup.Add(3)
+
 	params := mux.Vars(r)
 
 	userId := params["id"]
@@ -94,6 +112,9 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
+	var waitGroup sync.WaitGroup
+
+	waitGroup.Add(3)
 	params := mux.Vars(r)
 	userId := params["id"]
 
@@ -133,6 +154,9 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
+	var waitGroup sync.WaitGroup
+
+	waitGroup.Add(3)
 	params := mux.Vars(r)
 
 	userId := params["id"]

@@ -13,9 +13,13 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"sync"
 )
 
 func Create(w http.ResponseWriter, r *http.Request) {
+	var waitGroup sync.WaitGroup
+
+	waitGroup.Add(3)
 	userId, err := auth.GetUserId(r)
 
 	validation.Err(w, http.StatusUnauthorized, err)
@@ -52,6 +56,9 @@ func Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetMyPublications(w http.ResponseWriter, r *http.Request) {
+	var waitGroup sync.WaitGroup
+
+	waitGroup.Add(3)
 	userId, err := auth.GetUserId(r)
 
 	validation.Err(w, http.StatusUnauthorized, err)
@@ -70,6 +77,9 @@ func GetMyPublications(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPublication(w http.ResponseWriter, r *http.Request) {
+	var waitGroup sync.WaitGroup
+
+	waitGroup.Add(3)
 	params := mux.Vars(r)
 
 	id := params["id"]
@@ -88,6 +98,9 @@ func GetPublication(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdatePublication(w http.ResponseWriter, r *http.Request) {
+	var waitGroup sync.WaitGroup
+
+	waitGroup.Add(3)
 	_, err := auth.GetUserId(r)
 
 	validation.Err(w, http.StatusUnauthorized, err)
@@ -123,6 +136,9 @@ func UpdatePublication(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAllPublication(w http.ResponseWriter, r *http.Request) {
+	var waitGroup sync.WaitGroup
+
+	waitGroup.Add(3)
 	_, err := auth.GetUserId(r)
 
 	validation.Err(w, http.StatusUnauthorized, err)
@@ -141,6 +157,9 @@ func GetAllPublication(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeletedPublication(w http.ResponseWriter, r *http.Request) {
+	var waitGroup sync.WaitGroup
+
+	waitGroup.Add(3)
 	userId, err := auth.GetUserId(r)
 
 	validation.Err(w, http.StatusUnauthorized, err)
@@ -175,6 +194,9 @@ func DeletedPublication(w http.ResponseWriter, r *http.Request) {
 }
 
 func LikePublication(w http.ResponseWriter, r *http.Request) {
+	var waitGroup sync.WaitGroup
+
+	waitGroup.Add(3)
 	params := mux.Vars(r)
 
 	id := params["id"]
@@ -216,6 +238,9 @@ func LikePublication(w http.ResponseWriter, r *http.Request) {
 }
 
 func DislikePublication(w http.ResponseWriter, r *http.Request) {
+	var waitGroup sync.WaitGroup
+
+	waitGroup.Add(3)
 	params := mux.Vars(r)
 
 	id := params["id"]
