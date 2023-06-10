@@ -12,9 +12,13 @@ import (
 	"github.com/gorilla/mux"
 	"io"
 	"net/http"
+	"sync"
 )
 
 func UpdatePassword(w http.ResponseWriter, r *http.Request) {
+	var waitGroup sync.WaitGroup
+
+	waitGroup.Add(3)
 	userIDToken, err := auth2.GetUserId(r)
 
 	validation.Err(w, http.StatusUnauthorized, err)

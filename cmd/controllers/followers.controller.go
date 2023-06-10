@@ -9,9 +9,13 @@ import (
 	"errors"
 	"github.com/gorilla/mux"
 	"net/http"
+	"sync"
 )
 
 func FollowerUser(w http.ResponseWriter, r *http.Request) {
+	var waitGroup sync.WaitGroup
+
+	waitGroup.Add(3)
 	followerId, err := auth.GetUserId(r)
 
 	validation.Err(w, http.StatusUnauthorized, err)
@@ -40,6 +44,9 @@ func FollowerUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func Unfollow(w http.ResponseWriter, r *http.Request) {
+	var waitGroup sync.WaitGroup
+
+	waitGroup.Add(3)
 	followerId, err := auth.GetUserId(r)
 
 	validation.Err(w, http.StatusUnauthorized, err)
@@ -68,7 +75,9 @@ func Unfollow(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetFollow(w http.ResponseWriter, r *http.Request) {
+	var waitGroup sync.WaitGroup
 
+	waitGroup.Add(3)
 	params := mux.Vars(r)
 
 	userId := params["userId"]
@@ -92,7 +101,9 @@ func GetFollow(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetFollowers(w http.ResponseWriter, r *http.Request) {
+	var waitGroup sync.WaitGroup
 
+	waitGroup.Add(3)
 	params := mux.Vars(r)
 
 	followId := params["followId"]
