@@ -6,7 +6,7 @@ require (
 	github.com/badoux/checkmail v1.2.1
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-sql-driver/mysql v1.7.0
-	github.com/golang-jwt/jwt/v5 v5.0.0
+	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/gorilla/mux v1.8.0
 	github.com/joho/godotenv v1.5.1
 	github.com/kat-co/vala v0.0.0-20170210184112-42e1d8b61f12
